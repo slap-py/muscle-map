@@ -506,6 +506,8 @@ dialog.addEventListener("click", (e) => {
 });
 const raycaster = new THREE.Raycaster(),
   mouse = new THREE.Vector2();
+// Closest hit per mesh; every mesh still participates in selection priority.
+raycaster.firstHitOnly = true;
 function pickStructure(clientX: number, clientY: number): string | null {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.set(
@@ -815,3 +817,4 @@ function frame(time: number) {
   }
 }
 requestAnimationFrame(frame);
+

@@ -4,6 +4,7 @@ import { buildFoot, rays, type Point } from "./foot";
 import { ankleDetails } from "./ankleDetails";
 import { loft, ribbon, type Section } from "./geometry";
 
+import { enableMeshPicking } from "./picking";
 export function createAnkle() {
   const root = new THREE.Group();
   const parts = new Map<
@@ -34,7 +35,8 @@ export function createAnkle() {
       side: tissue === "fascia" ? THREE.DoubleSide : THREE.FrontSide,
     });
     const m = new THREE.Mesh(g, mat);
-    m.userData = { id, fiber };
+    m.userData = { id, atlasId: id, fiber };
+    if (!fiber) enableMeshPicking(m);
     m.castShadow = !fiber;
     m.receiveShadow = true;
     parts.get(id)!.group.add(m);
@@ -252,3 +254,4 @@ export function createAnkle() {
     new THREE.Box3().setFromObject(part.group).getCenter(part.anchor);
   return { root, parts };
 }
+
