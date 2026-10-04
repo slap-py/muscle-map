@@ -12,8 +12,8 @@ export function createCameraControls(
   controls.smoothTime = 0.25;
   controls.draggingSmoothTime = 0.125;
   controls.dollyToCursor = true;
-  controls.minDistance = 0.02;
-  controls.maxDistance = 30;
+  controls.minDistance = 2;
+  controls.maxDistance = 3000;
   controls.minPolarAngle = Math.PI * 0.15;
   controls.maxPolarAngle = Math.PI * 0.85;
   controls.mouseButtons.right = CameraControls.ACTION.TRUCK;
@@ -43,10 +43,11 @@ export function updateCamera(
 ) {
   const changed = controls.update(dt);
   // As in Cell Explorer, maintain depth precision while inspecting small structures.
-  camera.near = THREE.MathUtils.clamp(controls.distance * 0.01, 0.0005, 1);
+  camera.near = THREE.MathUtils.clamp(controls.distance * 0.01, 0.05, 100);
   camera.far = camera.near * 1e5;
   camera.updateProjectionMatrix();
   return changed;
 }
 
 export { CameraControls };
+

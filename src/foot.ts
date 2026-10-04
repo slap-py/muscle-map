@@ -25,7 +25,8 @@ interface Connection {
   role: string;
 }
 
-// +X is medial, +Z points toward the toes. Locations are schematic, in model units.
+// LEGACY authoring coordinates only: +X medial, +Y up, +Z anterior.
+// createAnkle bakes these into ISB-aligned millimeters; see COORDINATES.md.
 export const footBones: FootBone[] = [
   {
     id: "talus",

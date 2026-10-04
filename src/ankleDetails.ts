@@ -1,3 +1,4 @@
+// Paths below are legacy procedural authoring inputs; see COORDINATES.md.
 import type { Structure, Tissue } from "./data";
 import type { Point } from "./foot";
 

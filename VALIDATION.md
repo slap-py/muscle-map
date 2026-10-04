@@ -1,14 +1,27 @@
-# Validation — Foot & Ankle
+# Validation — Phases 0 and 1
 
 Checked October 4, 2026.
 
-- TypeScript/Vite production build passes.
-- Eight automated tests cover bone counts and toe segmentation, valid reciprocal attachment relationships, finite selectable geometry for every active atlas entry, smooth camera convergence and bounds, and anatomical compass projection.
-- The active atlas excludes the femur and knee; the regional model replaces the earlier full-leg assembly.
-- Browser inspection: overview, medial skeleton and plantar views; individual retinaculum selection; connection lists; fascia/cartilage layer controls; camera compass direction switching.
-- Compass marker positions change during orbit; the medial and lateral axes remain opposites in camera coordinates.
-- Smooth camera controller and pan interactions retained from the previous update.
-- Hover checks sampled 40 visible structures across all six tissue types: atlas names highlight and temporary model labels appear with Labels off. Pointer leave clears the preview, click selection persists, and dragging suppresses hover without selecting a structure. No browser errors occurred.
-- Label transition checks verify persistent label elements, fade-out and cleanup, cancellation of fleeting hover previews, preserved click selection, and immediate transitions with reduced motion enabled. No browser errors occurred.
+- Phase 0: build passed; browser rendered all 66 entries with no page errors.
+  Tests were waived by the phase instructions.
+- Phase 1: production build passes; all 12 tests pass.
+- Coordinate tests verify right-handed axes, fixed datum, mm bounds, atlas IDs,
+  medial placement, label anchors, original projected framing, and BVH raycast
+  agreement with ordinary raycasts from five view directions.
+- Production browser inspection covers presets, compass, hover/click selection,
+  labels, search, focus, isolation, connections, all layers and tissue presets,
+  opacity, orbit/pan/zoom, keyboard pan, the complete tour and reduced motion.
+- Overview, isolated talus and plantar-tour screenshots were visually inspected.
+  The overview retains its original composition and controls.
 
-These checks validate rendering and interaction. Anatomical shape fidelity remains approximate and has not been clinically validated. See README.md for scope and omissions.
+Reproduce with npm run build, npm test, and scripts/browser-check.mjs against a
+local production preview. See continuation.md for commands and environment notes.
+Browser evidence is in validation/browser-check.json and validation/*.png.
+
+Known non-blocking diagnostics: Vite bundle-size advisory; existing favicon 404.
+Opposite compass buttons overlap in aligned views, as before this work.
+
+This validates rendering and interaction, not anatomical accuracy. The geometry
+remains procedural, the mm calibration is illustrative, and legacy anatomical
+claims still require a claim-level citation audit before replacement content ships.
+

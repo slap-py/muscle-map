@@ -4,6 +4,7 @@ import { buildFoot, rays, type Point } from "./foot";
 import { ankleDetails } from "./ankleDetails";
 import { loft, ribbon, type Section } from "./geometry";
 
+import { legacyToAnatomicalMatrix } from "./coordinates";
 import { enableMeshPicking } from "./picking";
 export function createAnkle() {
   const root = new THREE.Group();
@@ -36,7 +37,7 @@ export function createAnkle() {
     });
     const m = new THREE.Mesh(g, mat);
     m.userData = { id, atlasId: id, fiber };
-    if (!fiber) enableMeshPicking(m);
+
     m.castShadow = !fiber;
     m.receiveShadow = true;
     parts.get(id)!.group.add(m);
@@ -250,6 +251,11 @@ export function createAnkle() {
     g.translate(0, 0.08, 0);
     add("plantar-fascia", g);
   }
+  for (const part of parts.values())
+    for (const mesh of part.meshes) {
+      mesh.geometry.applyMatrix4(legacyToAnatomicalMatrix);
+      if (!mesh.userData.fiber) enableMeshPicking(mesh);
+    }
   for (const part of parts.values())
     new THREE.Box3().setFromObject(part.group).getCenter(part.anchor);
   return { root, parts };

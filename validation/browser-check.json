@@ -1,0 +1,21 @@
+{
+  "url": "http://127.0.0.1:5176/",
+  "browser": "154.0.4258.53",
+  "checks": [
+    "66 atlas entries, production WebGL render",
+    "all five presets and six compass directions",
+    "BVH mesh hover, transient label with labels off, click selection and pointer leave",
+    "search, focus, isolate and connected structure links",
+    "all six layers, tissue presets, labels and opacity",
+    "zoom buttons, wheel, orbit, compass tracking, pan and keyboard pan",
+    "all six guided tour stops and finish",
+    "reduced-motion labels"
+  ],
+  "errors": [],
+  "incidental": [
+    {
+      "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:5176/favicon.ico"
+    }
+  ]
+}

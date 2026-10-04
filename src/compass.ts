@@ -1,45 +1,46 @@
 import * as THREE from "three";
+import { anatomicalDirections } from "./coordinates";
 export const directions = [
   {
     id: "medial",
     short: "M",
     label: "Medial · inner side",
-    v: [1, 0, 0],
+    v: anatomicalDirections.medial,
     color: "#8e694e",
   },
   {
     id: "lateral",
     short: "L",
     label: "Lateral · outer side",
-    v: [-1, 0, 0],
+    v: anatomicalDirections.lateral,
     color: "#8e694e",
   },
   {
     id: "dorsal",
     short: "D",
     label: "Dorsal · top of foot",
-    v: [0, 1, 0],
+    v: anatomicalDirections.dorsal,
     color: "#698168",
   },
   {
     id: "plantar",
     short: "Pl",
     label: "Plantar · sole",
-    v: [0, -1, 0],
+    v: anatomicalDirections.plantar,
     color: "#698168",
   },
   {
     id: "anterior",
     short: "A",
     label: "Anterior · toward toes",
-    v: [0, 0, 1],
+    v: anatomicalDirections.anterior,
     color: "#547f93",
   },
   {
     id: "posterior",
     short: "P",
     label: "Posterior · toward heel",
-    v: [0, 0, -1],
+    v: anatomicalDirections.posterior,
     color: "#547f93",
   },
 ];

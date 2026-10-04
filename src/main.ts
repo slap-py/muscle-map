@@ -14,6 +14,8 @@ import { createAnkle } from "./ankle";
 import { createCompass } from "./compass";
 import { relatedIds } from "./foot";
 
+import { cameraPreset, legacyPointToMm } from "./coordinates";
+
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = `
 <header class="topbar"><div class="brand"><span class="brand-icon" aria-hidden="true">⌁</span><div><strong>Foot & Ankle</strong><small>AN ANATOMICAL STUDY</small></div></div>
@@ -173,7 +175,7 @@ for (const tissue of tissueKeys) {
 }
 const viewport = $("#viewport");
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(34, 1, 10, 10000);
 let renderer: THREE.WebGLRenderer;
 try {
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -195,7 +197,7 @@ renderer.domElement.setAttribute(
   "aria-label",
   "3D foot and ankle model. Drag to rotate, scroll to zoom, or select structures in the atlas.",
 );
-camera.position.set(0.25, 6.1, 23);
+camera.position.copy(legacyPointToMm(0.25, 6.1, 23));
 const controls = createCameraControls(camera, renderer.domElement);
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 function applyMotionPreference() {
@@ -230,17 +232,24 @@ renderer.domElement.addEventListener("keydown", (e) => {
 });
 scene.add(new THREE.HemisphereLight("#fff7e8", "#9d8d7b", 2.3));
 const key = new THREE.DirectionalLight("#fff2db", 3.4);
-key.position.set(-4, 12, 7);
+key.position.copy(legacyPointToMm(-4, 12, 7));
+key.target.position.copy(legacyPointToMm(0, 0, 0));
+scene.add(key.target);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
-key.shadow.camera.left = -7;
-key.shadow.camera.right = 7;
-key.shadow.camera.top = 12;
-key.shadow.camera.bottom = -6;
-key.shadow.normalBias = 0.025;
+key.shadow.camera.left = -700;
+key.shadow.camera.right = 700;
+key.shadow.camera.top = 1200;
+key.shadow.camera.bottom = -600;
+key.shadow.camera.near = 50;
+key.shadow.camera.far = 50000;
+key.shadow.camera.updateProjectionMatrix();
+key.shadow.normalBias = 2.5;
 scene.add(key);
 const fill = new THREE.DirectionalLight("#dcecf3", 1.6);
-fill.position.set(5, 6, -4);
+fill.position.copy(legacyPointToMm(5, 6, -4));
+fill.target.position.copy(legacyPointToMm(0, 0, 0));
+scene.add(fill.target);
 scene.add(fill);
 controls.minPolarAngle = 0.001;
 controls.maxPolarAngle = Math.PI - 0.001;
@@ -248,11 +257,11 @@ const updateCompass = createCompass($("#compass"), (view) => setView(view));
 const leg = createAnkle();
 scene.add(leg.root);
 const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(200, 200),
+  new THREE.PlaneGeometry(20000, 20000),
   new THREE.ShadowMaterial({ color: "#6e583e", opacity: 0.12 }),
 );
 floor.rotation.x = -Math.PI / 2;
-floor.position.y = 0.06;
+floor.position.copy(legacyPointToMm(0, 0.06, 0));
 floor.receiveShadow = true;
 scene.add(floor);
 function setView(view: string, animate = true) {
@@ -262,24 +271,7 @@ function setView(view: string, animate = true) {
   $(".scene-heading h1").textContent = "Foot & ankle";
   $(".scene-heading p").textContent = "A closer study of every step.";
   applyMotionPreference();
-  const views: Record<string, number[]> = {
-    foot: [-0.8, 0.8, 1.5],
-    medial: [1, 0.13, 0.02],
-    lateral: [-1, 0.13, 0.02],
-    dorsal: [0, 1, 0.45],
-    plantar: [0, -1, 0.04],
-    anterior: [0, 0.08, 1],
-    posterior: [0, 0.08, -1],
-  };
-  const v = new THREE.Vector3(...(views[view] ?? views.foot)).normalize();
-  const isSurface = view === "dorsal" || view === "plantar";
-  const target = new THREE.Vector3(
-    0,
-    isSurface ? 0.5 : 1.43,
-    isSurface ? 0.9 : 0.76,
-  );
-  const distance = (isSurface ? 5.9 : 8.5) * Math.max(1, 0.75 / camera.aspect);
-  const p = target.clone().addScaledVector(v, distance);
+  const { target, position: p } = cameraPreset(view, camera.aspect);
   void controls.setLookAt(p.x, p.y, p.z, target.x, target.y, target.z, animate);
   buildLabels();
   $("#view-name").textContent =
@@ -339,11 +331,11 @@ function focusParts(ids: string[], foot = false) {
     ),
   );
   const distance = Math.max(
-    0.6,
+    60,
     (size.length() / 2 / Math.sin(halfFov)) * 1.32,
   );
   const direction = foot
-    ? new THREE.Vector3(-0.8, 1.5, 1.8).normalize()
+    ? new THREE.Vector3(1.8, 1.5, 0.8).normalize()
     : camera.position
         .clone()
         .sub(controls.getTarget(new THREE.Vector3(), false))
@@ -794,7 +786,7 @@ function frame(time: number) {
     const anchor = leg.parts.get(id)!.anchor;
     const p = anchor.clone().project(camera);
     const x =
-      (p.x * 0.5 + 0.5) * viewport.clientWidth + (anchor.x > 0 ? 65 : -65);
+      (p.x * 0.5 + 0.5) * viewport.clientWidth + (anchor.z < 0 ? 65 : -65);
     let y = (-p.y * 0.5 + 0.5) * viewport.clientHeight;
     while (
       occupied.some((q) => Math.abs(q.x - x) < 145 && Math.abs(q.y - y) < 32)

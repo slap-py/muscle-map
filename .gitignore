@@ -3,3 +3,8 @@ dist/
 test-results/
 *.log
 .npm-cache/
+
+# Generated root preview captures (keep source-model assets trackable)
+/preview*.jpg
+/*-preview.png
+/playwright-report/

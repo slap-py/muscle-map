@@ -56,3 +56,11 @@ Reference reading:
 - `src/main.ts`: atlas, layers, selection, camera views and tour
 
 Built with TypeScript, Three.js, camera-controls and Vite. Fonts are local; the app has no runtime asset-service dependency.
+
+## Anatomical asset migration
+
+Phases 0 and 1 establish the asset/licensing pipeline, BVH picking and millimeter
+coordinates. The geometry remains procedural until a later source-model import.
+See [continuation.md](continuation.md) for completed work and next steps,
+[COORDINATES.md](COORDINATES.md) for the fixed frame and scale contract,
+and [credits.md](credits.md) for licensing and attribution.
