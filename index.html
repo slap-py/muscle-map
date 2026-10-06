@@ -55,11 +55,15 @@ body{margin:0;font:13px/1.5 system-ui,sans-serif;background:var(--bg)}
 @media (prefers-reduced-motion: reduce) {
   .loading-bar::after { animation: none; width: 100%; }
 }
+#loading .brand-mark{width:40px;height:40px;fill:none;stroke:var(--accent);stroke-width:1.5}
+#loading.determinate .loading-bar::after{animation:none;transform:none;width:var(--progress,0%);transition:width .15s}
+#loading.load-failed .loading-bar{display:none}
+@media(prefers-reduced-motion:reduce){#loading,#loading.determinate .loading-bar::after{transition:none}}
     </style>
   </head>
   <body>
     <div id="app"></div>
-    <div id="loading" role="status" aria-live="polite"><h1>Foot &amp; Ankle Explorer</h1><div class="loading-bar" aria-hidden="true"></div><p>Loading anatomy models…</p></div>
+    <div id="loading" role="status" aria-live="polite"><svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 2c3-1 5 1 4 4l-2 5c-1 2 0 4-2 6-2 2-6 1-6-2 0-2 2-4 3-6s0-6 3-7Z"/><path d="m9 9 5 2"/></svg><h1>Foot &amp; Ankle Explorer</h1><div class="loading-bar" aria-hidden="true"></div><p>Loading models…</p></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

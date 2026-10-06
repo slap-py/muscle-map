@@ -1,107 +1,58 @@
-# Validation — Phases 0 and 1
+# Foot & Ankle Explorer — validation
 
-Checked October 4, 2026.
+Checked October 5, 2026 (America/Los_Angeles). Version remains 1.0.0.
 
-- Phase 0: build passed; browser rendered all 66 entries with no page errors.
-  Tests were waived by the phase instructions.
-- Phase 1: production build passes; all 12 tests pass.
-- Coordinate tests verify right-handed axes, fixed datum, mm bounds, atlas IDs,
-  medial placement, label anchors, original projected framing, and BVH raycast
-  agreement with ordinary raycasts from five view directions.
-- Production browser inspection covers presets, compass, hover/click selection,
-  labels, search, focus, isolation, connections, all layers and tissue presets,
-  opacity, orbit/pan/zoom, keyboard pan, the complete tour and reduced motion.
-- Overview, isolated talus and plantar-tour screenshots were visually inspected.
-  The overview retains its original composition and controls.
+## UI revamp
 
-Reproduce with npm run build, npm test, and scripts/browser-check.mjs against a
-local production preview. See continuation.md for commands and environment notes.
-Browser evidence is in validation/browser-check.json and validation/*.png.
+**Final production build: passed. Unit/integration tests: 64 passed across 12 files. All eight browser scripts passed against the final production build on port 5176.**
 
-Known non-blocking diagnostics: Vite bundle-size advisory; existing favicon 404.
-Opposite compass buttons overlap in aligned views, as before this work.
+| Browser script | Result |
+| --- | --- |
+| `browser-check.mjs` | General controls and About: passed |
+| `bone-browser-check.mjs` | All 30 bones and fallback picking: passed |
+| `soft-browser-check.mjs` | All 77 non-bone structures and partial fallback: passed |
+| `exterior-browser-check.mjs` | Exterior, opacity, toe filters, fallback: passed |
+| `connection-browser-check.mjs` | Attachments, cutaway, restoration, late refit: passed |
+| `misc-browser-check.mjs` | Connection highlighting, keyboard, narrow layout: passed |
+| `hover-connections-browser-check.mjs` | Hover-label rules: passed |
+| `revamp-browser-check.mjs` | New UI, persistence, labels, loading, responsive layouts: passed |
 
-This validates rendering and interaction, not anatomical accuracy. The geometry
-remains procedural, the mm calibration is illustrative, and legacy anatomical
-claims still require a claim-level citation audit before replacement content ships.
+No application or shader errors were reported. The general browser check records an incidental favicon 404.
 
+Build and test checkpoints were run during the feature-removal, grouped-list, inspector, label, exterior-viewer, topbar/loading, and About phases. The dev server at port 5174 was checked throughout. Final production regression checks use preview port 5176.
 
+New automated coverage includes:
 
-## Phase 2 bone assets — 2026-10-04
+- Allowed anatomical groups and atlas memberships, with explicit skin exemption and the fixed-taxonomy MTP-band limitation.
+- Real IDs and zoom boundaries for label tiers; cartilage is excluded from automatic tiers.
+- Muscle-fact coverage and source links for exactly 13 muscles, with other tissues' new fact fields left unauthored.
+- Physical skin material and the skin shadow exception across opacity changes.
+- Nine non-overlapping overview labels with leader lines; hidden and <50%-opacity structures excluded; forefoot zoom reveals additional label tiers.
+- Type/area/visible-layer filters, highlighted search, temporarily revealed selected rows, ↑/↓/Enter, saved collapse state, and selection synchronization.
+- Derived bone articulations, muscle facts/references, 24px keyboard resizing, expand/restore, saved width, and operation with localStorage blocked.
+- Pointer dragging was additionally checked at both 280px and 680px clamp limits.
+- Camera centering remains in the free canvas after inspector resizing and temporal antialiasing jitter cleanup.
+- Shared title/mark, real byte-based loading progress, About tabs and keyboard navigation, responsive 820px and 390px layouts, and the narrow overflow menu.
+- A 2.5-second asset-failure notice followed by functioning procedural shapes.
 
-Build and 16 unit/integration tests pass. The real shipped GLB contains all 30
-right-side bones with exact IDs and identity transforms. Source cleanup enforces
-zero loose vertices and zero non-manifold edges; final triangle counts range from
-6,524 to 12,000. Five ray directions per bone compare accelerated and ordinary hits.
+The existing regression suites retain source-bone selection and BVH behavior, all soft-tissue selections, camera/compass/zoom/pan, attachment decals and clinical notes, camera-sensitive cutaways, Highlight connections and hover behavior, reduced motion, missing assets, and delayed asset refitting. Obsolete feature steps have been removed or replaced.
 
-`node scripts/browser-check.mjs` validates all existing controls against the loaded
-asset. `node scripts/bone-browser-check.mjs` individually selects, isolates, focuses,
-hovers and labels all 30 imported bones, then verifies a simulated missing GLB
-leaves the procedural fallback functional. JSON reports and phase2 screenshots are
-in validation/. Source-to-frame matrices and artifact hashes are in the shipped
-manifest. Soft-tissue anatomical alignment is outside these software checks.
+Missing-skin evidence: `validation/exterior-source-inspection.json`. UI evidence: `validation/revamp-browser-check.json`, existing `validation/*-browser-check.json`, `revamp-overview.png`, `revamp-inspector-wide.png`, `revamp-forefoot.png`, `revamp-narrow-820.png`, `revamp-narrow-390.png`, and `exterior-*.png`.
 
+## Blocked geometry acceptance
 
-## Phases 3–4 — 2026-10-04
+The installed Blender 5.2 **MCP** extension is reachable with the corrected project bridge. Inspection of the pinned Startup.blend found no skin mesh; Skin and Dermis are empty and Integument contains appendages. The user authorized continuing other work when Blender work was blocked.
 
-Production build and 21 tests across six files pass. New tests parse the shipped
-muscle GLB, verify identity transforms, triangle budgets and exact registration,
-validate attachment references and named guide order, check footprint projection,
-confirm guide interpolation and separate flattened component geometry, and check
-both surface-derived cartilage shells at all 39 joint interfaces. They also check
-resource disposal on refit and muscle-load fallback. The test timeout accommodates
-real source-mesh fitting instead of mocking surface queries.
+Real-skin geometry was therefore not exported. The existing exterior GLB/manifest and illustrative provenance were preserved. The requested ≤40k triangles and ≥95% bone-vertex bounding-box enclosure checks for the replacement cannot be claimed, and real-skin/no-ring visual acceptance is pending. The viewer's skin material, shadow behavior, and skin-plus-bone preset are verified independently.
 
-The Blender exporter independently checks post-validation manifold edges,
-connected components and retained belly volume. This caught and corrected source
-material seam fragmentation in abductor hallucis/FHL before final delivery.
+These checks validate software behavior and geometric consistency, not clinical or biomechanical accuracy. Existing source anatomy, fitted attachment extents, cartilage thickness, and skin shape remain subject to the documented limitations. The production build emits Vite's bundle-size advisory.
 
-The general browser suite and all 30 individual bone interactions pass, including
-bone-asset 404 fallback. All 75 soft-tissue groups also pass selection, hover, focus, isolate and label
-checks, with no application errors; muscle-asset 404 retains all 105 entries.
-See `validation/soft-browser-check.json` for the recorded results. Screenshots use the phase4
-prefix; earlier phase2 evidence is retained.
+## Reproduce
 
-These checks validate geometry and interaction, not anatomical accuracy. Source
-scale is preserved, while footprints, paths, shell masks and thickness are authored
-illustrative fits. Existing diagnostics: Vite large-bundle advisory and favicon 404.
+```sh
+npm run build
+npm test
+npm run preview -- --port 5176 --strictPort
+```
 
-
-## Phase 5 — 2026-10-04
-
-Build and 25 tests in 7 files pass. New real-asset checks verify every surface
-footprint produces a decal on its actual bone, exclude junction/soft-tissue
-endpoints, verify direct attachments exclude pulley-only contacts, and project
-footprint rims inside desktop and narrow camera frames. A synthetic occlusion
-fixture verifies camera movement restores clear structures and excludes hidden,
-selected and behind-target geometry.
-
-`node scripts/connection-browser-check.mjs` verifies muscle/tendon/ligament
-footprints, notes and source links, clinical points, focus, ghost mode, deep
-Lisfranc cutaways while orbiting, Escape from focused controls, manual layer
-changes, all six tour stops/back/finish, restoration of prior layers/opacity,
-rapid animated focus, narrow layout, both GLB 404 fallbacks and late asset refits.
-The existing general interaction suite also passes. No application/shader errors;
-the existing favicon 404 and Vite bundle advisory remain. See
-`validation/connection-browser-check.json` and `validation/phase5-*.png`.
-
-Visual review caught overlapping shared origins covering the active amber decal;
-active footprints now render after all inactive decals. These checks validate
-software geometry and interaction, not the anatomical accuracy of authored
-footprint extents or a complete set of muscle origins.
-
-## Exterior, regional atlas, and opacity update
-
-- `npm run build`: passed (existing large-bundle advisory remains).
-- `npm test`: 28 tests across 8 files passed.
-- `node scripts/exterior-browser-check.mjs`: passed in headless Edge at
-  1440x1000 and 1100x800; no page errors. Checked five distinct toe tabs,
-  13 loaded muscles, exterior preset, skin opacity, muscle opacity through
-  81/80/79 percent, reset, gastrocnemius attachment controls, and exterior
-  asset failure fallback.
-- Visually reviewed `validation/exterior-overview.png`,
-  `validation/exterior-dorsal.png`, `validation/muscle-opacity-50.png`,
-  `validation/gastrocnemius.png`, and `validation/exterior-narrow.png`.
-- Skin is an illustrative fitted envelope. Coverage transparency avoids
-  object-order popping; fine grain can remain during motion and settles
-  through temporal antialiasing at rest.
+Then execute every `scripts/*-browser-check.mjs` with Node. Set `VIEWER_URL` to override port 5176. No new dependencies are required.

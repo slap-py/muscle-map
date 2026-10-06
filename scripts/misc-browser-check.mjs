@@ -15,7 +15,7 @@ const choose = id => page.locator(`.structure-row[data-id="${id}"]`).click();
 const layers = () => page.locator('[data-layer]').evaluateAll(elements => elements.map(element => [element.dataset.layer, element.checked]));
 const ready = () => page.waitForFunction(() => document.querySelector('#viewport')?.dataset.softTissues === 'ready');
 try {
-  await page.goto(process.env.VIEWER_URL ?? 'http://127.0.0.1:5177', {waitUntil: 'networkidle'});
+  await page.goto(process.env.VIEWER_URL ?? 'http://127.0.0.1:5176', {waitUntil: 'networkidle'});
   await ready();
   await choose('edl');
   assert.deepEqual(await highlighted(), []);
@@ -51,8 +51,6 @@ try {
   await page.locator('#focus-selected').click();
   await page.locator('#isolate').click();
   assert((await highlighted()).includes('tibialis-anterior-tendon'));
-  await page.locator('#ghost-mode').click();
-  assert.equal((await data()).ghost, 'true');
   await page.locator('#clear').click();
   assert.deepEqual(await highlighted(), []);
   assert.equal((await data()).ghost, 'false');
@@ -111,9 +109,10 @@ try {
     await route.continue();
   });
   await page.reload({waitUntil: 'domcontentloaded'});
-  await choose('edl');
-  await page.locator('#highlight-connections').click();
-  await page.locator('#focus-selected').click();
+  // Simulate an existing selection while the initial loading overlay blocks pointer input.
+  await page.locator('.structure-row[data-id="edl"]').evaluate(element => element.click());
+  await page.locator('#highlight-connections').evaluate(element => element.click());
+  await page.locator('#focus-selected').evaluate(element => element.click());
   await ready();
   assert.equal((await highlighted()).length, 10);
   assert.equal(await page.locator('#highlight-connections').getAttribute('aria-pressed'), 'true');

@@ -6,6 +6,7 @@ export interface Detail {
   id: string;
   name: string;
   tissue: Tissue;
+  group: string;
   description: string;
   role: string;
   attachments: string[];
@@ -15,6 +16,7 @@ export interface Detail {
 export const ankleDetails: Detail[] = [
   {
     id: "soleus-distal",
+    group: "Superficial posterior compartment",
     name: "Soleus · distal portion",
     tissue: "muscle",
     description:
@@ -24,6 +26,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "fibularis-brevis",
+    group: "Lateral compartment",
     name: "Fibularis brevis · distal portion",
     tissue: "muscle",
     description: "Distal lateral-compartment muscle beside fibularis longus.",
@@ -32,6 +35,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "ehl",
+    group: "Anterior compartment",
     name: "Extensor hallucis longus · distal portion",
     tissue: "muscle",
     description:
@@ -41,6 +45,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "edl",
+    group: "Anterior compartment",
     name: "Extensor digitorum longus · distal portion",
     tissue: "muscle",
     description:
@@ -50,6 +55,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "edb",
+    group: "Dorsal foot muscles",
     name: "Extensor digitorum brevis",
     tissue: "muscle",
     description:
@@ -59,6 +65,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "abductor-hallucis",
+    group: "Plantar foot muscles",
     name: "Abductor hallucis",
     tissue: "muscle",
     description:
@@ -68,6 +75,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "abductor-digiti",
+    group: "Plantar foot muscles",
     name: "Abductor digiti minimi",
     tissue: "muscle",
     description:
@@ -77,6 +85,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "fibularis-brevis-tendon",
+    group: "Fibular tendons",
     name: "Fibularis brevis tendon",
     tissue: "tendon",
     description:
@@ -96,6 +105,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "edb-tendons",
+    group: "Extensor tendons",
     name: "Extensor digitorum brevis tendons",
     tissue: "tendon",
     description:
@@ -128,6 +138,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "superior-extensor",
+    group: "Retinacula",
     name: "Superior extensor retinaculum",
     tissue: "fascia",
     description: "A transverse retaining band at the front of the distal leg.",
@@ -152,6 +163,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "inferior-extensor",
+    group: "Retinacula",
     name: "Inferior extensor retinaculum",
     tissue: "fascia",
     description:
@@ -183,6 +195,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "superior-fibular",
+    group: "Retinacula",
     name: "Superior fibular retinaculum",
     tissue: "fascia",
     description: "A retaining band behind the lateral malleolus.",
@@ -205,6 +218,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "inferior-fibular",
+    group: "Retinacula",
     name: "Inferior fibular retinaculum",
     tissue: "fascia",
     description: "A lateral calcaneal band retaining the fibular tendon paths.",
@@ -226,6 +240,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "plantar-fascia",
+    group: "Plantar fascia",
     name: "Plantar aponeurosis",
     tissue: "fascia",
     description:
@@ -243,6 +258,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "talar-cartilage",
+    group: "Articular cartilage",
     name: "Talar dome · articular cartilage",
     tissue: "cartilage",
     description:
@@ -252,6 +268,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "sesamoid-medial",
+    group: "Sesamoids",
     name: "Medial hallux sesamoid",
     tissue: "bone",
     description: "The medial sesamoid under the first metatarsal head.",
@@ -260,6 +277,7 @@ export const ankleDetails: Detail[] = [
   },
   {
     id: "sesamoid-lateral",
+    group: "Sesamoids",
     name: "Lateral hallux sesamoid",
     tissue: "bone",
     description: "The lateral sesamoid under the first metatarsal head.",
@@ -272,14 +290,7 @@ export const ankleStructures: Structure[] = ankleDetails.map((d) => ({
   name: d.name,
   tissue: d.tissue,
   region: "Foot",
-  group:
-    d.tissue === "fascia"
-      ? "Retinacula & plantar fascia"
-      : d.tissue === "muscle"
-        ? "Regional muscles"
-        : d.tissue === "bone"
-          ? "Hallux sesamoids"
-          : "Ankle details",
+  group: d.group,
   description: d.description,
   role: d.role,
   connection: "See modeled attachments below.",

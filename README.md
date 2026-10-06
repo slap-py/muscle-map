@@ -1,120 +1,61 @@
 # Foot & Ankle Explorer
 
-A focused, static study of a **right foot and ankle**, using the Cell Simulator interface and smooth camera controller.
+Version 1.0.0 · Updated October 2026
 
-## Run
+An interactive, static study of the right foot and ankle. The atlas contains 107 selectable structures: 30 bones, 13 muscles, 12 tendon groups, 15 ligament groups, 6 fascia/retinacular groups, 30 cartilage groups, and skin.
+
+## Run and validate
 
 ```sh
 npm install
 npm run dev
+npm run build
+npm test
+npm run preview -- --port 5176 --strictPort
 ```
 
-Open http://127.0.0.1:5174. Use `npm run build` for the production build and `npm test` for geometry/camera/compass checks.
+The dev server uses http://127.0.0.1:5174. Every `scripts/*-browser-check.mjs` accepts `VIEWER_URL` and defaults to http://127.0.0.1:5176. Run each with Node against the preview. Reports and screenshots are in `validation/`; see [VALIDATION.md](VALIDATION.md).
 
 ## Explore
 
-- Drag to orbit, right/Shift-drag to pan, and scroll to zoom toward the cursor. Pan mode supports ordinary left-drag; two-finger touch pans and pinches.
-- The lower-left anatomical compass follows the camera. Click **M** (medial), **L** (lateral), **D** (dorsal/top), **Pl** (plantar/sole), **A** (anterior/toes), or **P** (posterior/heel) to orient the view. These directions refer to the right foot. View changes take the shortest horizontal rotation, including after repeated orbits or clicks during a transition.
-- Overview, dorsal, plantar, medial, and lateral presets frame the regional study.
-- Search or click individual structures, isolate them, focus the camera, or show adjacent and attached structures (**Neighbors**).
-- Turn on **Highlight connections** under Layers to keep the selected structure and its modeled attachments highlighted. For example, selecting extensor digitorum longus highlights its tendons and toe insertion bones. Connected structures appear in teal in the model and atlas; Focus structure frames the full connection. The toggle stays on as you change selections, temporarily reveals hidden connected layers, and preserves your layer choices. Isolate shows only the selected structure; Reset turns the toggle off.
-- Hover over any visible structure to highlight its name in the atlas and show a temporary model label, even with Labels turned off. With **Highlight connections** on, hover labels only appear for the selected structure and its highlighted connections; dimmed surroundings do not show hover labels.
-- Labels fade in and out and glide with the camera. A brief hover settling time softens switches between neighboring structures; reduced-motion preferences disable these animations.
-- Toggle bones, muscles, tendons, ligaments, fascia/retinacula, and joint-surface cartilage.
-- Selecting a muscle, tendon or ligament highlights its modeled bone footprints in teal. Under **Attachments**, choose an endpoint to fly to its fitted surface; the active footprint turns amber. Soft-tissue endpoints and muscle–tendon junctions are labeled separately.
-- **Ghost mode** preserves the selected structure and its direct attachments while fading surroundings. Focused connections automatically fade structures obstructing the footprint as you orbit. Escape restores your layer and opacity settings; changing a layer exits ghost mode.
-- Read attachment notes and section-level sources beside each endpoint, with sourced clinical points for ATFL, Achilles and Lisfranc connections.
-- Follow the six-stop connection tour through ATFL, Achilles, Lisfranc, superior extensor retinaculum, fibularis brevis and plantar fascia. Each stop uses footprint focus and ghost mode.
-- Keys: **1** dorsal, **2** lateral, **3** medial, **4** overview, **P** pan, **F** focus selected, **L** labels, **R** reset, **Escape** restore surroundings and clear. Arrow keys pan when the canvas has focus.
+- Exterior shows skin and bones at 100% skin opacity. Lower the skin slider to see the skeleton. Anatomy and Skeleton provide the other presets.
+- Search names, anatomical groups, and descriptions. Tissue chips are independent multi-select filters; cartilage is excluded from the list by default. The Area dropdown filters leg, ankle/heel, midfoot, and individual toes. “Only visible layers” follows your layer switches. Clear filters restores the defaults.
+- Tissue sections can be collapsed; their state is saved locally. A selected structure remains temporarily listed even when filtered out. Selection from the model expands its section and scrolls the row into view. Use ↑/↓ and Enter within the list.
+- Labels start on. The overview displays major landmarks; zooming closer reveals regional and smaller structures. Overlapping automatic labels are omitted, leader lines connect labels to their anchors, and hidden or faded structures below 50% opacity are excluded. Selection and hover take priority.
+- Select a structure for Focus, Isolate, Neighbors, description, function, attachments, related structures, and applicable references. All 13 muscles include sourced origin, insertion, action, innervation, and blood supply. Bone articulations are computed from the existing relationship graph; other tissues have no newly authored fact fields.
+- Drag the inspector's left edge to resize it from 280–680px. Its focused handle responds to ←/→ in 24px steps. Expand switches to 640px and restores your saved width. Wider panels arrange facts and descriptive text in two columns. The empty inspector shows only a prompt and Layers.
+- Highlight connections colors modeled attachments in teal and temporarily reveals hidden connected layers. Focus frames the selected connection set. Isolate takes precedence. Reset turns highlighting off.
+- In Attachments, select a card to focus its footprint. Surrounding anatomy fades; camera-aware cutaways follow the close-up. Select again to return, or press Escape to restore surroundings and clear selection. Footprint extents are illustrative.
+- Drag to orbit, right-drag or Shift-drag to pan, and scroll/pinch to zoom. The anatomical compass and five view buttons provide fixed views. **1–5** select Overview, Dorsal, Plantar, Medial, Lateral; **P** toggles pan, **F** focuses, **L** toggles labels, **R** resets. Canvas arrow keys pan.
+- About has Overview, Controls, and Sources & credits tabs with arrow-key navigation. Below 700px, topbar actions appear in the ⋯ menu. Below 900px, panels move beneath the canvas.
 
-## Regional anatomy
+Models load with byte-based progress when all content lengths are known, or an indeterminate bar otherwise. Failed assets retain procedural shapes and show an explanatory message for 2.5 seconds.
 
-The active atlas contains 105 selectable entries: 30 bones, 12 muscles, 12 tendon groups, 15 ligament groups, six fascia/retinacular groups and 30 cartilage groups. Complexes preserve their existing atlas IDs; independently named component meshes and footprint records appear under Zoom to connection in the inspector.
+## Anatomy, provenance, and the pending skin replacement
 
-The procedural fallback refinements guided by the supplied illustrations include distinct talar body/neck contours, a longer calcaneal tuberosity and medial shelf, navicular tuberosity, wedge-like cuneiforms, a recessed second metatarsal base, broad metatarsal heads, toe articular ends, fifth-metatarsal tuberosity, unequal malleolar heights, and raised medial midfoot. Tendon routes are joined by extensor and fibular retinacula, intrinsic muscle volumes, plantar aponeurosis, and the hallux sesamoids.
+Bones and muscle bellies use registered Z-Anatomy / BodyParts3D meshes. Gastrocnemius includes both source heads and is separately selectable from soleus. Tendons, ligaments, retinacula, and 78 cartilage patches across 39 modeled interfaces are fitted to the source surfaces. Geometry is static and simplified, not clinical; nerves, vessels, bursae, tendon sheaths, and some small structures are omitted.
 
-The full leg and knee animation have been removed from the active experience. `src/model.ts` preserves the earlier procedural leg implementation for reference and is not imported by the app.
+**Real-skin replacement is blocked.** Inspection of the pinned `assets/source/Startup.blend` through the running Blender 5.2 **MCP** extension found no skin/integument mesh. Its Skin and Dermis collections are empty; Integument contains hair and nail appendages. Under the requested stop condition, the existing exterior GLB and manifest were preserved. The skin remains an illustrative fitted surface, and its provenance remains `illustrative-envelope`. No claim of right-leg skin extraction, capping, ≤40k triangles, or 95% bone enclosure is made. The new skin material and Exterior preset are implemented independently.
 
-## Accuracy and references
+The prescribed group taxonomy places MTP collateral bands under “Midfoot ligaments”; source comments record this taxonomy limitation. All source fact links are in `src/muscleFacts.ts` and attachment references in `src/attachments.ts`.
 
-The bone and muscle layers use 30 bone meshes and 12 muscle bellies adapted from Z-Anatomy / BodyParts3D at the same source scale and registration. Procedural tendons, flattened ligament/retinacular bands and cartilage shells are fitted to their surfaces. This is not a clinically validated reconstruction. The supplied screenshots provide visible contours and relationships but not hidden surfaces, measured dimensions, or individual variation. They were used as visual references, not redistributed as textures or model assets.
+## Implementation and reproducibility
 
-Bursae, tendon sheaths, nerves, vessels and many small ligaments remain omitted. Retinacular bundles, toe collateral pairs, and extensor expansions are simplified. Cartilage uses 78 offset surface patches across 39 modeled synovial interfaces; thickness and masks are illustrative. The knee femoral surfaces lie outside the atlas. The study is static; it makes no force, strain, gait, or physiological-deformation predictions.
+The app uses template-string HTML in `src/main.ts`, CSS tokens in `src/style.css`, TypeScript, Three.js, camera-controls, and Vite. No UI framework or dependency was added. Fonts and models are local.
 
-Reference reading:
+- `src/labels.ts`: label tiers and zoom thresholds.
+- `src/data.ts`, `foot.ts`, `ankleDetails.ts`, `softTissueData.ts`: atlas metadata and groups.
+- `src/muscleFacts.ts`: source-linked muscle facts.
+- `src/assets.ts`, `appearance.ts`: model loading, fallback, materials, and depth coverage.
+- `src/connections.ts`, `attachments.ts`, `joints.ts`, `softTissues.ts`: relationships and fitted geometry.
 
-- [OpenStax — Lower-limb bones and foot arches](https://openstax.org/books/anatomy-and-physiology-2e/pages/8-4-bones-of-the-lower-limb)
-- [NCBI — Foot and ankle anatomy](https://www.ncbi.nlm.nih.gov/books/NBK546698/)
-- [NCBI — Ankle joint](https://www.ncbi.nlm.nih.gov/books/NBK545158/)
-- [NCBI — Foot muscles and tendon paths](https://www.ncbi.nlm.nih.gov/books/NBK539705/)
-- [Advanced Ankle and Foot Sonoanatomy — retinacula](https://pmc.ncbi.nlm.nih.gov/articles/PMC7151198/)
+Keep all `scripts/prepare-*.py` files. GLBs, manifests, source metadata, and license files are tracked. `.blend` and `.zip` originals are ignored but retained locally; exporters need `assets/source/Startup.blend`.
 
-## Implementation
+Use the running **MCP** extension on localhost:9876:
 
-- `src/assets.ts`: bone/muscle GLB loading, atlas matching, per-structure fallback and BVH integration
-- `src/attachments.ts`: typed footprints, named pulley guides, component records and source ledger
-- `src/connections.ts`: surface decals, attachment-only neighborhoods, footprint camera poses, ray-sampled cutaways and sourced clinical points
-- `src/softTissues.ts`: surface fitting, tendon curves, flattened bands and cartilage offsets
-- `src/joints.ts`: explicit synovial surface-pair inventory
-- `scripts/prepare-muscles.py`: source muscle extraction and reproducible export
-- `src/ankle.ts`: procedural regional assembly, muscles, cartilage and tissue materials
-- `src/foot.ts`: shaped foot bones, tendon/ligament paths and attachment graph
-- `src/ankleDetails.ts`: additional regional structures and metadata
-- `src/geometry.ts`: contour lofts and broad retaining bands
-- `src/compass.ts`: camera-relative anatomical compass
-- `src/camera.ts`: Cell Explorer-style smooth camera and adaptive depth clipping
-- `src/main.ts`: atlas, layers, selection, camera views and tour
+```sh
+python scripts/blender-command.py
+python scripts/blender-command.py scripts/inspect-exterior.py
+```
 
-Built with TypeScript, Three.js, camera-controls and Vite. Fonts are local; the app has no runtime asset-service dependency.
-
-## Anatomical asset migration
-
-Phases 0–2 provide BVH picking, millimeter coordinates, and all 30 source bones in
-`public/models/bones.glb` (about 5.7 MB). Each bone has 6,524–12,000 triangles and
-its existing atlas ID. `assets/bones.blend` is the cleaned source scene.
-`public/models/bones.manifest.json` records the immutable source revision, object
-mapping, processing, unit conversion and registration. Adapted bone assets are
-CC BY-SA 4.0. The GLB loader preserves existing interaction records and keeps each
-procedural bone if its source mesh cannot load.
-See [continuation.md](continuation.md) for completed work and next steps,
-[COORDINATES.md](COORDINATES.md) for the fixed frame and scale contract,
-and [credits.md](credits.md) for licensing and attribution.
-
-### Phases 3–4
-
-Run `scripts/prepare-muscles.py` with Blender 5.2 (background, factory startup,
-disabled auto-execution) to reproduce `public/models/muscles.glb` and its manifest.
-`node scripts/soft-geometry-check.mjs` checks the assembled registered model;
-`node scripts/soft-browser-check.mjs` exercises all 75 soft-tissue atlas groups
-and a missing-muscle-asset fallback in Edge. The browser suites default to the
-production preview at http://127.0.0.1:5176.
-
-### Phase 5
-
-`node scripts/connection-browser-check.mjs` checks footprint highlighting, focus,
-ghost restoration, deep cutaways, all six tour stops, narrow layouts, reduced motion,
-asset failures and refitting after late loads. Use `VIEWER_URL` to override the
-production preview at port 5176. Decals use the fitted attachment surfaces, not label
-anchors. Muscle selections expose the modeled tendon insertion records; unmodeled
-proximal muscle origins are not invented. Cutaways sample the footprint center and
-rim against visible anatomy, fading whole obstructing structures rather than cutting
-mesh topology. Footprint extents remain illustrative.
-
-### Exterior and regional browsing
-
-Use **Exterior** to show the skin surface, or enable **Skin exterior** under
-Visible layers and adjust **Skin opacity** to reveal the anatomy underneath.
-Anatomy starts with skin hidden. Skin is an illustrative fitted envelope, not a
-scan; nails and surface creases are omitted. Gastrocnemius includes both source
-heads and remains separately selectable from soleus.
-
-Atlas tabs organize the model by lower leg, ankle/heel, midfoot, and each toe.
-Toe tabs include the corresponding bones, cartilage and associated soft tissues.
-Shared multi-toe tendons appear in each relevant tab. Search filters the current tab.
-
-Faded anatomy uses depth-tested alpha coverage and temporal antialiasing, avoiding
-object transparency sorting and the old 80% depth-write/shadow switch. Fine grain
-can remain during motion and settles when the camera stops.
-
-Run `node scripts/exterior-browser-check.mjs` against the development server on
-port 5178 to check exterior controls, regional tabs, opacity, and asset fallback.
+The bridge uses NUL-delimited JSON with `type: execute`, `code`, and `strict_json`. Inspection/export scripts may replace Blender's open scene; save work first. `prepare-exterior.py` remains the existing illustrative exporter until a real skin source is supplied. See [COORDINATES.md](COORDINATES.md), [credits.md](credits.md), [public/models/CREDITS.md](public/models/CREDITS.md), and [continuation.md](continuation.md).

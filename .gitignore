@@ -17,3 +17,7 @@ test-results/
 # Keep Blender originals and archives locally, outside Git
 *.blend
 *.zip
+
+# Python inspection/export bytecode
+__pycache__/
+*.pyc

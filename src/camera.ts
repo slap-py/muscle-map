@@ -66,3 +66,12 @@ export function updateCamera(
 
 export { CameraControls };
 
+
+/** Off-axis projection keeps the free canvas centered even when TAA clears its
+ * temporary jitter view offsets. filmOffset is independent of those offsets. */
+export function setInspectorInset(camera: THREE.PerspectiveCamera, width: number, height: number, covered: number) {
+  camera.aspect = width / height;
+  camera.clearViewOffset();
+  camera.filmOffset = covered / width * camera.getFilmWidth() * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect;
+  camera.updateProjectionMatrix();
+}

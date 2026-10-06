@@ -16,6 +16,8 @@ try {
  for(const id of ['soleus-distal','achilles','atfl','deltoid','fibularis-longus-tendon','lisfranc']){
   await choose(id);assert(Number((await data()).footprints)>0,id+' bone decals');
   assert(await page.locator('.attachment-note').count()>0);
+  assert(await page.locator('.attachment-details').evaluateAll(sections=>sections.every(section=>section.open)));
+  assert(await page.locator('.connection-links').evaluateAll(sections=>sections.every(section=>section.open)));
   assert(await page.locator('.connection-card details a[href^="https://"]').count()>0);
  }
  checks.push('muscle, tendon, ligament and multi-component bone footprints; per-attachment notes and sources');
@@ -33,12 +35,13 @@ try {
  const deepCutaway=(await data()).cutaway;
  await page.screenshot({path:'validation/phase5-lisfranc.png'});
  const bounds=await page.locator('canvas').boundingBox();
- await page.mouse.move(bounds.x+bounds.width/2,bounds.y+bounds.height/2);
- await page.mouse.down();await page.mouse.move(bounds.x+bounds.width/2+210,bounds.y+bounds.height/2+100,{steps:12});await page.mouse.up();
+ await page.mouse.move(bounds.x+70,bounds.y+bounds.height/2);
+ await page.mouse.down();await page.mouse.move(bounds.x+280,bounds.y+bounds.height/2+100,{steps:12});await page.mouse.up();
  await page.waitForTimeout(350);
+ assert.equal(await page.locator('#view-name').innerText(),'FREE CAMERA');
  assert.notEqual((await data()).cutaway,deepCutaway,'cutaway changes after orbit');
  checks.push('deep Lisfranc cutaway follows camera orbit');
- await page.locator('#ghost-mode').focus();await page.keyboard.press('Escape');
+ await page.locator('#focus-selected').focus();await page.keyboard.press('Escape');
  assert.equal((await data()).ghost,'false');assert.equal((await data()).cutaway,'');assert.equal((await data()).footprints,'0');
  assert.equal(await page.locator('.structure-row.selected').count(),0);
  checks.push('Escape restores while panel button has focus');
@@ -49,25 +52,12 @@ try {
  checks.push('explicit layer changes exit temporary ghost/cutaway mode');
  await page.locator('[data-mode="skeleton"]').click();
  await page.locator('#opacity').fill('40');
+ await choose('achilles');
  const before=await layers();
- await choose('talus');await page.locator('#ghost-mode').click();assert.equal((await data()).ghost,'true');
+ await focus('achilles:common-calcaneal:to');assert.equal((await data()).ghost,'true');
  await page.locator('#search').focus();await page.keyboard.press('Escape');
  assert.deepEqual(await layers(),before);assert.equal(await page.locator('#opacity').inputValue(),'40');
- await page.locator('#tour').click();
- const stops=[];
- for(let i=1;i<=6;i++){
-  await page.waitForTimeout(220);const d=await data();
-  assert.equal(d.ghost,'true');assert(d.focusedConnection);assert(Number(d.footprints)>0);
-  assert.match(await page.locator('#tour-step').innerText(),new RegExp(i+' of 6','i'));
-  stops.push(d.focusedConnection);
-  if(i===3){await page.locator('#tour-prev').click();await page.locator('#tour-next').click();}
-  if(i===6)await page.screenshot({path:'validation/phase5-plantar-tour.png'});
-  await page.locator('#tour-next').click();
- }
- assert.equal(await page.locator('#tour-card').isVisible(),false);
- assert.equal((await data()).ghost,'false');assert.equal((await data()).cutaway,'');
- assert.deepEqual(await layers(),before);assert.equal(await page.locator('#opacity').inputValue(),'40');
- checks.push('six footprint tour stops, back, finish and restoration of prior layers/opacity');
+
  await page.locator('#reset').click();await page.emulateMedia({reducedMotion:'no-preference'});
  await choose('achilles');await focus('achilles:common-calcaneal:to');await choose('atfl');await focus('atfl:anterior-talofibular:to');
  await page.waitForTimeout(1200);assert.equal((await data()).focusedConnection,'atfl:anterior-talofibular:to');
@@ -85,11 +75,13 @@ try {
  await page.unroute('**/models/*.glb');
  await page.route('**/models/*.glb',async route=>{await new Promise(resolve=>setTimeout(resolve,2500));await route.continue();});
  await page.goto(process.env.VIEWER_URL??'http://127.0.0.1:5176',{waitUntil:'domcontentloaded',timeout:60000});
- await choose('achilles');await focus('achilles:common-calcaneal:to');
+ // State/refit scenario: the loading overlay intentionally blocks ordinary pointer input.
+ await page.locator('.structure-row[data-id="achilles"]').evaluate(element=>element.click());
+ await page.locator('[data-connection="achilles:common-calcaneal:to"]').evaluate(element=>element.click());
  await page.waitForFunction(()=>document.querySelector('#viewport').dataset.boneAssets==='ready');
  await page.waitForTimeout(1000);assert.equal((await data()).focusedConnection,'achilles:common-calcaneal:to');assert.equal((await data()).footprints,'1');
- checks.push('late asset load refits decals and active camera target');
+ checks.push('simulated pending-load selection refits decals and active camera target');
  assert.deepEqual(errors,[]);
- const result={checks,stops,deepCutaway,errors};
+ const result={checks,deepCutaway,errors};
  await fs.writeFile('validation/connection-browser-check.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));
 }finally {await browser.close();}

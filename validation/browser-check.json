@@ -3,14 +3,14 @@
   "browser": "154.0.4258.53",
   "checks": [
     "all 30 Z-Anatomy bones loaded without procedural fallback",
-    "105 atlas entries, production WebGL render",
+    "107 atlas entries, default cartilage exclusion, labels on and production WebGL render",
     "all five presets and six compass directions",
     "BVH mesh hover, transient label with labels off, click selection and pointer leave",
     "search, focus, isolate and connected structure links",
     "all six layers, tissue presets, labels and opacity",
     "zoom buttons, wheel, orbit, compass tracking, pan and keyboard pan",
-    "all six guided tour stops and finish",
-    "reduced-motion labels"
+    "reset restores labels and reduced-motion labels remain usable",
+    "About overview, controls and sources tabs with accessible state and source links"
   ],
   "errors": [],
   "incidental": [

@@ -20,6 +20,7 @@ interface Connection {
   id: string;
   name: string;
   tissue: "tendon" | "ligament";
+  group: string;
   attachments: string[];
   paths: Point[][];
   radius: number;
@@ -137,6 +138,7 @@ for (let i = 0; i < 5; i++) {
 export const footConnections: Connection[] = [
   {
     id: "atfl",
+    group: "Lateral ankle ligaments",
     name: "Anterior talofibular ligament",
     tissue: "ligament",
     attachments: ["fibula", "talus"],
@@ -153,6 +155,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "cfl",
+    group: "Lateral ankle ligaments",
     name: "Calcaneofibular ligament",
     tissue: "ligament",
     attachments: ["fibula", "calcaneus"],
@@ -169,6 +172,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "ptfl",
+    group: "Lateral ankle ligaments",
     name: "Posterior talofibular ligament",
     tissue: "ligament",
     attachments: ["fibula", "talus"],
@@ -185,6 +189,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "deltoid",
+    group: "Medial (deltoid) ligament",
     name: "Deltoid ligament complex",
     tissue: "ligament",
     attachments: ["tibia", "talus", "calcaneus", "navicular"],
@@ -211,6 +216,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "aitfl",
+    group: "Syndesmosis",
     name: "Anterior inferior tibiofibular ligament",
     tissue: "ligament",
     attachments: ["tibia", "fibula"],
@@ -228,6 +234,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "spring",
+    group: "Midfoot ligaments",
     name: "Spring ligament complex",
     tissue: "ligament",
     attachments: ["calcaneus", "navicular"],
@@ -250,6 +257,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "long-plantar",
+    group: "Midfoot ligaments",
     name: "Long plantar ligament",
     tissue: "ligament",
     attachments: [
@@ -293,6 +301,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "lisfranc",
+    group: "Midfoot ligaments",
     name: "Lisfranc ligament",
     tissue: "ligament",
     attachments: ["cuneiform-medial", "metatarsal-2"],
@@ -310,6 +319,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "dorsal-talonavicular",
+    group: "Midfoot ligaments",
     name: "Dorsal talonavicular ligament",
     tissue: "ligament",
     attachments: ["talus", "navicular"],
@@ -326,6 +336,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "tibialis-anterior-tendon",
+    group: "Extensor tendons",
     name: "Tibialis anterior tendon",
     tissue: "tendon",
     attachments: ["anterior", "cuneiform-medial", "metatarsal-1"],
@@ -349,6 +360,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "fibularis-longus-tendon",
+    group: "Fibular tendons",
     name: "Fibularis longus tendon",
     tissue: "tendon",
     attachments: ["fibularis", "cuneiform-medial", "metatarsal-1"],
@@ -375,6 +387,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "extensor-hallucis-tendon",
+    group: "Extensor tendons",
     name: "Extensor hallucis longus tendon",
     tissue: "tendon",
     attachments: ["phalanx-1-distal"],
@@ -395,6 +408,7 @@ export const footConnections: Connection[] = [
   },
   {
     id: "extensor-digitorum-tendons",
+    group: "Extensor tendons",
     name: "Extensor digitorum longus tendons",
     tissue: "tendon",
     attachments: [2, 3, 4, 5].flatMap((n) => [
@@ -428,6 +442,8 @@ for (let i = 0; i < 5; i++) {
   const r = i === 0 ? 0.08 : 0.06;
   footConnections.push({
     id: `mtp-collateral-${n}`,
+    // The fixed atlas taxonomy collects foot ligaments here, including forefoot MTP bands.
+    group: "Midfoot ligaments",
     name: `Toe ${n} MTP collateral ligaments`,
     tissue: "ligament",
     attachments: [`metatarsal-${n}`, `phalanx-${n}-proximal`],
@@ -469,8 +485,7 @@ export const footStructures: Structure[] = [
     name: c.name,
     tissue: c.tissue,
     region: "Foot",
-    group:
-      c.tissue === "tendon" ? "Foot tendon paths" : "Foot & ankle ligaments",
+    group: c.group,
     description: c.description,
     role: c.role,
     connection: c.attachments

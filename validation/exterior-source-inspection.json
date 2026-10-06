@@ -1,0 +1,485 @@
+{
+  "source": "H:\\Projects\\Muscle Map\\assets\\source\\Startup.blend",
+  "candidates": [
+    {
+      "name": "Lateral head of gastrocnemius.l",
+      "type": "MESH",
+      "vertices": 2454,
+      "triangles": 4908,
+      "registeredBoundsMm": [
+        [
+          -69.84934955835342,
+          152.43321657180786,
+          -209.3082070350647
+        ],
+        [
+          8.057955652475357,
+          421.7536747455597,
+          -155.20964562892914
+        ]
+      ]
+    },
+    {
+      "name": "Lateral head of gastrocnemius.ol",
+      "type": "MESH",
+      "vertices": 19,
+      "triangles": 22,
+      "registeredBoundsMm": [
+        [
+          -4.593902267515659,
+          402.53376960754395,
+          -187.44240701198578
+        ],
+        [
+          8.811553940176964,
+          421.7536151409149,
+          -174.2231696844101
+        ]
+      ]
+    },
+    {
+      "name": "Lateral head of gastrocnemius.or",
+      "type": "MESH",
+      "vertices": 19,
+      "triangles": 22,
+      "registeredBoundsMm": [
+        [
+          -4.593902267515659,
+          402.53376960754395,
+          24.82202835381031
+        ],
+        [
+          8.811553940176964,
+          421.7536151409149,
+          38.04126754403114
+        ]
+      ]
+    },
+    {
+      "name": "Lateral head of gastrocnemius.r",
+      "type": "MESH",
+      "vertices": 2454,
+      "triangles": 4908,
+      "registeredBoundsMm": [
+        [
+          -69.84931230545044,
+          152.43327617645264,
+          5.808483809232712
+        ],
+        [
+          8.057944476604462,
+          421.75355553627014,
+          59.907056391239166
+        ]
+      ]
+    },
+    {
+      "name": "Lateral subtendinous bursa of gastrocnemius muscle.l",
+      "type": "MESH",
+      "vertices": 63,
+      "triangles": 96,
+      "registeredBoundsMm": [
+        [
+          -11.130975559353828,
+          398.0278670787811,
+          -187.81742453575134
+        ],
+        [
+          4.262597765773535,
+          415.79893231391907,
+          -172.38864302635193
+        ]
+      ]
+    },
+    {
+      "name": "Lateral subtendinous bursa of gastrocnemius muscle.r",
+      "type": "MESH",
+      "vertices": 63,
+      "triangles": 96,
+      "registeredBoundsMm": [
+        [
+          -11.130975559353828,
+          398.0278670787811,
+          22.98753149807453
+        ],
+        [
+          4.262597765773535,
+          415.79893231391907,
+          38.4163074195385
+        ]
+      ]
+    },
+    {
+      "name": "Medial head of gastrocnemius.l",
+      "type": "MESH",
+      "vertices": 3233,
+      "triangles": 6462,
+      "registeredBoundsMm": [
+        [
+          -67.51272082328796,
+          138.80695402622223,
+          -160.60015559196472
+        ],
+        [
+          18.48956197500229,
+          438.45897912979126,
+          -109.45334285497665
+        ]
+      ]
+    },
+    {
+      "name": "Medial head of gastrocnemius.ol",
+      "type": "MESH",
+      "vertices": 51,
+      "triangles": 72,
+      "registeredBoundsMm": [
+        [
+          2.066642977297306,
+          410.4420244693756,
+          -140.81919193267822
+        ],
+        [
+          17.460506409406662,
+          437.40397691726685,
+          -123.76169860363007
+        ]
+      ]
+    },
+    {
+      "name": "Medial head of gastrocnemius.or",
+      "type": "MESH",
+      "vertices": 51,
+      "triangles": 72,
+      "registeredBoundsMm": [
+        [
+          2.066642977297306,
+          410.4420244693756,
+          -25.639453902840614
+        ],
+        [
+          17.460506409406662,
+          437.40397691726685,
+          -8.581963367760181
+        ]
+      ]
+    },
+    {
+      "name": "Medial head of gastrocnemius.r",
+      "type": "MESH",
+      "vertices": 3233,
+      "triangles": 6462,
+      "registeredBoundsMm": [
+        [
+          -67.51269102096558,
+          138.8070285320282,
+          -39.94782269001007
+        ],
+        [
+          18.489543348550797,
+          438.4588599205017,
+          11.198991909623146
+        ]
+      ]
+    },
+    {
+      "name": "Medial subtendinous bursa of gastrocnemius muscle.l",
+      "type": "MESH",
+      "vertices": 55,
+      "triangles": 80,
+      "registeredBoundsMm": [
+        [
+          2.0559667609632015,
+          411.47634387016296,
+          -143.30832660198212
+        ],
+        [
+          8.673407137393951,
+          430.20427227020264,
+          -127.44937837123871
+        ]
+      ]
+    },
+    {
+      "name": "Medial subtendinous bursa of gastrocnemius muscle.r",
+      "type": "MESH",
+      "vertices": 55,
+      "triangles": 80,
+      "registeredBoundsMm": [
+        [
+          2.0559667609632015,
+          411.47634387016296,
+          -21.95173129439354
+        ],
+        [
+          8.673407137393951,
+          430.20427227020264,
+          -6.092790514230728
+        ]
+      ]
+    }
+  ],
+  "skinCollections": {
+    "Skin": [],
+    "Dermis": [],
+    "Integument": [
+      {
+        "name": "Pubic hairs",
+        "type": "MESH",
+        "vertices": 820,
+        "triangles": 1491,
+        "registeredBoundsMm": [
+          [
+            94.0239429473877,
+            752.7802586555481,
+            -131.75728917121887
+          ],
+          [
+            136.8190497159958,
+            824.3009448051453,
+            -19.215665757656097
+          ]
+        ]
+      },
+      {
+        "name": "Hairs of eyebrow.r",
+        "type": "MESH",
+        "vertices": 397,
+        "triangles": 794,
+        "registeredBoundsMm": [
+          [
+            108.179971575737,
+            1541.0375595092773,
+            -61.66546791791916
+          ],
+          [
+            131.12910091876984,
+            1550.2310991287231,
+            -20.879948511719704
+          ]
+        ]
+      },
+      {
+        "name": "Hairs of eyebrow.l",
+        "type": "MESH",
+        "vertices": 397,
+        "triangles": 794,
+        "registeredBoundsMm": [
+          [
+            108.179971575737,
+            1541.0375595092773,
+            -128.52118909358978
+          ],
+          [
+            131.12910091876984,
+            1550.2310991287231,
+            -87.73567527532578
+          ]
+        ]
+      },
+      {
+        "name": "Eyelashes.l",
+        "type": "MESH",
+        "vertices": 45,
+        "triangles": 56,
+        "registeredBoundsMm": [
+          [
+            107.34441876411438,
+            1514.7913694381714,
+            -56.34850263595581
+          ],
+          [
+            120.67825347185135,
+            1530.0068855285645,
+            -29.53176014125347
+          ]
+        ]
+      },
+      {
+        "name": "Eyelashes.r",
+        "type": "MESH",
+        "vertices": 45,
+        "triangles": 56,
+        "registeredBoundsMm": [
+          [
+            107.34441876411438,
+            1514.7913694381714,
+            -119.86938118934631
+          ],
+          [
+            120.67825347185135,
+            1530.0068855285645,
+            -93.05264055728912
+          ]
+        ]
+      },
+      {
+        "name": "Hairs of head",
+        "type": "MESH",
+        "vertices": 8282,
+        "triangles": 16563,
+        "registeredBoundsMm": [
+          [
+            -95.04586458206177,
+            1455.690860748291,
+            -167.6005721092224
+          ],
+          [
+            125.02497434616089,
+            1675.6709814071655,
+            28.24641764163971
+          ]
+        ]
+      },
+      {
+        "name": "BezierCircle'",
+        "type": "CURVE"
+      },
+      {
+        "name": "Perionyx.l",
+        "type": "MESH",
+        "vertices": 64,
+        "triangles": 54,
+        "registeredBoundsMm": [
+          [
+            97.85434603691101,
+            635.6950402259827,
+            -412.30520606040955
+          ],
+          [
+            122.15592712163925,
+            711.8475437164307,
+            -299.69316720962524
+          ]
+        ]
+      },
+      {
+        "name": "Perionyx.r",
+        "type": "MESH",
+        "vertices": 64,
+        "triangles": 54,
+        "registeredBoundsMm": [
+          [
+            97.85433858633041,
+            635.6950402259827,
+            150.2920538187027
+          ],
+          [
+            122.15594947338104,
+            711.8476033210754,
+            262.9041075706482
+          ]
+        ]
+      },
+      {
+        "name": "Perionyx (foot).l",
+        "type": "MESH",
+        "vertices": 54,
+        "triangles": 44,
+        "registeredBoundsMm": [
+          [
+            122.66575545072556,
+            -50.78229680657387,
+            -223.0013608932495
+          ],
+          [
+            168.22834312915802,
+            -42.10536926984787,
+            -155.3996354341507
+          ]
+        ]
+      },
+      {
+        "name": "Perionyx (foot).r",
+        "type": "MESH",
+        "vertices": 54,
+        "triangles": 44,
+        "registeredBoundsMm": [
+          [
+            122.66580760478973,
+            -50.782304257154465,
+            5.99854439496994
+          ],
+          [
+            168.2283878326416,
+            -42.10536554455757,
+            73.60026985406876
+          ]
+        ]
+      },
+      {
+        "name": "Nail plate.l",
+        "type": "MESH",
+        "vertices": 197,
+        "triangles": 283,
+        "registeredBoundsMm": [
+          [
+            98.0108380317688,
+            630.9003233909607,
+            -414.77376222610474
+          ],
+          [
+            135.00607013702393,
+            712.0890617370605,
+            -299.7093200683594
+          ]
+        ]
+      },
+      {
+        "name": "Nail plate (foot).r",
+        "type": "MESH",
+        "vertices": 148,
+        "triangles": 198,
+        "registeredBoundsMm": [
+          [
+            122.31741100549698,
+            -52.395086735486984,
+            6.218455731868744
+          ],
+          [
+            181.01780116558075,
+            -42.08998382091522,
+            73.60605150461197
+          ]
+        ]
+      },
+      {
+        "name": "Nail plate (foot).l",
+        "type": "MESH",
+        "vertices": 148,
+        "triangles": 198,
+        "registeredBoundsMm": [
+          [
+            122.31742590665817,
+            -52.395083010196686,
+            -223.0071872472763
+          ],
+          [
+            181.01781606674194,
+            -42.089980095624924,
+            -155.61959147453308
+          ]
+        ]
+      },
+      {
+        "name": "Nail plate.r",
+        "type": "MESH",
+        "vertices": 197,
+        "triangles": 283,
+        "registeredBoundsMm": [
+          [
+            98.0108380317688,
+            630.9003233909607,
+            150.30820667743683
+          ],
+          [
+            135.00607013702393,
+            712.0890617370605,
+            265.372633934021
+          ]
+        ]
+      }
+    ]
+  },
+  "skinMeshFound": false,
+  "exportStatus": "stopped: no source skin mesh"
+}

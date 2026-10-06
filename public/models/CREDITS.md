@@ -95,3 +95,9 @@ with separate toe contours, voxel union and smoothing. It is not scanned skin;
 nails and creases are omitted. It is an adaptation under the same CC BY-SA 4.0
 terms and attribution as the source anatomy. Rebuild with Blender:
 `blender --background --factory-startup --disable-autoexec --python scripts/prepare-exterior.py`.
+
+## October 2026 skin inspection
+
+The Blender 5.2 MCP source inspection found no skin/integument mesh in the pinned Startup.blend. Skin and Dermis collections are empty; Integument contains hair and nail appendages. The real-skin replacement is pending. The exterior GLB and manifest were preserved, and the procedural surface must not be attributed as extracted Z-Anatomy skin.
+
+The viewer now uses a skin physical material and a skin-plus-bone Exterior preset. These visual changes do not change the geometry's provenance. The running MCP extension can be inspected through `python scripts/blender-command.py scripts/inspect-exterior.py` after saving open Blender work.

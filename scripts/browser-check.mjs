@@ -22,11 +22,16 @@ try {
   assert.equal(await page.locator("#viewport").getAttribute("data-loaded-bones"), "30");
   checks.push("all 30 Z-Anatomy bones loaded without procedural fallback");
   await settle();
-  assert.equal(await page.locator(".structure-row").count(), 105);
+  const cartilageCount = Number(await page.locator('[data-atlas-type="cartilage"] span').innerText());
+  assert.equal(await page.locator('[data-atlas-type="cartilage"]').getAttribute('aria-pressed'), 'false');
+  assert.equal(await page.locator('.structure-row').count(), 107 - cartilageCount);
+  await page.locator('[data-atlas-type="cartilage"]').click();
+  assert.equal(await page.locator('.structure-row').count(), 107);
+  assert.equal(await page.locator('#labels').getAttribute('aria-pressed'), 'true');
   assert.equal(await page.locator("#render-error").isVisible(), false);
   await fs.mkdir("validation", { recursive: true });
   await page.screenshot({ path: "validation/phase4-overview.png" });
-  checks.push("105 atlas entries, production WebGL render");
+  checks.push("107 atlas entries, default cartilage exclusion, labels on and production WebGL render");
 
   for (const view of ["dorsal", "plantar", "medial", "lateral", "foot"]) {
     await page.locator('[data-view="' + view + '"]').click();
@@ -44,6 +49,8 @@ try {
 
   await page.locator("#reset").click();
   await settle();
+  await page.locator("#labels").click();
+  assert.equal(await page.locator("#labels").getAttribute("aria-pressed"), "false");
   const bounds = await page.locator("canvas").boundingBox();
   let picked = null;
   for (let y = bounds.y + 140; y < bounds.y + bounds.height - 120 && !picked; y += 65) {
@@ -89,11 +96,11 @@ try {
     assert.equal(await checkbox.isChecked(), false);
     await checkbox.check();
   }
-  for (const mode of ["skeleton", "connective", "anatomy"]) {
+  for (const mode of ["skeleton", "anatomy"]) {
     await page.locator('[data-mode="' + mode + '"]').click();
     assert.equal(await page.locator('[data-mode="' + mode + '"]').getAttribute("aria-pressed"), "true");
   }
-  await page.locator("#labels").click();
+  assert.equal(await page.locator("#labels").getAttribute("aria-pressed"), "true");
   await settle();
   assert(await page.locator(".model-label.shown").count() > 0);
   await page.locator("#opacity").fill("40");
@@ -105,18 +112,18 @@ try {
   await page.locator("#zoom-in").click();
   await page.locator("#zoom-out").click();
   const before = await page.locator("#compass").innerHTML();
-  await page.mouse.move(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  await page.mouse.move(bounds.x + 70, bounds.y + bounds.height / 2);
   await page.mouse.down();
-  await page.mouse.move(bounds.x + bounds.width / 2 + 95, bounds.y + bounds.height / 2 + 40, { steps: 12 });
+  await page.mouse.move(bounds.x + 165, bounds.y + bounds.height / 2 + 40, { steps: 12 });
   await page.mouse.up();
   await settle();
   assert.equal(await page.locator("#view-name").innerText(), "FREE CAMERA");
   assert.notEqual(await page.locator("#compass").innerHTML(), before);
   await page.locator("#pan").click();
   assert.equal(await page.locator("#pan").getAttribute("aria-pressed"), "true");
-  await page.mouse.move(bounds.x + 400, bounds.y + 350);
+  await page.mouse.move(bounds.x + 70, bounds.y + 350);
   await page.mouse.down();
-  await page.mouse.move(bounds.x + 440, bounds.y + 365, { steps: 6 });
+  await page.mouse.move(bounds.x + 110, bounds.y + 365, { steps: 6 });
   await page.mouse.up();
   await page.locator("canvas").focus();
   await page.keyboard.press("ArrowLeft");
@@ -125,26 +132,27 @@ try {
   checks.push("zoom buttons, wheel, orbit, compass tracking, pan and keyboard pan");
 
   await page.locator("#reset").click();
-  await page.locator("#tour").click();
-  for (let i = 1; i <= 6; i++) {
-    await settle();
-    assert.match(await page.locator("#tour-step").innerText(), new RegExp(i + " of 6", "i"));
-    assert.equal(await page.locator(".structure-row.selected").count(), 1);
-    if (i === 6) await page.screenshot({ path: "validation/phase4-plantar-tour.png" });
-    await page.locator("#tour-next").click();
-  }
-  assert.equal(await page.locator("#tour-card").isVisible(), false);
-  checks.push("all six guided tour stops and finish");
+
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("#reset").click();
   await settle();
-  await page.locator("#labels").click();
+  assert.equal(await page.locator("#labels").getAttribute("aria-pressed"), "true");
   await page.waitForTimeout(150);
   assert(await page.locator(".model-label.shown").count() > 0);
   await page.locator("#labels").click();
   assert.equal(await page.locator(".model-label").count(), 0);
-  checks.push("reduced-motion labels");
+  checks.push("reset restores labels and reduced-motion labels remain usable");
+  await page.locator('#about').click();
+  assert(await page.locator('#about-dialog').isVisible());
+  for (const tab of ['overview', 'controls', 'sources']) {
+    await page.locator(`[data-about-tab="${tab}"]`).click();
+    assert.equal(await page.locator(`[data-about-tab="${tab}"]`).getAttribute('aria-selected'), 'true');
+  }
+  assert(await page.locator('#about-dialog a[href^="https://"]:visible').count() > 0);
+  await page.locator('.dialog-close').click();
+  assert.equal(await page.locator('#about-dialog').isVisible(), false);
+  checks.push('About overview, controls and sources tabs with accessible state and source links');
   assert.deepEqual(errors, []);
   await fs.writeFile("validation/browser-check.json", JSON.stringify({ url: page.url(), browser: await browser.version(), checks, errors, incidental }, null, 2));
   console.log(JSON.stringify({ checks, errors, incidental }, null, 2));

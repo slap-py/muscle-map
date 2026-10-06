@@ -21,7 +21,7 @@ const hoverAt = point => page.evaluate(async ({x,y})=>{
   return document.querySelector('.structure-row.hovered')?.dataset.id ?? null;
 },point);
 try {
-  await page.goto(process.env.VIEWER_URL ?? 'http://127.0.0.1:5177',{waitUntil:'networkidle'});
+  await page.goto(process.env.VIEWER_URL ?? 'http://127.0.0.1:5176',{waitUntil:'networkidle'});
   await page.waitForFunction(()=>document.querySelector('#viewport')?.dataset.softTissues==='ready');
   await choose('edl');
   await page.locator('#focus-selected').click();
@@ -34,6 +34,9 @@ try {
   for(const dx of [-90,-75,-65,-55,-40,40,55,65,75,90]) {
     for(const dy of [0,-20,20,-60,60,-120,120]) candidates.push({x:anchor.x+dx,y:anchor.y+dy});
   }
+  const canvasBounds = await page.locator('canvas').boundingBox();
+  for(let y=canvasBounds.y+70;y<canvasBounds.y+canvasBounds.height-70;y+=30)
+    for(let x=canvasBounds.x+50;x<canvasBounds.x+canvasBounds.width-50;x+=30) candidates.push({x,y});
   let musclePoint, unrelated = [];
   const allowed = new Set(['edl','extensor-digitorum-tendons',...Array.from({length:4},(_,i)=>i+2).flatMap(toe=>[`phalanx-${toe}-middle`,`phalanx-${toe}-distal`])]);
   for(const point of candidates) {

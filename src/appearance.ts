@@ -22,6 +22,6 @@ export function applyCoverage(mesh: THREE.Mesh, alpha: number) {
   depth.userData.coverage.value=alpha;
   if(depth.alphaHash !== hashed) {depth.alphaHash=hashed;depth.needsUpdate=true;}
   depth.opacity=alpha;
-  mesh.castShadow=!mesh.userData.fiber;
+  mesh.castShadow=!mesh.userData.fiber && mesh.userData.id !== "skin";
   mesh.renderOrder=0;
 }

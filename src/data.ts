@@ -1,3 +1,4 @@
+import { muscleFacts } from './muscleFacts';
 import { softTissueStructures } from './softTissueData';
 export { attachmentRecords, attachmentsFor, attachmentSources } from './attachments';
 export type { AttachmentRecord, Footprint, GuidePoint } from './attachments';
@@ -16,6 +17,14 @@ export interface Structure {
   role: string;
   connection: string;
   hint: string;
+  origin?: string;
+  insertion?: string;
+  action?: string;
+  innervation?: string;
+  bloodSupply?: string;
+  articulations?: string[];
+  clinical?: string;
+  references?: {title: string; url: string}[];
 }
 export const tissueNames: Record<Tissue, string> = {
   skin: "Skin exterior",
@@ -63,7 +72,7 @@ export const allStructures: Structure[] = [
     name: "Tibia",
     tissue: "bone",
     region: "Lower leg",
-    group: "Skeleton",
+    group: "Leg bones",
     description: "The larger, medial bone of the lower leg.",
     role: "Carries most of the load through the lower leg.",
     connection: "Femur → talus",
@@ -74,7 +83,7 @@ export const allStructures: Structure[] = [
     name: "Fibula",
     tissue: "bone",
     region: "Lower leg",
-    group: "Skeleton",
+    group: "Leg bones",
     description: "The slender bone alongside the tibia.",
     role: "Provides muscle attachments and lateral ankle support.",
     connection: "Lateral tibia → outer ankle",
@@ -186,7 +195,7 @@ export const allStructures: Structure[] = [
     name: "Gastrocnemius",
     tissue: "muscle",
     region: "Lower leg",
-    group: "Posterior compartment",
+    group: "Superficial posterior compartment",
     description: "The two-headed superficial calf muscle.",
     role: "Plantar flexes the ankle; also flexes the knee.",
     connection: "Femoral condyles → calcaneus via Achilles tendon",
@@ -197,7 +206,7 @@ export const allStructures: Structure[] = [
     name: "Soleus",
     tissue: "muscle",
     region: "Lower leg",
-    group: "Posterior compartment · deep",
+    group: "Superficial posterior compartment",
     description: "A broad calf muscle beneath gastrocnemius.",
     role: "Plantar flexes the ankle.",
     connection: "Tibia / fibula → calcaneus via Achilles tendon",
@@ -230,7 +239,7 @@ export const allStructures: Structure[] = [
     name: "Achilles tendon",
     tissue: "tendon",
     region: "Lower leg",
-    group: "Connective tissue",
+    group: "Achilles",
     description: "The shared tendon of the gastrocnemius and soleus.",
     role: "Transfers calf force to the heel.",
     connection: "Calf muscles → calcaneus",
@@ -241,7 +250,7 @@ export const allStructures: Structure[] = [
     name: "Quadriceps tendon",
     tissue: "tendon",
     region: "Knee",
-    group: "Connective tissue",
+    group: "Knee extensor tendons",
     description: "The tendon immediately above the kneecap.",
     role: "Transfers quadriceps force to the patella.",
     connection: "Quadriceps → superior patella",
@@ -252,7 +261,7 @@ export const allStructures: Structure[] = [
     name: "Patellar ligament",
     tissue: "ligament",
     region: "Knee",
-    group: "Connective tissue",
+    group: "Knee extensor ligaments",
     description:
       "The strong band between kneecap and shinbone, also called the patellar tendon.",
     role: "Completes the knee extensor mechanism.",
@@ -268,7 +277,7 @@ export const allStructures: Structure[] = [
     description: "A broad band on the inner side of the knee.",
     role: "Resists excessive inward angulation of the knee.",
     connection: "Medial femur → medial tibia",
-    hint: "Use Connective view to inspect the side of the knee.",
+    hint: "Use the ligament layer to inspect the side of the knee.",
   },
   {
     id: "lcl",
@@ -312,5 +321,6 @@ for (const d of structures) {
   if (d.id === 'talar-cartilage') { d.name = 'Talus · articular cartilage'; d.description = 'Offset layers on the talar ankle, subtalar and talonavicular joint surfaces.'; }
   if (d.id === 'deltoid') d.description = 'Separate tibionavicular, tibiocalcaneal, tibiospring and deep anterior/posterior tibiotalar bands. Bundle anatomy varies between individuals.';
 }
+for (const d of structures) if (d.tissue === "muscle") Object.assign(d, muscleFacts[d.id]);
 export const byId = Object.fromEntries(structures.map((s) => [s.id, s]));
 export const allById = Object.fromEntries(allStructures.map((s) => [s.id, s]));

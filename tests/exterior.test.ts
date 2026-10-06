@@ -30,7 +30,11 @@ describe('exterior and regional atlas',()=>{
   const skin=model.parts.get('skin')!.meshes[0];
   expect(skin.geometry.boundingBox!.max.y).toBeGreaterThan(430);
   expect(skin.geometry.boundingBox!.max.x).toBeGreaterThan(165);
+  // Pinned source contains no skin mesh; retain honest provenance until replaced.
   expect(skin.userData.source).toBe('illustrative-envelope');
+  expect(skin.material).toBeInstanceOf(THREE.MeshPhysicalMaterial);
+  applyCoverage(skin,.4);
+  expect(skin.castShadow).toBe(false);
  });
  it('retains depth coverage across 80% and makes shadow coverage follow the slider',()=>{
   const mesh=new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshStandardMaterial());

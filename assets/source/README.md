@@ -10,3 +10,9 @@ Git, retained locally, and reproducible from the manifest. The template's embedd
 Python is never executed. No full-body definitions or excluded assets are exported.
 
 See ../../credits.md for attribution and the processed manifest for object IDs.
+
+## Blender 5.2 MCP and missing skin
+
+Use the running extension titled **MCP** (not “MCP for Blender”) at localhost:9876 through `scripts/blender-command.py`. It sends NUL-terminated JSON with type `execute`, code, and strict_json. The no-argument command reads scene status; script arguments execute the saved script.
+
+Save open Blender work before `scripts/inspect-exterior.py`: it opens this pinned Startup.blend. October 2026 inspection found no skin/integument mesh: Skin and Dermis collections are empty, and Integument contains appendages. Real-skin extraction is blocked until a suitable source is supplied. Existing exterior geometry and its manifest remain the illustrative version. All prepare scripts and local originals are retained.

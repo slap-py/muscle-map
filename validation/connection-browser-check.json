@@ -5,19 +5,10 @@
     "deep Lisfranc cutaway follows camera orbit",
     "Escape restores while panel button has focus",
     "explicit layer changes exit temporary ghost/cutaway mode",
-    "six footprint tour stops, back, finish and restoration of prior layers/opacity",
     "rapid animated focus changes settle on latest connection",
     "narrow viewport connection focus",
     "bone and muscle asset 404 fallbacks retain focus and footprint",
-    "late asset load refits decals and active camera target"
-  ],
-  "stops": [
-    "atfl:anterior-talofibular:to",
-    "achilles:common-calcaneal:to",
-    "lisfranc:interosseous:to",
-    "superior-extensor:transverse:to",
-    "fibularis-brevis-tendon:fifth-metatarsal:to",
-    "plantar-fascia:digital-slip-1:from"
+    "simulated pending-load selection refits decals and active camera target"
   ],
   "deepCutaway": "cartilage-cuneiform-intermediate,cartilage-navicular,cuneiform-intermediate,navicular,talar-cartilage",
   "errors": []

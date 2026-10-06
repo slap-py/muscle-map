@@ -68,12 +68,12 @@ function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissu
       geometry.computeBoundingSphere();
       if (!geometry.boundingSphere || geometry.boundingSphere.radius <= 0)
         throw new Error("Empty anatomical surface");
-      mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+      mesh = new THREE.Mesh(geometry, byId[id].tissue === "skin" ? new THREE.MeshPhysicalMaterial({color: "#d8a68a", roughness: .55, sheen: .3, sheenColor: "#ffd9c4", clearcoat: .05}) : new THREE.MeshStandardMaterial({
         color: colors[byId[id].tissue], roughness: tissue === "bone" ? 0.76 : 0.68, side: THREE.FrontSide,
       }));
       mesh.name = id;
       mesh.userData = { id, atlasId: id, fiber: false, source: byId[id].tissue === "skin" ? "illustrative-envelope" : "z-anatomy" };
-      mesh.castShadow = true;
+      mesh.castShadow = byId[id].tissue !== "skin";
       mesh.receiveShadow = true;
       enableMeshPicking(mesh);
       const list = staged.get(id) ?? [];
@@ -119,7 +119,8 @@ function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissu
 export async function loadBoneAssets(
   parts: Parts,
   url = `${import.meta.env.BASE_URL}models/bones.glb`,
-  loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path)).scene,
+  loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded,e.total))).scene,
+  onProgress?: (loaded: number, total: number) => void,
 ): Promise<AssetReport> {
   try {
     return installBoneAssets(await loadScene(url), parts);
@@ -131,13 +132,13 @@ export async function loadBoneAssets(
 
 export const installBoneAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, boneIds, 'bone');
 export const installMuscleAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, muscleIds.filter(id => id !== "gastrocnemius"), 'muscle');
-export async function loadMuscleAssets(parts: Parts, url = `${import.meta.env.BASE_URL}models/muscles.glb`, loadScene: (url:string)=>Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path)).scene):Promise<AssetReport> {
+export async function loadMuscleAssets(parts: Parts, url = `${import.meta.env.BASE_URL}models/muscles.glb`, loadScene: (url:string)=>Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded,e.total))).scene, onProgress?: (loaded:number,total:number)=>void):Promise<AssetReport> {
   try { return installMuscleAssets(await loadScene(url), parts); }
   catch(error) { return {loaded:[], fallback:muscleIds.filter(id => id !== "gastrocnemius"), warnings:[`Muscle asset unavailable: ${String(error)}`]}; }
 }
 
-export async function loadExteriorAssets(parts: Parts): Promise<AssetReport> {
-  try { return installExteriorAssets((await new GLTFLoader().loadAsync(`${import.meta.env.BASE_URL}models/exterior.glb`)).scene, parts); }
+export async function loadExteriorAssets(parts: Parts, onProgress?: (loaded:number,total:number)=>void): Promise<AssetReport> {
+  try { return installExteriorAssets((await new GLTFLoader().loadAsync(`${import.meta.env.BASE_URL}models/exterior.glb`, e => onProgress?.(e.loaded,e.total))).scene, parts); }
   catch(error) { return {loaded:[],fallback:['skin','gastrocnemius'],warnings:[`Exterior asset unavailable: ${String(error)}`]}; }
 }
 export const installExteriorAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, ['skin','gastrocnemius'], 'skin');
