@@ -36,6 +36,21 @@ export function zoomBy(controls: CameraControls, factor: number) {
   );
 }
 
+/** Normalize after assigning the destination so the current angle is its nearest
+ * equivalent, including after multiple orbits or an interrupted transition. */
+export function lookAtNearest(
+  controls: CameraControls,
+  position: THREE.Vector3,
+  target: THREE.Vector3,
+  animate = true,
+) {
+  const transition = controls.setLookAt(
+    position.x, position.y, position.z, target.x, target.y, target.z, animate,
+  );
+  controls.normalizeRotations();
+  return transition;
+}
+
 export function updateCamera(
   controls: CameraControls,
   camera: THREE.PerspectiveCamera,

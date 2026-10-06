@@ -1,7 +1,10 @@
+import { softTissueStructures } from './softTissueData';
+export { attachmentRecords, attachmentsFor, attachmentSources } from './attachments';
+export type { AttachmentRecord, Footprint, GuidePoint } from './attachments';
 import { ankleStructures } from "./ankleDetails";
 import { footStructures } from "./foot";
 export type Tissue =
-  "muscle" | "bone" | "tendon" | "ligament" | "fascia" | "cartilage";
+  "skin" | "muscle" | "bone" | "tendon" | "ligament" | "fascia" | "cartilage";
 export type Region = "Thigh" | "Knee" | "Lower leg" | "Foot";
 export interface Structure {
   id: string;
@@ -15,6 +18,7 @@ export interface Structure {
   hint: string;
 }
 export const tissueNames: Record<Tissue, string> = {
+  skin: "Skin exterior",
   muscle: "Muscles",
   bone: "Bones",
   tendon: "Tendons",
@@ -23,6 +27,7 @@ export const tissueNames: Record<Tissue, string> = {
   cartilage: "Cartilage",
 };
 export const colors: Record<Tissue, string> = {
+  skin: "#c99c80",
   muscle: "#b96857",
   bone: "#d9c8a2",
   tendon: "#adc2bb",
@@ -281,25 +286,17 @@ export const structures: Structure[] = [
   ...allStructures.filter(
     (s) =>
       s.region === "Foot" ||
-      ["tibia", "fibula", "anterior", "fibularis", "achilles"].includes(s.id),
+      ["tibia", "fibula", "anterior", "fibularis", "achilles", "gastrocnemius"].includes(s.id),
   ),
+  {id:"skin",name:"Skin exterior",tissue:"skin",region:"Lower leg",group:"Outer surface",description:"An illustrative outer contour covering the lower leg, ankle, foot and five toes, fitted around the registered anatomy. This is not scanned skin.",role:"Shows the external shape and helps relate deeper structures to the surface.",connection:"Continuous exterior over the leg and foot",hint:"Use Exterior or the skin layer toggle. Lower skin opacity to reveal anatomy beneath; nails and skin creases are not modeled."},
   ...ankleStructures,
+  ...softTissueStructures,
 ];
 for (const d of structures) {
-  if (d.id === "tibia") {
-    d.name = "Distal tibia";
-    d.description =
-      "The distal tibial shaft, plafond and medial malleolus. The proximal leg is outside this study.";
+  if (d.id === "tibia")
     d.hint = "Notice the medial malleolus descending alongside the talus.";
-  }
-  if (d.id === "fibula") {
-    d.name = "Distal fibula";
-    d.description =
-      "The distal fibular shaft and lateral malleolus, which extends lower than the medial malleolus.";
-  }
   if (d.id === "anterior" || d.id === "fibularis") {
-    d.name += " · distal portion";
-    d.description += " Only the distal segment is shown.";
+    d.description += " The source muscle belly is shown at native scale.";
   }
   if (d.id === "extensor-hallucis-tendon")
     d.description =
@@ -307,6 +304,13 @@ for (const d of structures) {
   if (d.id === "extensor-digitorum-tendons")
     d.description =
       "Four distal tendon slips from the regional extensor digitorum longus belly to toes 2–5. Extensor expansions remain simplified.";
+}
+for (const d of structures) {
+  if (d.tissue === 'muscle') { d.name = d.name.replace(' · distal portion', ''); d.description = d.description.replace('The lower portion of the deep calf muscle, cut at the top of this regional model.', 'The deep calf muscle belly from the registered source.').replace('Distal lateral-compartment muscle beside fibularis longus.', 'Lateral-compartment muscle beside fibularis longus.').replace('A distal anterior-compartment muscle leading to the four lesser toes.', 'An anterior-compartment muscle leading to the four lesser toes.'); }
+  if (['fdl','fhl','tibialis-posterior'].includes(d.id)) d.region='Lower leg';
+  if (d.id === 'soleus-distal') {d.description='The broad calf muscle beneath the two heads of gastrocnemius. Both contribute to the Achilles tendon.';d.hint='Select Soleus to reveal it beneath gastrocnemius, or lower muscle opacity.';}
+  if (d.id === 'talar-cartilage') { d.name = 'Talus · articular cartilage'; d.description = 'Offset layers on the talar ankle, subtalar and talonavicular joint surfaces.'; }
+  if (d.id === 'deltoid') d.description = 'Separate tibionavicular, tibiocalcaneal, tibiospring and deep anterior/posterior tibiotalar bands. Bundle anatomy varies between individuals.';
 }
 export const byId = Object.fromEntries(structures.map((s) => [s.id, s]));
 export const allById = Object.fromEntries(allStructures.map((s) => [s.id, s]));

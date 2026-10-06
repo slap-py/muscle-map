@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "EDL highlights its tendons and eight toe insertion endpoints; Focus frames full path while layer choices stay unchanged",
+    "persistent mode follows selection, keyboard toggling works, and disabling restores hidden tendon layer",
+    "isolation takes precedence; ghost, clear selection, and reset coexist with highlighting",
+    "six compass directions and interrupted animated view changes settle on latest selection",
+    "connection control remains accessible on narrow layout",
+    "connection highlighting and framing work with procedural asset fallback",
+    "highlight selection persists through late bone and muscle asset loading"
+  ],
+  "errors": []
+}

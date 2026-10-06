@@ -18,12 +18,15 @@ const checks = [];
 try {
   await page.goto(process.env.VIEWER_URL ?? "http://127.0.0.1:5176", { waitUntil: "networkidle" });
   await page.locator("canvas").waitFor();
+  await page.waitForFunction(() => document.querySelector("#viewport")?.dataset.boneAssets === "ready");
+  assert.equal(await page.locator("#viewport").getAttribute("data-loaded-bones"), "30");
+  checks.push("all 30 Z-Anatomy bones loaded without procedural fallback");
   await settle();
-  assert.equal(await page.locator(".structure-row").count(), 66);
+  assert.equal(await page.locator(".structure-row").count(), 105);
   assert.equal(await page.locator("#render-error").isVisible(), false);
   await fs.mkdir("validation", { recursive: true });
-  await page.screenshot({ path: "validation/phase1-overview.png" });
-  checks.push("66 atlas entries, production WebGL render");
+  await page.screenshot({ path: "validation/phase4-overview.png" });
+  checks.push("105 atlas entries, production WebGL render");
 
   for (const view of ["dorsal", "plantar", "medial", "lateral", "foot"]) {
     await page.locator('[data-view="' + view + '"]').click();
@@ -73,7 +76,7 @@ try {
   await page.locator("#isolate").click();
   await settle();
   assert.equal(await page.locator("#isolate").getAttribute("aria-pressed"), "true");
-  await page.screenshot({ path: "validation/phase1-focus.png" });
+  await page.screenshot({ path: "validation/phase4-focus.png" });
   await page.locator("#show-connections").click();
   assert.equal(await page.locator("#show-connections").getAttribute("aria-pressed"), "true");
   assert(await page.locator(".connection-links button").count() > 0);
@@ -125,9 +128,9 @@ try {
   await page.locator("#tour").click();
   for (let i = 1; i <= 6; i++) {
     await settle();
-    assert.match(await page.locator("#tour-step").innerText(), new RegExp(i + " OF 6"));
+    assert.match(await page.locator("#tour-step").innerText(), new RegExp(i + " of 6", "i"));
     assert.equal(await page.locator(".structure-row.selected").count(), 1);
-    if (i === 6) await page.screenshot({ path: "validation/phase1-plantar-tour.png" });
+    if (i === 6) await page.screenshot({ path: "validation/phase4-plantar-tour.png" });
     await page.locator("#tour-next").click();
   }
   assert.equal(await page.locator("#tour-card").isVisible(), false);

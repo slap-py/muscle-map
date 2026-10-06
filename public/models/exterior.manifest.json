@@ -1,0 +1,111 @@
+{
+  "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceUrl": "https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceBlendSha256": "9f08a17ea0115fed80b2a73ecdf0a1bc2ab2f6956f37c593ce23d513ea35afcd",
+  "license": "CC-BY-SA-4.0",
+  "attribution": [
+    "Z-Anatomy \u2014 The libre 3D atlas of anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
+    "BodyParts3D \u2014 The Database Center for Life Science \u2014 Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
+  ],
+  "registration": {
+    "method": "Proper basis rotation and translation; native physical scale, no per-bone repositioning or nonuniform scaling",
+    "sourceTalusDatumMeters": [
+      -0.07470057159662247,
+      0.03657284379005432,
+      0.06766913086175919
+    ],
+    "datumDefinition": "Source Talus.r world bounding-box center frozen before surface processing, mapped to the Phase 1 authored talus datum [0,0,0]; display registration, not a measured joint center",
+    "sourceWorldToGltfRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.03657284379005432
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.06766913086175919
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        -0.07470057159662247
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "sourceWorldToBlenderRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.03657284379005432
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.07470057159662247
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.06766913086175919
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "exportYUp": true
+  },
+  "gastrocnemius": [
+    {
+      "sourceObject": "Medial head of gastrocnemius.r",
+      "boundsMm": [
+        [
+          -67.35196685791016,
+          138.9477996826172,
+          -39.67823791503906
+        ],
+        [
+          18.205711364746094,
+          438.3017578125,
+          11.154163360595703
+        ]
+      ],
+      "triangles": 16000
+    },
+    {
+      "sourceObject": "Lateral head of gastrocnemius.r",
+      "boundsMm": [
+        [
+          -69.66325378417969,
+          152.72305297851562,
+          5.881481647491455
+        ],
+        [
+          7.855557918548584,
+          421.5623779296875,
+          59.698028564453125
+        ]
+      ],
+      "triangles": 16000
+    }
+  ],
+  "skin": {
+    "method": "Elliptical envelopes fitted around registered source cross-sections; separate toe envelopes; voxel union and smoothing",
+    "limitation": "Illustrative outer contour, not scanned skin. Nails and skin creases are not modeled."
+  },
+  "glbSha256": "717b9c8270e6401453c396eb106b4730124cccad727a521dc6d9758f2dcb3d6c"
+}

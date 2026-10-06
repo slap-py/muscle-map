@@ -1,0 +1,844 @@
+{
+  "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceUrl": "https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceBlendSha256": "9f08a17ea0115fed80b2a73ecdf0a1bc2ab2f6956f37c593ce23d513ea35afcd",
+  "license": "CC-BY-SA-4.0",
+  "attribution": [
+    "Z-Anatomy \u2014 The libre 3D atlas of anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
+    "BodyParts3D \u2014 The Database Center for Life Science \u2014 Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
+  ],
+  "sourceUnits": {
+    "system": "METRIC",
+    "metersPerUnit": 1.0
+  },
+  "gltfUnits": "meters",
+  "runtimeUnits": "millimeters; multiply by 1000 once",
+  "coordinateConvention": "Phase 1: +X anterior, +Y superior, +Z subject-right; fixed talus reference origin",
+  "registration": {
+    "method": "Proper basis rotation and translation; native physical scale, no per-bone repositioning or nonuniform scaling",
+    "sourceTalusDatumMeters": [
+      -0.07470057159662247,
+      0.03657284379005432,
+      0.06766913086175919
+    ],
+    "datumDefinition": "Source Talus.r world bounding-box center frozen before surface processing, mapped to the Phase 1 authored talus datum [0,0,0]; display registration, not a measured joint center",
+    "sourceWorldToGltfRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.03657284379005432
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.06766913086175919
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        -0.07470057159662247
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "sourceWorldToBlenderRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.03657284379005432
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.07470057159662247
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.06766913086175919
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "exportYUp": true
+  },
+  "processing": [
+    "Right-side source selection only; full tibia and fibula retained",
+    "Separate two connected sesamoid surfaces, identify medial/lateral by anatomical transverse coordinate",
+    "Remove loose vertices and degenerate edges; recalculate outward normals",
+    "Catmull-Clark subdivision of coarse source surfaces then decimation when above 12000 triangles; no new anatomical detail claimed",
+    "Bake all source world transforms and registration into geometry; identity object transforms",
+    "Export meter-scale GLB with atlas IDs as node names and extras.atlasId"
+  ],
+  "limitations": [
+    "Source surface smoothing is a visual adaptation, not a higher resolution scan",
+    "Existing procedural soft tissues are not registered or anatomically validated against these bones"
+  ],
+  "bones": [
+    {
+      "atlasId": "tibia",
+      "sourceObject": "Tibia.r",
+      "sourceTriangles": 1670,
+      "subdivisionLevels": 1,
+      "triangles": 9792,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          -0.026275314390659332,
+          0.007862286642193794,
+          -0.03699919581413269
+        ],
+        [
+          0.04105352982878685,
+          0.36534449458122253,
+          0.04088514298200607
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "fibula",
+      "sourceObject": "Fibula.r",
+      "sourceTriangles": 1264,
+      "subdivisionLevels": 1,
+      "triangles": 7584,
+      "removedLooseVertices": 19,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          -0.022955160588026047,
+          -0.01231745257973671,
+          0.01420703623443842
+        ],
+        [
+          0.00970951747149229,
+          0.35001155734062195,
+          0.0499635711312294
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "talus",
+      "sourceObject": "Talus.r",
+      "sourceTriangles": 1350,
+      "subdivisionLevels": 1,
+      "triangles": 8000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          -0.02926984243094921,
+          -0.01753544993698597,
+          -0.020549140870571136
+        ],
+        [
+          0.02913716435432434,
+          0.017256278544664383,
+          0.02092066779732704
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "calcaneus",
+      "sourceObject": "Calcaneus.r",
+      "sourceTriangles": 1448,
+      "subdivisionLevels": 1,
+      "triangles": 8624,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          -0.0548168383538723,
+          -0.05602400749921799,
+          -0.01961694285273552
+        ],
+        [
+          0.020599354058504105,
+          -0.005416208878159523,
+          0.02717464230954647
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "navicular",
+      "sourceObject": "Navicular bone.r",
+      "sourceTriangles": 732,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.021648796275258064,
+          -0.018203677609562874,
+          -0.02172943577170372
+        ],
+        [
+          0.0453094057738781,
+          0.008172485046088696,
+          0.018528403714299202
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "cuboid",
+      "sourceObject": "Cuboid bone.r",
+      "sourceTriangles": 998,
+      "subdivisionLevels": 2,
+      "triangles": 11998,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.013408225029706955,
+          -0.03843889757990837,
+          0.005339654628187418
+        ],
+        [
+          0.04700825735926628,
+          -0.008901238441467285,
+          0.0369318425655365
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "cuneiform-medial",
+      "sourceObject": "Medial cuneiform bone.r",
+      "sourceTriangles": 992,
+      "subdivisionLevels": 2,
+      "triangles": 11998,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 1,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.035767342895269394,
+          -0.03192039951682091,
+          -0.016297128051519394
+        ],
+        [
+          0.06844761222600937,
+          -0.00015647579857613891,
+          0.008222684264183044
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "cuneiform-intermediate",
+      "sourceObject": "Intermediate cuneiform bone.r",
+      "sourceTriangles": 444,
+      "subdivisionLevels": 2,
+      "triangles": 10656,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.036478329449892044,
+          -0.020702889189124107,
+          -0.00033067050389945507
+        ],
+        [
+          0.0591936819255352,
+          0.0027553813997656107,
+          0.01857372187077999
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "cuneiform-lateral",
+      "sourceObject": "Lateral cuneiform bone.r",
+      "sourceTriangles": 638,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.03051384910941124,
+          -0.02722957916557789,
+          0.006730188149958849
+        ],
+        [
+          0.05667085573077202,
+          -0.0010457249591127038,
+          0.0306837297976017
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "metatarsal-1",
+      "sourceObject": "First metatarsal bone.r",
+      "sourceTriangles": 1088,
+      "subdivisionLevels": 1,
+      "triangles": 6524,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.057452958077192307,
+          -0.05273845046758652,
+          -0.014244974590837955
+        ],
+        [
+          0.1208103820681572,
+          -0.008215482346713543,
+          0.007310947868973017
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-1-proximal",
+      "sourceObject": "Proximal phalanx of first finger of foot.r",
+      "sourceTriangles": 532,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.11702350527048111,
+          -0.05631376802921295,
+          -0.013655293732881546
+        ],
+        [
+          0.15060915052890778,
+          -0.03866308927536011,
+          0.012259653769433498
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-1-distal",
+      "sourceObject": "Distal phalanx of first finger of foot.r",
+      "sourceTriangles": 466,
+      "subdivisionLevels": 2,
+      "triangles": 11184,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.14435690641403198,
+          -0.057458147406578064,
+          -0.004753329791128635
+        ],
+        [
+          0.17103935778141022,
+          -0.046427078545093536,
+          0.01566988416016102
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "metatarsal-2",
+      "sourceObject": "Second metatarsal bone.r",
+      "sourceTriangles": 690,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.051526810973882675,
+          -0.05370869114995003,
+          0.006112719886004925
+        ],
+        [
+          0.1212163120508194,
+          -0.004402230028063059,
+          0.023148752748966217
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-2-proximal",
+      "sourceObject": "Proximal phalanx of second finger of foot.r",
+      "sourceTriangles": 426,
+      "subdivisionLevels": 2,
+      "triangles": 10192,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.11915574222803116,
+          -0.054521724581718445,
+          0.011954415589571
+        ],
+        [
+          0.14827591180801392,
+          -0.04200562834739685,
+          0.0296997781842947
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-2-middle",
+      "sourceObject": "Middle phalanx of second finger of foot.r",
+      "sourceTriangles": 382,
+      "subdivisionLevels": 2,
+      "triangles": 8272,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.1457691788673401,
+          -0.055695515125989914,
+          0.02036120556294918
+        ],
+        [
+          0.16304905712604523,
+          -0.04684893786907196,
+          0.03235552832484245
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-2-distal",
+      "sourceObject": "Distal phalanx of second finger of foot.r",
+      "sourceTriangles": 236,
+      "subdivisionLevels": 3,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.16034583747386932,
+          -0.05794259533286095,
+          0.024224737659096718
+        ],
+        [
+          0.17352770268917084,
+          -0.050766073167324066,
+          0.03379764035344124
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "metatarsal-3",
+      "sourceObject": "Third metatarsal bone.r",
+      "sourceTriangles": 814,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.0502835288643837,
+          -0.053957339376211166,
+          0.014682542532682419
+        ],
+        [
+          0.11772757023572922,
+          -0.010031653568148613,
+          0.03731808811426163
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-3-proximal",
+      "sourceObject": "Proximal phalanx of third finger of foot.r",
+      "sourceTriangles": 460,
+      "subdivisionLevels": 2,
+      "triangles": 11008,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.11270130425691605,
+          -0.055306486785411835,
+          0.02786221355199814
+        ],
+        [
+          0.14271517097949982,
+          -0.043620575219392776,
+          0.044053249061107635
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-3-middle",
+      "sourceObject": "Middle phalanx of third finger of foot.r",
+      "sourceTriangles": 400,
+      "subdivisionLevels": 2,
+      "triangles": 8944,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.1400420218706131,
+          -0.056464385241270065,
+          0.03599163889884949
+        ],
+        [
+          0.15725865960121155,
+          -0.04848460108041763,
+          0.04664582014083862
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-3-distal",
+      "sourceObject": "Distal phalanx of third finger of foot.r",
+      "sourceTriangles": 318,
+      "subdivisionLevels": 2,
+      "triangles": 7632,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.15501929819583893,
+          -0.05797399580478668,
+          0.03987591341137886
+        ],
+        [
+          0.16679498553276062,
+          -0.05208339914679527,
+          0.04839164391160011
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "metatarsal-4",
+      "sourceObject": "Fourth metatarsal bone.r",
+      "sourceTriangles": 834,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.040501344949007034,
+          -0.05497850105166435,
+          0.019879546016454697
+        ],
+        [
+          0.10868199169635773,
+          -0.01879722811281681,
+          0.04926235228776932
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-4-proximal",
+      "sourceObject": "Proximal phalanx of fourth finger of foot.r",
+      "sourceTriangles": 460,
+      "subdivisionLevels": 2,
+      "triangles": 11040,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.10521101951599121,
+          -0.0576200895011425,
+          0.03946400806307793
+        ],
+        [
+          0.1309700459241867,
+          -0.04408545047044754,
+          0.05742882192134857
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-4-middle",
+      "sourceObject": "Middle phalanx of fourth finger of foot.r",
+      "sourceTriangles": 448,
+      "subdivisionLevels": 2,
+      "triangles": 10048,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.12894213199615479,
+          -0.057813968509435654,
+          0.04969852790236473
+        ],
+        [
+          0.142766073346138,
+          -0.049630261957645416,
+          0.060642093420028687
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-4-distal",
+      "sourceObject": "Distal phalanx of fourth finger of foot.r",
+      "sourceTriangles": 278,
+      "subdivisionLevels": 2,
+      "triangles": 6672,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.14045977592468262,
+          -0.058339279145002365,
+          0.05323853716254234
+        ],
+        [
+          0.15184801816940308,
+          -0.05114695057272911,
+          0.06176011636853218
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "metatarsal-5",
+      "sourceObject": "Fifth metatarsal bone.r",
+      "sourceTriangles": 894,
+      "subdivisionLevels": 2,
+      "triangles": 11998,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.022575248032808304,
+          -0.057687412947416306,
+          0.02637358009815216
+        ],
+        [
+          0.09611738473176956,
+          -0.026739666238427162,
+          0.06296386569738388
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-5-proximal",
+      "sourceObject": "Proximal phalanx of fifth finger of foot.r",
+      "sourceTriangles": 516,
+      "subdivisionLevels": 2,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.0916094183921814,
+          -0.05775075405836105,
+          0.05169455707073212
+        ],
+        [
+          0.11830931156873703,
+          -0.04781419783830643,
+          0.06986314803361893
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-5-middle",
+      "sourceObject": "Middle phalanx of fifth finger of foot.r",
+      "sourceTriangles": 216,
+      "subdivisionLevels": 3,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.11644794046878815,
+          -0.05794839188456535,
+          0.06231438368558884
+        ],
+        [
+          0.1238848939538002,
+          -0.051546692848205566,
+          0.07057616859674454
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "phalanx-5-distal",
+      "sourceObject": "Distal phalanx of fifth finger of foot.r",
+      "sourceTriangles": 236,
+      "subdivisionLevels": 3,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.12225731462240219,
+          -0.05830905959010124,
+          0.06392596662044525
+        ],
+        [
+          0.13299456238746643,
+          -0.0530729740858078,
+          0.07161031663417816
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "sesamoid-medial",
+      "sourceObject": "Sesamoid bones of foot.r",
+      "sourceTriangles": 80,
+      "subdivisionLevels": 3,
+      "triangles": 7680,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.10356543213129044,
+          -0.055288851261138916,
+          -0.011269262060523033
+        ],
+        [
+          0.11262592673301697,
+          -0.049465376883745193,
+          -0.00429734168574214
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    },
+    {
+      "atlasId": "sesamoid-lateral",
+      "sourceObject": "Sesamoid bones of foot.r",
+      "sourceTriangles": 210,
+      "subdivisionLevels": 3,
+      "triangles": 12000,
+      "removedLooseVertices": 0,
+      "removedDanglingFaces": 0,
+      "repairedTriangularHoles": 0,
+      "nonManifoldEdges": 0,
+      "boundsMeters": [
+        [
+          0.10035679489374161,
+          -0.05679517239332199,
+          -0.0025289144832640886
+        ],
+        [
+          0.11366376280784607,
+          -0.04917003959417343,
+          0.005547195672988892
+        ]
+      ],
+      "license": "CC-BY-SA-4.0",
+      "provenance": "Z-Anatomy / BodyParts3D; skeletal subset under upstream blanket model license; unrelated exception objects excluded"
+    }
+  ],
+  "glbSha256": "93c5e1bcb3a7262efebb6d4f02ffb5599fa39b1d2b3149024b1ea0a5991f5e04"
+}

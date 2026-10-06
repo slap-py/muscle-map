@@ -1,3 +1,5 @@
+import { attachmentRecords } from './attachments';
+import { jointSurfaces, cartilageId } from './joints';
 import * as THREE from "three";
 import type { Structure } from "./data";
 import { loft } from "./geometry";
@@ -460,7 +462,7 @@ export const footStructures: Structure[] = [
           ? "Forms the heel and receives the Achilles tendon."
           : "Contributes to the articulated framework of the foot.",
     connection: "Explore adjacent bones and modeled attachments below.",
-    hint: "Use Focus for a close-up, or Show connections to keep related structures visible.",
+    hint: "Use Focus for a close-up, or Neighbors to keep related structures visible.",
   })),
   ...footConnections.map((c): Structure => ({
     id: c.id,
@@ -484,12 +486,14 @@ export const footStructures: Structure[] = [
           id,
       )
       .join(" ↔ "),
-    hint: "Show connections to inspect its attachment bones. Paths and bundle widths are simplified.",
+    hint: "Use Neighbors to inspect its attachment bones. Paths and bundle widths are simplified.",
   })),
 ];
 
 /** Adjacency represents articulations and modeled soft-tissue attachments, not bone fusion. */
 export const footLinks: [string, string][] = [
+  ["gastrocnemius", "achilles"],
+  ["gastrocnemius", "soleus-distal"],
   ["talus", "tibia"],
   ["talus", "fibula"],
   ["talus", "calcaneus"],
@@ -526,6 +530,14 @@ for (const c of footConnections)
   for (const a of c.attachments) footLinks.push([c.id, a]);
 for (const d of ankleDetails)
   for (const id of d.attachments) footLinks.push([d.id, id]);
+for (const a of attachmentRecords) {
+  footLinks.push([a.structureId, a.from.structureId], [a.structureId, a.to.structureId]);
+  for (const guide of a.guidePoints) footLinks.push([a.structureId, guide.supportId]);
+}
+for (const joint of jointSurfaces) for (const bone of joint.bones) {
+  footLinks.push([cartilageId(bone), bone]);
+  for (const other of joint.bones) footLinks.push([cartilageId(bone), other]);
+}
 export function relatedIds(id: string) {
   return new Set(
     footLinks.flatMap(([a, b]) => (a === id ? [b] : b === id ? [a] : [])),

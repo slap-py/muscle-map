@@ -1,3 +1,10 @@
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { TAARenderPass } from "three/addons/postprocessing/TAARenderPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { atlasTabs, atlasIds } from "./atlas";
+import { applyCoverage } from "./appearance";
+import { attachmentSources } from './attachments';
+import { connectionsFor, directlyAttachedIds, connectionHighlightIds, footprintDecal, connectionCameraPose, connectionOccluders, connectionClinicalPoints, type Connection } from './connections';
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
@@ -6,32 +13,69 @@ import * as THREE from "three";
 import {
   CameraControls,
   createCameraControls,
+  lookAtNearest,
   zoomBy,
   updateCamera,
 } from "./camera";
 import { structures, byId, tissueNames, colors, type Tissue } from "./data";
 import { createAnkle } from "./ankle";
+import { loadBoneAssets, loadMuscleAssets, loadExteriorAssets } from "./assets";
+import { rebuildSoftTissues } from "./softTissues";
 import { createCompass } from "./compass";
 import { relatedIds } from "./foot";
 
 import { cameraPreset, legacyPointToMm } from "./coordinates";
 
+const icon = {
+  search: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>',
+  pan: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v13M1.5 8h13M6 3.5l2-2 2 2M6 12.5l2 2 2-2M3.5 6l-2 2 2 2M12.5 6l2 2-2 2"/></svg>',
+  plus: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>',
+  minus: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg>',
+  home: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 7.5 8 3l5.5 4.5M4 6.5V13h8V6.5"/></svg>',
+  close: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>',
+};
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = `
-<header class="topbar"><div class="brand"><span class="brand-icon" aria-hidden="true">⌁</span><div><strong>Foot & Ankle</strong><small>AN ANATOMICAL STUDY</small></div></div>
-<div class="segmented modes" aria-label="Tissue presets"><button data-mode="anatomy" class="active">Anatomy</button><button data-mode="skeleton">Skeleton</button><button data-mode="connective">Connective</button></div>
-<button id="labels" class="tool-button" aria-pressed="false">⌖ Labels</button><button id="reset" class="tool-button">↺ Reset</button><button id="tour" class="primary">▷ Guided tour</button></header>
+<header class="topbar">
+  <span class="title">Foot &amp; Ankle</span>
+  <div class="segmented modes" aria-label="Tissue presets"><button data-mode="exterior">Exterior</button><button data-mode="anatomy" class="active">Anatomy</button><button data-mode="skeleton">Skeleton</button><button data-mode="connective">Connective</button></div>
+  <nav class="topbar-actions"><button id="labels" class="tool-button" aria-pressed="false">Labels</button><button id="tour" class="tool-button">Tour</button><button id="reset" class="tool-button">Reset</button><button id="about" class="tool-button">About</button></nav>
+</header>
 <main>
-<aside class="panel atlas"><div class="panel-heading"><span class="eyebrow">STRUCTURE ATLAS</span><span class="count">${structures.length}</span></div><div class="atlas-intro"><h2>Inside the foot & ankle</h2><p>Explore the anatomy beneath<br>every step.</p><label class="search"><span aria-hidden="true">⌕</span><input id="search" placeholder="Find a structure…" aria-label="Find a structure" type="search"/></label><select id="region" aria-label="Atlas region"><option value="all">Foot & ankle study</option><option value="foot">Foot structures</option></select></div><div id="structure-list" class="atlas-scroll"></div><div class="atlas-footer"><span class="status-dot"></span> Right foot & ankle <span>•</span> ${structures.length} structures</div></aside>
-<section id="viewport" aria-label="Interactive 3D anatomy model"><div class="scene-heading"><span class="eyebrow">HUMAN ANATOMY / FOOT & ANKLE</span><h1>Built for movement.</h1><p>One leg. Layers of possibility.</p></div><div class="view-controls segmented" aria-label="Camera views"><button data-view="foot" class="active">Overview</button><button data-view="dorsal">Dorsal</button><button data-view="plantar">Plantar</button><button data-view="medial">Medial</button><button data-view="lateral">Lateral</button></div><div id="label-layer"></div><div class="compass-wrap"><div id="compass" role="group" aria-label="Anatomical view compass"></div><small>RIGHT FOOT · CLICK TO ORIENT</small></div><div class="orientation"><span id="view-name">ANTERIOR VIEW</span><small>RIGHT FOOT & ANKLE</small></div><button id="pan" class="pan-toggle" aria-pressed="false" title="Pan with left drag. You can also right-drag or Shift-drag in Orbit mode.">✥ Pan</button><div class="canvas-tools"><button id="zoom-in" aria-label="Zoom in" title="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out" title="Zoom out">−</button><button id="home" aria-label="Reset camera" title="Reset camera">⌂</button></div><div class="scene-help">Drag to orbit <i>·</i> Right / Shift-drag to pan <i>·</i> Scroll to zoom</div><div id="render-error" hidden></div></section>
-<aside class="panel inspector"><div class="panel-heading"><span class="eyebrow">FIELD NOTES</span><button id="clear" aria-label="Clear selection" title="Clear selection">×</button></div><div id="details" class="details" aria-live="polite"></div><div class="layer-section"><div class="section-heading"><span class="eyebrow">VISIBLE LAYERS</span><button id="all-layers">Show all</button></div><div id="layers"></div><label class="opacity-label" for="opacity">Muscle opacity <output id="opacity-value">100%</output></label><input id="opacity" type="range" min="10" max="100" value="100"/><p class="layer-hint">Lower opacity to see the skeleton beneath.</p></div></aside>
-<section class="motion-bar study-bar"><span class="status-dot"></span><div><strong>Foot & ankle study</strong><small>26 primary foot bones + 2 hallux sesamoids · distal tibia & fibula</small></div><span class="study-note">Reference-guided geometry</span></section>
-</main><footer class="footer"><span><span class="status-dot"></span> An interactive study in anatomy</span><span>Simplified educational model <i>·</i> <button id="about">Model & sources ↗</button></span></footer>
-<dialog id="about-dialog"><button class="dialog-close" aria-label="Close model information">×</button><span class="eyebrow">ABOUT THIS MODEL</span><h2>Anatomy, made explorable.</h2><p>A regional right foot and ankle model, refined against your supplied dorsal and lateral reference illustrations.</p><p>Shapes, proportions, attachment sites, and motion are simplified. This is a selected set of major structures, not a complete anatomical atlas. Only the distal leg and foot are included. Nerves, vessels, bursae, tendon sheaths and several deep muscles remain omitted. The talar cartilage patch is illustrative, not a full cartilage reconstruction. All 26 standard foot bones are individually selectable. Two hallux sesamoids are included. Some ligament bundles are omitted; toe collateral pairs and extensor tendon slips are grouped by joint or muscle.</p><p>The model is a static anatomy study. Screenshots guide the contours and relationships but do not supply hidden 3D surfaces, calibrated dimensions, or validated biomechanics. No scan-derived or externally licensed mesh is used.</p><h3>Reference reading</h3><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/8-4-bones-of-the-lower-limb" target="_blank" rel="noreferrer">OpenStax · Bones of the lower limb ↗</a><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/11-6-appendicular-muscles-of-the-pelvic-girdle-and-lower-limbs" target="_blank" rel="noreferrer">OpenStax · Muscles of the lower limb ↗</a><a href="https://www.ncbi.nlm.nih.gov/books/NBK545158/" target="_blank" rel="noreferrer">NCBI · Ankle joint and ligaments ↗</a><a href="https://www.ncbi.nlm.nih.gov/books/NBK539705/" target="_blank" rel="noreferrer">NCBI · Foot muscles and tendon paths ↗</a><h3>Camera controls</h3><p>Drag to orbit. Right-drag or Shift-drag to pan. Pan mode makes left-drag (or one-finger touch) pan. Two fingers pan and pinch to zoom. Focus a structure to orbit around it. Arrow keys pan when the canvas is focused.</p><h3>Keyboard shortcuts</h3><p>1 / 2 / 3 / 4: dorsal, lateral, medial, overview<br>P: pan mode · F: focus selected · L: labels · R: reset<br>Compass: choose an anatomical direction · Escape: clear selection</p></dialog>
-<div id="tour-card" hidden><span class="eyebrow" id="tour-step"></span><button id="tour-close" aria-label="Exit guided tour">×</button><h3 id="tour-title"></h3><p id="tour-text"></p><button id="tour-prev">← Back</button><button id="tour-next" class="primary">Next →</button></div>`;
+<aside class="panel atlas" aria-label="Structures">
+  <div class="atlas-head">
+    <label class="search">${icon.search}<input id="search" placeholder="Search ${structures.length} structures" aria-label="Find a structure" type="search"/></label>
+    <div id="atlas-tabs" role="tablist" aria-label="Anatomical regions">${atlasTabs.map(([id,label]) => `<button id="tab-${id}" role="tab" aria-controls="structure-list" data-region="${id}" aria-selected="${id === 'all'}">${label}</button>`).join('')}</div>
+  </div>
+  <div id="structure-list" class="atlas-scroll" role="tabpanel" aria-labelledby="tab-all"></div>
+</aside>
+<section id="viewport" aria-label="Interactive 3D anatomy model">
+  <div id="label-layer"></div>
+  <div class="compass-wrap"><div id="compass" role="group" aria-label="Anatomical view compass"></div><span id="view-name">ANTERIOR VIEW</span></div>
+  <div class="view-controls segmented" aria-label="Camera views"><button data-view="foot" class="active">Overview</button><button data-view="dorsal">Dorsal</button><button data-view="plantar">Plantar</button><button data-view="medial">Medial</button><button data-view="lateral">Lateral</button></div>
+  <div class="canvas-tools"><button id="pan" aria-pressed="false" aria-label="Pan mode" title="Pan mode (P). Right-drag or Shift-drag also pans.">${icon.pan}</button><button id="zoom-in" aria-label="Zoom in" title="Zoom in">${icon.plus}</button><button id="zoom-out" aria-label="Zoom out" title="Zoom out">${icon.minus}</button><button id="home" aria-label="Reset camera" title="Reset camera">${icon.home}</button></div>
+  <div id="tour-card" hidden><div class="tour-head"><span id="tour-step"></span><button id="tour-close" class="icon-button" aria-label="Exit guided tour">${icon.close}</button></div><h3 id="tour-title"></h3><p id="tour-text"></p><div class="tour-nav"><button id="tour-prev" class="button">Back</button><button id="tour-next" class="button primary">Next</button></div></div>
+  <div id="render-error" hidden></div>
+</section>
+<aside class="panel inspector" aria-label="Details and layers">
+  <button id="clear" class="icon-button" aria-label="Clear selection" title="Clear selection">${icon.close}</button>
+  <div id="details" class="details" aria-live="polite"></div>
+  <section class="layer-section">
+    <div class="section-heading"><h2>Layers</h2><button id="all-layers" class="link-button">Show all</button></div>
+    <div id="layers"></div>
+    <button id="highlight-connections" class="toggle-row" aria-pressed="false" aria-describedby="highlight-connections-hint"><span>Highlight connections</span><span class="switch" aria-hidden="true"></span></button>
+    <p id="highlight-connections-hint" class="sr-only">Highlight attached tendons and bones with your selection. Hidden connections appear temporarily.</p>
+    <div class="slider-row"><label for="opacity">Muscle</label><input id="opacity" type="range" min="10" max="100" value="100"/><output id="opacity-value">100%</output></div>
+    <div class="slider-row"><label for="skin-opacity">Skin</label><input id="skin-opacity" type="range" min="0" max="100" value="100"/><output id="skin-opacity-value">100%</output></div>
+    <p id="layer-hint" class="layer-hint"></p>
+  </section>
+</aside>
+</main>
+<dialog id="about-dialog"><button class="dialog-close icon-button" aria-label="Close model information">${icon.close}</button><h2>About this model</h2><p>A regional model of the right foot and ankle for study. Shapes, proportions and attachment sites are simplified, and it covers major structures rather than a complete atlas.</p><p>Bones and muscle bellies are adapted Z-Anatomy / BodyParts3D meshes, with procedural shapes as a fallback. All 26 foot bones, both hallux sesamoids, the tibia and fibula are individually selectable. Tendons follow named pulley guides; ligaments and retinacula are fitted bands; cartilage is a thin offset patch at modeled synovial joints. The skin is an illustrative envelope, not a scan. Nerves, vessels, bursae and tendon sheaths are omitted, and some ligament bundles are grouped.</p><p>Attachment footprint extents and positions are illustrative surface fits, not measured anatomy. Guide points, junction seams, cartilage surface masks and thicknesses, and the skin envelope are likewise illustrative. The model is static and makes no biomechanical predictions.</p><h3>Controls</h3><dl class="shortcuts"><dt>Drag</dt><dd>Orbit</dd><dt>Right-drag, Shift-drag</dt><dd>Pan (or toggle pan mode with P)</dd><dt>Scroll, pinch</dt><dd>Zoom</dd><dt>1 2 3 4 5</dt><dd>Overview, dorsal, plantar, medial, lateral</dd><dt>F L R</dt><dd>Focus selection, labels, reset</dd><dt>Arrows</dt><dd>Pan when the canvas has focus</dd><dt>Esc</dt><dd>Restore surroundings and clear selection</dd></dl><h3>Credits</h3><p>Z-Anatomy — The libre 3D atlas of anatomy, Gauthier Kervyn, CC BY-SA 4.0. BodyParts3D — The Database Center for Life Science, original model Kousaku Okubo, CC BY-SA 2.1 Japan. Adaptations: right-side extraction, separated sesamoids, muscle/tendon material separation, capped bellies, local topology repair, surface cleanup/subdivision, decimation, frame registration and GLB export.</p><ul class="link-list"><li><a href="https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e" target="_blank" rel="noreferrer">Pinned Z-Anatomy source</a></li><li><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">Adapted bone and muscle assets · CC BY-SA 4.0</a></li><li><a href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html" target="_blank" rel="noreferrer">BodyParts3D source</a></li><li><a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noreferrer">BodyParts3D · CC BY-SA 2.1 Japan</a></li></ul><h3>Reading</h3><ul class="link-list"><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/8-4-bones-of-the-lower-limb" target="_blank" rel="noreferrer">OpenStax · Bones of the lower limb</a></li><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/11-6-appendicular-muscles-of-the-pelvic-girdle-and-lower-limbs" target="_blank" rel="noreferrer">OpenStax · Muscles of the lower limb</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK545158/" target="_blank" rel="noreferrer">NCBI · Ankle joint and ligaments</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK539705/" target="_blank" rel="noreferrer">NCBI · Foot muscles and tendon paths</a></li></ul></dialog>`;
 const $ = <T extends HTMLElement = HTMLElement>(s: string) =>
   document.querySelector<T>(s)!;
 const tissueKeys: Tissue[] = [
+  "skin",
   "bone",
   "muscle",
   "tendon",
@@ -42,11 +86,16 @@ const tissueKeys: Tissue[] = [
 const state = {
   selected: null as string | null,
   hovered: null as string | null,
-  layers: new Set<Tissue>(tissueKeys),
+  layers: new Set<Tissue>(tissueKeys.filter(t => t !== "skin")),
+  atlasRegion: "all",
+  skinOpacity: 1,
   opacity: 1,
   labels: false,
   isolated: false,
   connections: false,
+  highlightConnections: false,
+  ghost: false,
+  focusedConnection: null as string | null,
   pan: false,
   footView: false,
 
@@ -59,45 +108,36 @@ function renderList() {
   const container = $("#structure-list");
   container.replaceChildren();
   let count = 0;
-  for (const tissue of tissueKeys) {
-    const items = structures.filter(
-      (s) =>
-        s.tissue === tissue &&
-        ($<HTMLSelectElement>("#region").value !== "foot" ||
-          s.region === "Foot" ||
-          ["achilles", "tibia", "fibula"].includes(s.id)) &&
-        `${s.name} ${s.group} ${s.region}`.toLowerCase().includes(q),
-    );
-    if (!items.length) continue;
-    const group = document.createElement("details");
-    group.open = true;
-    group.innerHTML = `<summary><span>${tissueNames[tissue]}</span><span>${items.length} <b>⌄</b></span></summary>`;
-    for (const d of items) {
-      const row = document.createElement("button");
-      row.className = "structure-row";
-      row.dataset.id = d.id;
-      row.innerHTML = `<i style="background:${colors[d.tissue]}"></i><span>${d.name}</span><span class="row-arrow">›</span>`;
-      row.onclick = () => select(d.id);
-      group.append(row);
-      count++;
-    }
-    container.append(group);
+  const ids = atlasIds(state.atlasRegion);
+  const items = structures.filter(s => ids.has(s.id) && `${s.name} ${s.group} ${s.region}`.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+  for (const d of items) {
+    const row = document.createElement('button');
+    row.className='structure-row';row.dataset.id=d.id;
+    row.innerHTML=`<i style="background:${colors[d.tissue]}"></i><span>${d.name}</span>`;
+    row.onclick=()=>select(d.id);container.append(row);count++;
   }
+  container.setAttribute('aria-labelledby', `tab-${state.atlasRegion}`);
+  document.querySelectorAll<HTMLButtonElement>('[data-region]').forEach(b=>{
+    const active=b.dataset.region===state.atlasRegion;
+    b.setAttribute('aria-selected',String(active));b.tabIndex=active?0:-1;
+  });
   if (!count) {
     const p = document.createElement("p");
     p.className = "empty";
     p.textContent =
-      "No structures found. Try “talus”, “retinaculum”, or a toe name.";
+      "No matches. Try “talus” or “retinaculum”.";
     container.append(p);
   }
   updateRows();
 }
 function updateRows() {
+  const highlighted = selectedConnectionHighlights();
   document
     .querySelectorAll<HTMLButtonElement>(".structure-row")
     .forEach((b) => {
       const selected = b.dataset.id === state.selected;
       b.classList.toggle("selected", selected);
+      b.classList.toggle("connected", !selected && highlighted.has(b.dataset.id!));
       b.classList.toggle("hovered", b.dataset.id === state.hovered);
       b.setAttribute("aria-pressed", String(selected));
     });
@@ -107,26 +147,80 @@ function renderDetails() {
   $("#clear").style.visibility = d ? "visible" : "hidden";
   if (!d) {
     $("#details").innerHTML =
-      `<div class="note-illustration" aria-hidden="true">✳</div><span class="eyebrow">FOOT & ANKLE</span><h2>A closer look<br>at every layer.</h2><p>Trace the heel, arches and toes. Follow the tendons beneath their retaining bands, and inspect the joints from every side.</p><div class="intro-tip"><span>↖</span> Choose a structure in the atlas or click directly on the model.</div><div class="mini-stats"><div><strong>${structures.filter((s) => s.tissue === "muscle").length}</strong><span>muscles</span></div><div><strong>${structures.filter((s) => s.tissue === "bone").length}</strong><span>bones</span></div><div><strong>${structures.filter((s) => s.tissue === "tendon" || s.tissue === "ligament").length}</strong><span>connections</span></div></div>`;
+      `<h2 class="empty-title">Nothing selected</h2><p>Pick a structure from the list or click the model to see its role and attachments.</p><p class="stats">${structures.filter((s) => s.tissue === "bone").length} bones · ${structures.filter((s) => s.tissue === "muscle").length} muscles · ${structures.filter((s) => s.tissue === "tendon" || s.tissue === "ligament").length} tendons &amp; ligaments</p><ul class="hints"><li><b>Drag</b> to orbit</li><li><b>Right-drag</b> to pan</li><li><b>Scroll</b> to zoom</li><li><b>1–5</b> switch views</li></ul>`;
   } else {
     $("#details").innerHTML =
-      `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${d.region} <span>/</span> ${d.tissue}</div><h2>${d.name}</h2><span class="group-name">${d.group}</span><p>${d.description}</p><h3>WHAT IT DOES</h3><p>${d.role}</p><h3>CONNECTIONS</h3><p class="connection">${d.connection}</p><div class="anatomy-tip"><span>◎</span><p>${d.hint}</p></div><button id="isolate" class="outline" aria-pressed="${state.isolated}">${state.isolated ? "↗ Show surrounding structures" : "⊙ Isolate structure"}</button>`;
+      `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${d.region} · ${d.tissue}</div><h2>${d.name}</h2><p class="group-name">${d.group}</p><div class="selection-tools"><button id="focus-selected" class="button" title="Frame this structure (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only this structure">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button><button id="ghost-mode" class="button" aria-pressed="${state.ghost}" title="Fade everything except direct attachments">Ghost</button></div><p>${d.description}</p><h3>Function</h3><p>${d.role}</p><h3>Connections</h3><p>${d.connection}</p><p class="anatomy-tip">${d.hint}</p>`;
     $("#isolate").onclick = () => {
       state.isolated = !state.isolated;
+      state.connections = false;
+      state.ghost = false;
+      clearConnectionFocus();
+      renderDetails();
+      updateAppearance();
+    };
+    $("#focus-selected").onclick = () => focusParts(state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : [d.id]);
+    $("#ghost-mode").onclick = () => {
+      state.ghost = !state.ghost;
+      state.isolated = false;
       state.connections = false;
       renderDetails();
       updateAppearance();
     };
-    const tools = document.createElement("div");
-    tools.className = "selection-tools";
-    tools.innerHTML = `<button id="focus-selected" class="outline">⌖ Focus structure</button><button id="show-connections" class="outline" aria-pressed="${state.connections}">${state.connections ? "Show all surroundings" : "Show connections"}</button>`;
-    $("#details").append(tools);
-    $("#focus-selected").onclick = () => focusParts([d.id]);
+    const connections = connectionsFor(leg.parts, d.id);
+    if (connections.length) {
+      const section = document.createElement('section');
+      section.className = 'attachment-details';
+      section.innerHTML = '<h3>Attachments</h3><p class="footprint-key">Select one to zoom in; select again to return.</p>';
+      // Bone insertions first, then junctions and soft-to-soft attachments.
+      const ordered = [...connections].sort((a,b) => Number(b.record[b.end].kind === 'surface') - Number(a.record[a.end].kind === 'surface'));
+      for (const connection of ordered) {
+        const {record, footprint, end} = connection;
+        const card = document.createElement('div');
+        card.className = 'connection-card';
+        const button = document.createElement('button');
+        button.className = 'connection-focus';
+        button.dataset.connection = connection.key;
+        button.setAttribute('aria-pressed', String(state.focusedConnection === connection.key));
+        button.textContent = `${byId[record.structureId].name} → ${byId[footprint.structureId].name}`;
+        button.onclick = () => toggleConnection(connection);
+        card.append(button);
+        const landmark = document.createElement('small');
+        landmark.textContent = `${record.component.replaceAll('-', ' ')} · ${footprint.landmark} · ${record[end].kind === 'surface' ? 'Bone footprint' : record[end].kind === 'junction' ? 'Muscle–tendon junction' : 'Soft-tissue attachment'}`;
+        card.append(landmark);
+        const note = document.createElement('p');
+        note.className = 'attachment-note';
+        note.textContent = record.note;
+        card.append(note);
+        const sources = document.createElement('details');
+        sources.innerHTML = '<summary>Sources</summary>';
+        for (const key of record.sourceIds) {
+          const source = attachmentSources[key as keyof typeof attachmentSources];
+          const link = document.createElement('a');
+          link.href = source.url; link.textContent = `${source.title} · ${source.section}`;
+          link.target = '_blank'; link.rel = 'noreferrer'; sources.append(link);
+        }
+        card.append(sources);
+        section.append(card);
+      }
+      const active = connections.find(c => c.key === state.focusedConnection);
+      const clinical = connectionClinicalPoints[active?.record.structureId ?? d.id];
+      if (clinical) {
+        const aside = document.createElement('aside'); aside.className = 'clinical-point';
+        aside.innerHTML = '<h3>Clinical note</h3>';
+        const note = document.createElement('p'); note.textContent = clinical.note; aside.append(note);
+        const link = document.createElement('a'); link.href = clinical.url; link.textContent = clinical.title;
+        link.target = '_blank'; link.rel = 'noreferrer'; aside.append(link); section.prepend(aside);
+      }
+      $("#details").append(section);
+    }
     const related = [...relatedIds(d.id)];
     $<HTMLButtonElement>("#show-connections").disabled = !related.length;
     $("#show-connections").onclick = () => {
       state.connections = !state.connections;
       state.isolated = false;
+      state.ghost = false;
+      clearConnectionFocus();
       if (state.connections)
         for (const id of related) state.layers.add(byId[id].tissue);
       state.mode = "custom";
@@ -137,14 +231,14 @@ function renderDetails() {
       const links = document.createElement("div");
       links.className = "connection-links";
       links.innerHTML =
-        "<h3>ADJACENT / ATTACHED STRUCTURES</h3><p>Articulating bones and modeled soft-tissue attachments.</p>";
+        "<h3>Related structures</h3>";
       for (const id of related) {
         const b = document.createElement("button");
         b.textContent = byId[id].name;
         b.onclick = () => {
           $<HTMLInputElement>("#search").value = "";
           if (byId[id].region !== "Foot")
-            $<HTMLSelectElement>("#region").value = "all";
+            state.atlasRegion = "all";
           renderList();
           select(id);
         };
@@ -160,15 +254,16 @@ for (const tissue of tissueKeys) {
   label.innerHTML = `<i style="background:${colors[tissue]}"></i><span>${tissueNames[tissue]}</span><input type="checkbox" data-layer="${tissue}" checked/><span class="switch" aria-hidden="true"></span>`;
   label.querySelector("input")!.onchange = (e) => {
     const checked = (e.target as HTMLInputElement).checked;
+    state.ghost = false;
+    clearConnectionFocus();
     checked ? state.layers.add(tissue) : state.layers.delete(tissue);
     if (!checked && state.selected && byId[state.selected].tissue === tissue) {
-      state.selected = null;
-      state.isolated = false;
-      state.connections = false;
+      select(null);
       renderDetails();
       updateRows();
     }
     state.mode = "custom";
+    renderDetails();
     updateAppearance();
   };
   $("#layers").append(label);
@@ -254,8 +349,104 @@ scene.add(fill);
 controls.minPolarAngle = 0.001;
 controls.maxPolarAngle = Math.PI - 0.001;
 const updateCompass = createCompass($("#compass"), (view) => setView(view));
+const composer = new EffectComposer(renderer);
+const taa = new TAARenderPass(scene, camera);
+taa.sampleLevel=2;
+composer.addPass(taa);composer.addPass(new OutputPass());
+let appearanceDirty=true;
 const leg = createAnkle();
 scene.add(leg.root);
+const footprintGroup = new THREE.Group();
+footprintGroup.name = 'attachment-footprints';
+scene.add(footprintGroup);
+let footprintSelection: string | null | undefined;
+let cutAwayIds = new Set<string>();
+let cutAwayDirty = false;
+let lastCutAwayTime = 0;
+
+let preFocusView: { position: THREE.Vector3; target: THREE.Vector3; label: string; view: string | undefined } | null = null;
+function clearConnectionFocus() {
+  preFocusView = null;
+  state.focusedConnection = null;
+  cutAwayIds.clear();
+  cutAwayDirty = false;
+}
+function activeConnection() {
+  return state.selected ? connectionsFor(leg.parts, state.selected).find(c => c.key === state.focusedConnection) : undefined;
+}
+function updateFootprints() {
+  if (footprintSelection !== state.selected) {
+    for (const child of [...footprintGroup.children]) {
+      const mesh = child as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
+      mesh.geometry.dispose(); mesh.material.dispose(); footprintGroup.remove(mesh);
+    }
+    footprintSelection = state.selected;
+    if (state.selected) for (const c of connectionsFor(leg.parts, state.selected)) {
+      const decal = footprintDecal(leg.parts, c);
+      if (decal) footprintGroup.add(decal);
+    }
+  }
+  for (const child of footprintGroup.children) {
+    const mesh = child as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
+    mesh.visible = !!leg.parts.get(mesh.userData.boneId)?.group.visible;
+    const active = mesh.userData.connectionKey === state.focusedConnection;
+    mesh.material.color.set(active ? '#ffac39' : '#21bda8');
+    // Shared origins can overlap (e.g. plantar slips); draw the focused patch last.
+    mesh.renderOrder = active ? 6 : 5;
+  }
+  viewport.dataset.footprints = String(footprintGroup.children.filter(c => c.visible).length);
+  viewport.dataset.focusedConnection = state.focusedConnection ?? '';
+  viewport.dataset.ghost = String(state.ghost);
+  viewport.dataset.cutaway = [...cutAwayIds].sort().join(',');
+}
+function toggleConnection(connection: Connection) {
+  if (state.focusedConnection !== connection.key) return focusConnection(connection);
+  const saved = preFocusView;
+  clearConnectionFocus();
+  state.ghost = false;
+  if (saved) {
+    applyMotionPreference();
+    void lookAtNearest(controls, saved.position, saved.target, !reducedMotion.matches);
+    $("#view-name").textContent = saved.label;
+    document.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
+      b.classList.toggle("active", b.dataset.view === saved.view);
+      b.setAttribute("aria-pressed", String(b.dataset.view === saved.view));
+    });
+  }
+  const scroll = $("#details").scrollTop;
+  renderDetails();
+  $("#details").scrollTop = scroll;
+  document.querySelector<HTMLButtonElement>(`[data-connection="${connection.key}"]`)?.focus({ preventScroll: true });
+  updateAppearance();
+}
+function focusConnection(connection: Connection) {
+  if (!state.focusedConnection) preFocusView = {
+    position: camera.position.clone(),
+    target: controls.getTarget(new THREE.Vector3(), false),
+    label: $("#view-name").textContent ?? "",
+    view: document.querySelector<HTMLButtonElement>("[data-view].active")?.dataset.view,
+  };
+  const keepKeyboardFocus = document.activeElement instanceof HTMLElement && document.activeElement.dataset.connection === connection.key;
+  state.focusedConnection = connection.key;
+  state.ghost = true;
+  state.isolated = false;
+  state.connections = false;
+  cutAwayIds.clear();
+  cutAwayDirty = true;
+  const { target, position } = connectionCameraPose(connection.footprint, camera.fov, camera.aspect);
+  cameraTouched = true;
+  applyMotionPreference();
+  void lookAtNearest(controls, position, target, !reducedMotion.matches);
+  $("#view-name").textContent = 'ATTACHMENT CLOSE-UP';
+  document.querySelectorAll('[data-view]').forEach(b => {b.classList.remove('active'); b.setAttribute('aria-pressed', 'false');});
+  const scroll = $("#details").scrollTop;
+  renderDetails();
+  $("#details").scrollTop = scroll;
+  if (keepKeyboardFocus) document.querySelector<HTMLButtonElement>(`[data-connection="${connection.key}"]`)?.focus({ preventScroll: true });
+  updateAppearance();
+}
+
+let cameraTouched = false;
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(20000, 20000),
   new THREE.ShadowMaterial({ color: "#6e583e", opacity: 0.12 }),
@@ -265,14 +456,25 @@ floor.position.copy(legacyPointToMm(0, 0.06, 0));
 floor.receiveShadow = true;
 scene.add(floor);
 function setView(view: string, animate = true) {
+  clearConnectionFocus();
+  updateAppearance();
+  renderDetails();
   state.footView = true;
   state.view = view;
-  $(".scene-heading").classList.add("close-up");
-  $(".scene-heading h1").textContent = "Foot & ankle";
-  $(".scene-heading p").textContent = "A closer study of every step.";
   applyMotionPreference();
   const { target, position: p } = cameraPreset(view, camera.aspect);
-  void controls.setLookAt(p.x, p.y, p.z, target.x, target.y, target.z, animate);
+  // Full source shafts extend beyond the procedural distal-leg overview.
+  // Fit the imported overview while keeping the regional view shortcuts intact.
+  if (view === "foot" && [...leg.parts.values()].some(part => part.meshes.some(mesh => mesh.userData.source === "z-anatomy"))) {
+    const bounds = new THREE.Box3().setFromObject(leg.root);
+    const direction = p.clone().sub(target).normalize();
+    bounds.getCenter(target);
+    const halfFov = Math.min(THREE.MathUtils.degToRad(camera.fov / 2),
+      Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
+    const distance = bounds.getSize(new THREE.Vector3()).length() / 2 / Math.sin(halfFov) * 1.2;
+    p.copy(target).addScaledVector(direction, distance);
+  }
+  void lookAtNearest(controls, p, target, animate && !reducedMotion.matches);
   buildLabels();
   $("#view-name").textContent =
     view === "foot" ? "OBLIQUE OVERVIEW" : `${view.toUpperCase()} VIEW`;
@@ -282,6 +484,7 @@ function setView(view: string, animate = true) {
   });
 }
 controls.addEventListener("controlstart", () => {
+  cameraTouched = true;
   $("#view-name").textContent = "FREE CAMERA";
   document.querySelectorAll("[data-view]").forEach((b) => {
     b.classList.remove("active");
@@ -292,7 +495,13 @@ function resize() {
   const w = viewport.clientWidth,
     h = viewport.clientHeight;
   renderer.setSize(w, h);
+  composer.setSize(w,h);
+  appearanceDirty=true;
   camera.aspect = w / h;
+  // On wide layouts the inspector floats over the canvas; centre the model in the free area.
+  const covered = innerWidth > 900 ? $(".inspector").offsetWidth + parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gap") || "12") : 0;
+  if (covered) camera.setViewOffset(w, h, covered / 2, 0, w, h);
+  else camera.clearViewOffset();
   camera.updateProjectionMatrix();
 }
 new ResizeObserver(resize).observe(viewport);
@@ -307,9 +516,11 @@ function setPan(pan: boolean) {
   $("#pan").setAttribute("aria-pressed", String(pan));
   $("#pan").classList.toggle("active", pan);
   renderer.domElement.style.cursor = pan ? "grab" : "default";
-  $("#pan").textContent = pan ? "✥ Pan on" : "✥ Pan";
 }
 function focusParts(ids: string[], foot = false) {
+  clearConnectionFocus();
+  updateAppearance();
+  renderDetails();
   const bounds = new THREE.Box3();
   for (const id of ids) {
     const part = leg.parts.get(id);
@@ -342,23 +553,8 @@ function focusParts(ids: string[], foot = false) {
         .normalize();
   const destination = center.clone().addScaledVector(direction, distance);
   controls.smoothTime = reducedMotion.matches ? 0.01 : 0.28;
-  void controls.setLookAt(
-    destination.x,
-    destination.y,
-    destination.z,
-    center.x,
-    center.y,
-    center.z,
-    true,
-  );
+  void lookAtNearest(controls, destination, center, !reducedMotion.matches);
   state.footView = foot || ids.every((id) => byId[id]?.region === "Foot");
-  $(".scene-heading").classList.add("close-up");
-  $(".scene-heading h1").textContent = foot
-    ? "Foot & ankle"
-    : "Structure study";
-  $(".scene-heading p").textContent = foot
-    ? "26 bones. Explore their connections."
-    : "Orbit, pan, and zoom to inspect.";
   $("#view-name").textContent = foot ? "FOOT & ANKLE" : "STRUCTURE CLOSE-UP";
   document.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
     const active = foot && b.dataset.view === "foot";
@@ -370,17 +566,27 @@ function focusParts(ids: string[], foot = false) {
 function focusFoot() {
   select(null);
   setView("foot");
-  $<HTMLSelectElement>("#region").value = "all";
+  state.atlasRegion = "all";
   $<HTMLInputElement>("#search").value = "";
   renderList();
 }
 $("#pan").onclick = () => setPan(!state.pan);
-$("#region").addEventListener("change", renderList);
-function select(id: string | null) {
+document.querySelectorAll<HTMLButtonElement>('[data-region]').forEach((b,index)=>{
+  b.onclick=()=>{state.atlasRegion=b.dataset.region!;renderList();};
+  b.onkeydown=e=>{
+    const tabs=[...document.querySelectorAll<HTMLButtonElement>('[data-region]')];
+    const next=e.key==='ArrowRight'?(index+1)%tabs.length:e.key==='ArrowLeft'?(index+tabs.length-1)%tabs.length:e.key==='Home'?0:e.key==='End'?tabs.length-1:-1;
+    if(next>=0){e.preventDefault();tabs[next].click();tabs[next].focus();}
+  };
+});
+function select(id: string | null, revealLayer = true) {
+  clearConnectionFocus();
+  state.ghost = false;
   state.selected = id;
+  if(id && !atlasIds(state.atlasRegion).has(id)) {state.atlasRegion="all";renderList();}
   state.isolated = false;
   state.connections = false;
-  if (id && !state.layers.has(byId[id].tissue)) {
+  if (id && revealLayer && !state.layers.has(byId[id].tissue)) {
     state.layers.add(byId[id].tissue);
     state.mode = "custom";
   }
@@ -389,7 +595,19 @@ function select(id: string | null) {
   $("#details").scrollTop = 0;
   updateAppearance();
 }
+function selectedConnectionHighlights() {
+  return state.highlightConnections && state.selected && !state.isolated
+    ? connectionHighlightIds(state.selected)
+    : new Set<string>();
+}
 function updateAppearance() {
+  appearanceDirty=true;
+  cutAwayDirty = !!state.focusedConnection;
+  const attached = state.ghost && state.selected ? directlyAttachedIds(state.selected) : new Set<string>();
+  const highlighted = selectedConnectionHighlights();
+  const focused = activeConnection();
+  // Keep the focused endpoint and owning band visible even from a muscle/bone inspector.
+  if (focused && state.ghost) { attached.add(focused.record.structureId); attached.add(focused.footprint.structureId); }
   const related =
     state.connections && state.selected
       ? relatedIds(state.selected)
@@ -398,27 +616,41 @@ function updateAppearance() {
     const d = byId[id],
       selected = id === state.selected;
     part.group.visible =
-      state.layers.has(d.tissue) &&
+      ((state.ghost && d.tissue !== "skin") || highlighted.has(id) || state.layers.has(d.tissue)) &&
       (!state.isolated || selected) &&
-      (!state.connections || selected || related.has(id));
+      (!state.connections || selected || highlighted.has(id) || related.has(id));
     for (const mesh of part.meshes) {
       const mat = mesh.material as THREE.MeshStandardMaterial;
-      let alpha = d.tissue === "muscle" ? state.opacity : 1;
-      if (state.selected && !selected && !state.isolated && !state.connections)
-        alpha = Math.min(alpha, 0.12);
-      if (selected) alpha = 1;
+      mat.userData.connectionBaseColor ??= mat.color.clone();
+      mat.color.copy(mat.userData.connectionBaseColor);
+      if (highlighted.has(id) && !selected) mat.color.set("#64c6b2");
+      const tissueOpacity = d.tissue === "muscle" ? state.opacity : d.tissue === "skin" ? state.skinOpacity : 1;
+      let alpha = tissueOpacity;
+      if (state.ghost) alpha = attached.has(id) ? 1 : Math.min(alpha, 0.07);
+      else if (state.selected && !selected && !state.isolated && !state.connections)
+        alpha = Math.min(alpha, state.highlightConnections ? 0.12 : 0.5);
+      if (highlighted.has(id) && !selected) alpha = 1;
+      if (cutAwayIds.has(id)) alpha = Math.min(alpha, 0.025);
+      if (selected) alpha = tissueOpacity;
       if (mesh.userData.fiber) alpha *= 0.22;
-      mat.opacity = alpha;
-      mat.transparent = alpha < 1;
-      mat.depthWrite = alpha > 0.8;
-      mat.emissive.set(selected ? "#623d17" : "#000000");
-      mat.emissiveIntensity = selected ? 0.13 : 0;
-      mesh.castShadow = alpha > 0.8;
-      mesh.renderOrder = selected ? 3 : 0;
+      applyCoverage(mesh, alpha);
+      mesh.visible = alpha > 0;
+      mat.emissive.set(selected ? "#623d17" : highlighted.has(id) ? "#218d7c" : "#000000");
+      mat.emissiveIntensity = selected ? 0.13 : highlighted.has(id) ? 0.25 : 0;
+
     }
   }
-  if (state.hovered && !leg.parts.get(state.hovered)?.group.visible)
+  updateRows();
+  $("#highlight-connections").setAttribute("aria-pressed", String(state.highlightConnections));
+  viewport.dataset.highlightedStructures = [...highlighted].filter(id => leg.parts.get(id)?.group.visible).sort().join(",");
+  updateFootprints();
+  $("#layer-hint").textContent = state.ghost
+    ? "Ghost mode shows all layers. Press Esc to restore."
+    : "";
+  if (state.hovered && (!leg.parts.get(state.hovered)?.group.visible ||
+    (state.highlightConnections && !hoverConnectionIds().has(state.hovered))))
     setHovered(null);
+  if (hoverPointer) requestHovered(pickStructure(hoverPointer.x, hoverPointer.y, true));
   document
     .querySelectorAll<HTMLInputElement>("[data-layer]")
     .forEach(
@@ -434,16 +666,18 @@ function updateAppearance() {
   buildLabels();
 }
 function preset(mode: string) {
+  clearConnectionFocus();
+  state.ghost = false;
   state.mode = mode;
   state.selected = null;
   state.isolated = false;
   state.connections = false;
   state.layers = new Set<Tissue>(
-    mode === "skeleton"
+    mode === "exterior" ? ["skin"] : mode === "skeleton"
       ? ["bone", "cartilage"]
       : mode === "connective"
         ? ["bone", "tendon", "ligament", "fascia", "cartilage"]
-        : tissueKeys,
+        : tissueKeys.filter(t => t !== "skin"),
   );
   updateRows();
   renderDetails();
@@ -458,14 +692,23 @@ document
   .forEach((b) => (b.onclick = () => setView(b.dataset.view!)));
 $("#search").addEventListener("input", renderList);
 $("#clear").onclick = () => select(null);
+$("#highlight-connections").onclick = () => {
+  state.highlightConnections = !state.highlightConnections;
+  updateAppearance();
+};
 $("#labels").onclick = () => {
   state.labels = !state.labels;
   updateAppearance();
 };
-$("#all-layers").onclick = () => preset("anatomy");
+$("#all-layers").onclick = () => { preset("anatomy");state.layers.add("skin");state.mode="custom";updateAppearance(); };
 $<HTMLInputElement>("#opacity").oninput = (e) => {
   state.opacity = Number((e.target as HTMLInputElement).value) / 100;
   $("#opacity-value").textContent = `${Math.round(state.opacity * 100)}%`;
+  updateAppearance();
+};
+$<HTMLInputElement>("#skin-opacity").oninput = e => {
+  state.skinOpacity=Number((e.target as HTMLInputElement).value)/100;
+  $("#skin-opacity-value").textContent=`${Math.round(state.skinOpacity*100)}%`;
   updateAppearance();
 };
 $("#home").onclick = () => setView("foot");
@@ -477,8 +720,12 @@ $("#zoom-out").onclick = () => {
 };
 function reset() {
   setPan(false);
-  $<HTMLSelectElement>("#region").value = "all";
+  state.highlightConnections = false;
+  state.atlasRegion = "all";
 
+  state.skinOpacity = 1;
+  $<HTMLInputElement>("#skin-opacity").value="100";
+  $("#skin-opacity-value").textContent="100%";
   state.opacity = 1;
   state.labels = false;
   $<HTMLInputElement>("#opacity").value = "100";
@@ -500,16 +747,23 @@ const raycaster = new THREE.Raycaster(),
   mouse = new THREE.Vector2();
 // Closest hit per mesh; every mesh still participates in selection priority.
 raycaster.firstHitOnly = true;
-function pickStructure(clientX: number, clientY: number): string | null {
+function hoverConnectionIds() {
+  return new Set([
+    ...selectedConnectionHighlights(),
+    ...(state.selected ? [state.selected] : []),
+  ]);
+}
+function pickStructure(clientX: number, clientY: number, hoverOnly = false): string | null {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.set(
     ((clientX - rect.left) / rect.width) * 2 - 1,
     (-(clientY - rect.top) / rect.height) * 2 + 1,
   );
   raycaster.setFromCamera(mouse, camera);
+  const hoverIds = hoverOnly && state.highlightConnections ? hoverConnectionIds() : null;
   const targets = [...leg.parts.values()]
-    .filter((p) => p.group.visible)
-    .flatMap((p) => p.meshes.filter((m) => !m.userData.fiber));
+    .filter((p) => p.group.visible && (!hoverIds || hoverIds.has(p.id)))
+    .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber));
   const hits = raycaster.intersectObjects(targets, false);
   // Match click selection: the selected solid structure takes priority over ghosted tissue.
   const chosen =
@@ -519,6 +773,8 @@ function pickStructure(clientX: number, clientY: number): string | null {
 let pendingHover: string | null | undefined;
 let hoverTimer: number | undefined;
 function setHovered(id: string | null) {
+  // Selection or mode may have changed during the hover settling delay.
+  if (id && state.highlightConnections && !hoverConnectionIds().has(id)) id = null;
   window.clearTimeout(hoverTimer);
   hoverTimer = undefined;
   pendingHover = undefined;
@@ -529,6 +785,7 @@ function setHovered(id: string | null) {
   buildLabels();
 }
 function requestHovered(id: string | null) {
+  if (id && state.highlightConnections && !hoverConnectionIds().has(id)) id = null;
   if (pendingHover === id) return;
   window.clearTimeout(hoverTimer);
   pendingHover = undefined;
@@ -564,7 +821,7 @@ renderer.domElement.addEventListener("pointermove", (e) => {
   if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 5) down.moved = true;
   if (e.pointerType === "touch" || e.buttons || pointers.size) return;
   hoverPointer = { x: e.clientX, y: e.clientY };
-  requestHovered(pickStructure(e.clientX, e.clientY));
+  requestHovered(pickStructure(e.clientX, e.clientY, true));
 });
 renderer.domElement.addEventListener("pointerleave", () => {
   hoverPointer = null;
@@ -617,7 +874,7 @@ function buildLabels() {
             "plantar-fascia",
           ]
         : ["tibia", "anterior", "superior-extensor", "edb", "metatarsal-1"];
-  const ids = state.labels ? defaultIds : [];
+  const ids = state.labels ? [...defaultIds, ...selectedConnectionHighlights()] : [];
   const visible = new Set([
     ...(state.hovered ? [state.hovered] : []),
     ...ids,
@@ -659,59 +916,27 @@ function buildLabels() {
   labelNodes.splice(0, labelNodes.length, ...next);
 }
 const tour = [
-  [
-    "talus",
-    "Inside the ankle mortise",
-    "The talar dome sits between the distal tibia and fibula. Compare the lower lateral malleolus with its medial counterpart.",
-    "anterior",
-  ],
-  [
-    "calcaneus",
-    "A heel with an arch",
-    "The calcaneal tuberosity forms the heel. The medial shelf supports the talus, while the midfoot rises into the arch.",
-    "medial",
-  ],
-  [
-    "cuneiform-medial",
-    "Wedges in the midfoot",
-    "Three differently sized cuneiforms sit between the navicular and metatarsals. The second metatarsal base is recessed.",
-    "dorsal",
-  ],
-  [
-    "superior-extensor",
-    "Tendons held close",
-    "The transverse superior band and Y-shaped inferior retinaculum keep the anterior tendon paths close to the ankle. Toggle Fascia & retinacula to look underneath.",
-    "foot",
-  ],
-  [
-    "fibularis-brevis-tendon",
-    "Around the outer ankle",
-    "Follow the two fibular tendons behind the lateral malleolus. Brevis inserts on the fifth metatarsal; longus turns beneath the cuboid toward the medial foot.",
-    "lateral",
-  ],
-  [
-    "plantar-fascia",
-    "Under the foot",
-    "The plantar aponeurosis fans toward the toes. The two hallux sesamoids lie beneath the first metatarsal head.",
-    "plantar",
-  ],
+  ['atfl', 'atfl:anterior-talofibular:to', 'At the outer ankle', 'Inspect the ATFL footprint on the talar neck. Ghost mode preserves the ligament and its two attached bones.'],
+  ['achilles', 'achilles:common-calcaneal:to', 'Calf to heel', 'Follow the Achilles tendon to its posterior calcaneal footprint. The amber patch marks the focused insertion.'],
+  ['lisfranc', 'lisfranc:interosseous:to', 'Deep in the midfoot', 'Inspect the Lisfranc attachment at the second metatarsal base. Overlying structures fade automatically as you orbit.'],
+  ['superior-extensor', 'superior-extensor:transverse:to', 'Tendons held close', 'Explore the tibial attachment of the superior extensor retinaculum, a retaining band across the anterior ankle.'],
+  ['fibularis-brevis-tendon', 'fibularis-brevis-tendon:fifth-metatarsal:to', 'Around the outer ankle', 'Trace fibularis brevis to the fifth metatarsal tuberosity. Its muscle and insertion bone remain visible in ghost mode.'],
+  ['plantar-fascia', 'plantar-fascia:digital-slip-1:from', 'Under the foot', 'Focus on the calcaneal attachment of the plantar aponeurosis before following its slips toward the toes.'],
 ];
 let tourIndex = 0;
 function showTour() {
-  const [id, title, text, view] = tour[tourIndex];
-
-  state.layers = new Set(tissueKeys);
-  state.mode = "anatomy";
-  select(id);
-  setView(view);
+  const [id, connectionKey, title, text] = tour[tourIndex];
+  select(id, false);
+  const connection = connectionsFor(leg.parts, id).find(c => c.key === connectionKey);
+  if (connection) focusConnection(connection);
   $("#tour-card").hidden = false;
   $("#tour-step").textContent =
-    `GUIDED TOUR / ${tourIndex + 1} OF ${tour.length}`;
+    `Tour · ${tourIndex + 1} of ${tour.length}`;
   $("#tour-title").textContent = title;
   $("#tour-text").textContent = text;
   $<HTMLButtonElement>("#tour-prev").disabled = tourIndex === 0;
   $("#tour-next").textContent =
-    tourIndex === tour.length - 1 ? "Finish ✓" : "Next →";
+    tourIndex === tour.length - 1 ? "Done" : "Next";
 }
 $("#tour").onclick = () => {
   tourIndex = 0;
@@ -735,18 +960,24 @@ $("#tour-next").onclick = () => {
   }
 };
 document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !dialog.open) {
+    select(null);
+    $("#tour-card").hidden = true;
+    return;
+  }
   if (
     (e.target as HTMLElement).matches("input,button,select,textarea") ||
     dialog.open
   )
     return;
   const k = e.key.toLowerCase();
-  if (k === "1") setView("dorsal");
-  if (k === "2") setView("lateral");
-  if (k === "3") setView("medial");
-  if (k === "4") focusFoot();
+  if (k === "1") focusFoot();
+  if (k === "2") setView("dorsal");
+  if (k === "3") setView("plantar");
+  if (k === "4") setView("medial");
+  if (k === "5") setView("lateral");
   if (k === "p") setPan(!state.pan);
-  if (k === "f" && state.selected) focusParts([state.selected]);
+  if (k === "f" && state.selected) focusParts(state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : [state.selected]);
   if (k === "l") $("#labels").click();
   if (k === "r") reset();
 
@@ -768,10 +999,25 @@ function frame(time: number) {
   if (document.hidden) return;
   const cameraChanged = updateCamera(controls, camera, dt);
   if (cameraChanged && hoverPointer)
-    requestHovered(pickStructure(hoverPointer.x, hoverPointer.y));
-  renderer.render(scene, camera);
+    requestHovered(pickStructure(hoverPointer.x, hoverPointer.y, true));
+  if (cameraChanged && state.focusedConnection) cutAwayDirty = true;
+  if (cutAwayDirty && time - lastCutAwayTime > 100) {
+    lastCutAwayTime = time;
+    const focused = activeConnection();
+    scene.updateMatrixWorld(true);
+    const next = focused ? connectionOccluders(leg.parts, camera.position, focused, state.selected) : new Set<string>();
+    if (next.size !== cutAwayIds.size || [...next].some(id => !cutAwayIds.has(id))) {
+      cutAwayIds = next;
+      updateAppearance();
+    }
+    cutAwayDirty = false;
+  }
+  taa.accumulate=!cameraChanged && !appearanceDirty;
+  composer.render();
+  appearanceDirty=false;
   updateCompass(camera.quaternion);
   const occupied: { x: number; y: number }[] = [];
+  const labelInset = innerWidth > 900 ? $(".inspector").offsetWidth + 12 : 0;
   const glide = reducedMotion.matches ? 1 : 1 - Math.exp(-dt / 0.1);
   for (let i = labelNodes.length - 1; i >= 0; i--) {
     const label = labelNodes[i];
@@ -793,9 +1039,9 @@ function frame(time: number) {
     )
       y += 34;
     if (id === state.hovered)
-      y = THREE.MathUtils.clamp(y, 115, viewport.clientHeight - 70);
+      y = THREE.MathUtils.clamp(y, 28, viewport.clientHeight - 70);
     occupied.push({ x, y });
-    const targetX = THREE.MathUtils.clamp(x, 80, viewport.clientWidth - 90);
+    const targetX = THREE.MathUtils.clamp(x, 80, viewport.clientWidth - 90 - labelInset);
     const positioned = label.x !== undefined;
     label.x = positioned ? label.x! + (targetX - label.x!) * glide : targetX;
     label.y = positioned ? label.y! + (y - label.y!) * glide : y;
@@ -803,10 +1049,41 @@ function frame(time: number) {
     node.style.top = `${label.y}px`;
     const shown =
       (positioned || reducedMotion.matches) &&
-      p.z <= 1 && y >= 105 && y <= viewport.clientHeight - 60;
+      p.z <= 1 && y >= 20 && y <= viewport.clientHeight - 60;
     node.classList.toggle("shown", shown);
     node.inert = !shown;
   }
 }
 requestAnimationFrame(frame);
 
+
+// Start after controls, state and labels exist, so late loads preserve user interaction.
+viewport.dataset.boneAssets = "loading";
+viewport.dataset.softTissues = "loading";
+void Promise.all([loadBoneAssets(leg.parts), loadMuscleAssets(leg.parts), loadExteriorAssets(leg.parts)]).then(([report, muscles, exterior]) => {
+  viewport.dataset.exteriorAssets = exterior.fallback.length ? "fallback" : "ready";
+  const soft = rebuildSoftTissues(leg.parts);
+  footprintSelection = undefined;
+  cutAwayIds.clear();
+  viewport.dataset.softTissues = soft.warnings.length ? "partial" : "ready";
+  viewport.dataset.loadedMuscles = String(muscles.loaded.length + Number(exterior.loaded.includes("gastrocnemius")));
+  viewport.dataset.cartilagePatches = String(soft.cartilagePatches);
+  for (const warning of [...muscles.warnings, ...exterior.warnings, ...soft.warnings]) console.warn(warning);
+  viewport.dataset.boneAssets = report.fallback.length ? "fallback" : "ready";
+  viewport.dataset.loadedBones = String(report.loaded.length);
+  if (report.loaded.length && state.view === "foot" && !state.selected && !cameraTouched) setView("foot", false);
+  for (const warning of report.warnings) console.warn(warning);
+  const focused = activeConnection();
+  if (focused) focusConnection(focused);
+  else renderDetails();
+  updateAppearance();
+  buildLabels();
+  if (hoverPointer) requestHovered(pickStructure(hoverPointer.x, hoverPointer.y, true));
+  hideLoading();
+}, () => hideLoading());
+function hideLoading() {
+  const el = document.getElementById("loading");
+  if (!el) return;
+  el.classList.add("done");
+  window.setTimeout(() => el.remove(), 400);
+}

@@ -72,3 +72,20 @@ Citations must give URL, title and section/figure plus what claim they support;
 general model attribution does not validate an attachment coordinate.
 
 
+
+## Phase 2 source registration
+
+Pinned Z-Anatomy source uses Metric / 1 meter per Blender unit. Its standing axes
+are -Y anterior, +Z superior and -X subject-right. The source world bounding-box
+center of Talus.r, frozen before smoothing, maps to the fixed Phase 1 datum
+[0, 0, 0]. This is a reproducible display registration, not a measured joint center.
+The exact datum and 4x4 source-world-to-GLB matrix are in bones.manifest.json.
+No scaling, reflection, independent bone repositioning or per-bone fitting is used.
+
+Blender geometry is stored with anterior +X, superior +Z and right -Y so the
+standard Y-up exporter produces the required anatomical GLB basis. Both matrices
+are recorded. All 30 Blender and GLB object transforms are identity. Runtime bakes
+GLB world matrices and multiplies by 1000 once; the legacy matrix is never applied.
+Full source tibia/fibula are retained; Overview fits their larger extent. Regional
+view shortcuts retain Phase 1 directions. Soft tissues stay procedural and do not
+represent registered attachments to the new surfaces.

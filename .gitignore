@@ -8,3 +8,12 @@ test-results/
 /preview*.jpg
 /*-preview.png
 /playwright-report/
+
+# Large pinned originals are reproducible from assets/source/source-manifest.json
+/assets/source/*.zip
+/assets/source/*.blend
+/assets/*.blend1
+
+# Keep Blender originals and archives locally, outside Git
+*.blend
+*.zip

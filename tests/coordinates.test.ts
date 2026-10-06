@@ -46,7 +46,7 @@ describe("millimeter anatomy contract", () => {
     expect(size.x).toBeGreaterThan(200);
     expect(size.x).toBeLessThan(400);
     expect(size.y).toBeGreaterThan(250);
-    expect(size.y).toBeLessThan(400);
+    expect(size.y).toBeLessThan(550); // Full calf and exterior extend above the distal-leg fallback.
     expect(model.parts.get("metatarsal-1")!.anchor.z).toBeLessThan(model.parts.get("metatarsal-5")!.anchor.z);
     for (const part of model.parts.values()) {
       expect(structures.some(s => s.id === part.id)).toBe(true);

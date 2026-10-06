@@ -73,7 +73,7 @@ export function createCompass(host: HTMLElement, onView: (id: string) => void) {
   dot.setAttribute("cx", "55");
   dot.setAttribute("cy", "55");
   dot.setAttribute("r", "3");
-  dot.setAttribute("fill", "#948671");
+  dot.setAttribute("fill", "#9b978e");
   svg.append(dot);
   return (q: THREE.Quaternion) => {
     for (const { d, line, b } of nodes) {
@@ -87,7 +87,7 @@ export function createCompass(host: HTMLElement, onView: (id: string) => void) {
       b.style.top = `${(y / 110) * 100}%`;
       b.style.opacity = p.z < 0 ? ".45" : "1";
       b.style.zIndex = String(Math.round((p.z + 1) * 10));
-      b.style.background = p.z < 0 ? "#f4eddf" : "#fffaf1";
+      b.style.background = p.z < 0 ? "#f2f1ee" : "#ffffff";
     }
   };
 }

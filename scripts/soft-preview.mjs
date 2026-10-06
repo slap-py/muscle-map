@@ -1,0 +1,12 @@
+import {chromium} from '@playwright/test';
+const browser=await chromium.launch({channel:'msedge',headless:true});
+const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+page.on('pageerror',e=>console.log('ERROR',e.message));page.on('console',m=>{if(m.type()==='warning')console.log('WARN',m.text());});
+await page.goto('http://127.0.0.1:5176',{waitUntil:'networkidle',timeout:60000});
+await page.waitForFunction(()=>document.querySelector('#viewport')?.dataset.softTissues==='ready',{timeout:60000});
+await page.screenshot({path:'validation/phase4-overview.png'});
+await page.locator('[data-view="lateral"]').click();await page.waitForTimeout(500);
+await page.screenshot({path:'validation/phase4-lateral.png'});
+await page.locator('[data-view="medial"]').click();await page.waitForTimeout(500);
+await page.screenshot({path:'validation/phase4-medial.png'});
+console.log(await page.locator('#viewport').evaluate(e=>({...e.dataset})));await browser.close();

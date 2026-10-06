@@ -1,0 +1,30 @@
+{
+  "revision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "downloaded": "2026-10-04",
+  "files": [
+    {
+      "path": "assets\\source\\Z-Anatomy-License.txt",
+      "url": "https://raw.githubusercontent.com/Z-Anatomy/Models-of-human-anatomy/b722f392d2b09d21f0527229fe1338f27a3bc04e/License.txt",
+      "sha256": "196b66b56551a862e59872f7cdb70e6d9a6ad84e9105962fca8ec28c14e97520",
+      "bytes": 2754
+    },
+    {
+      "path": "assets\\source\\Z-Anatomy-Readme.md",
+      "url": "https://raw.githubusercontent.com/Z-Anatomy/Models-of-human-anatomy/b722f392d2b09d21f0527229fe1338f27a3bc04e/Readme.md",
+      "sha256": "2439e8ccea759c644bbaf2f6fd48551fe054bfda30fd3d97d8384f75273466b3",
+      "bytes": 4243
+    },
+    {
+      "path": "assets\\source\\Z-Anatomy.zip",
+      "url": "https://raw.githubusercontent.com/Z-Anatomy/Models-of-human-anatomy/b722f392d2b09d21f0527229fe1338f27a3bc04e/Z-Anatomy.zip",
+      "sha256": "e029688545627bd0214b269e1063143abb580aad72b2c2445d6d8a9a0d9da736",
+      "bytes": 86734957
+    },
+    {
+      "path": "assets\\source\\Startup.blend",
+      "archiveMember": "Z-Anatomy/Startup.blend",
+      "sha256": "9f08a17ea0115fed80b2a73ecdf0a1bc2ab2f6956f37c593ce23d513ea35afcd",
+      "bytes": 306838281
+    }
+  ]
+}

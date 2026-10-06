@@ -1,3 +1,5 @@
+import muscleLandmarks from './muscleLandmarks.json';
+import { rebuildSoftTissues } from './softTissues';
 import * as THREE from "three";
 import { structures, byId, colors } from "./data";
 import { buildFoot, rays, type Point } from "./foot";
@@ -256,6 +258,32 @@ export function createAnkle() {
       mesh.geometry.applyMatrix4(legacyToAnatomicalMatrix);
       if (!mesh.userData.fiber) enableMeshPicking(mesh);
     }
+  // New muscles get registered procedural fallbacks before asynchronous assets arrive.
+  for (const id of ['tibialis-posterior','fdl','fhl'] as const) {
+    const [min,max]=muscleLandmarks[id].boundsMm;
+    const g=new THREE.SphereGeometry(1,24,16);
+    g.scale((max[0]-min[0])/2,(max[1]-min[1])/2,(max[2]-min[2])/2);
+    g.translate((max[0]+min[0])/2,(max[1]+min[1])/2,(max[2]+min[2])/2);
+    enableMeshPicking(add(id,g));
+  }
+  // Registered illustrative fallbacks remain selectable if the supplemental asset fails.
+  for (const [id, center, radius] of [
+    ['gastrocnemius',[-39,257,-10],[24,99,19]],
+    ['gastrocnemius',[-38,265,26],[22,87,17]],
+    ['skin',[-4,160,14],[62,211,61]],
+    ['skin',[48,-30,15],[111,43,60]],
+  ] as [string,number[],number[]][]) {
+    const g = new THREE.SphereGeometry(1,40,28);
+    g.scale(radius[0],radius[1],radius[2]);g.translate(center[0],center[1],center[2]);
+    enableMeshPicking(add(id,g));
+  }
+  for(let n=1;n<=5;n++) {
+    const box=new THREE.Box3();
+    for(const [id,part] of parts) if(id.startsWith(`phalanx-${n}-`)) box.union(new THREE.Box3().setFromObject(part.group));
+    const c=box.getCenter(new THREE.Vector3()),r=box.getSize(new THREE.Vector3()).multiplyScalar(.5).addScalar(5);
+    const g=new THREE.SphereGeometry(1,24,16);g.scale(r.x,r.y,r.z);g.translate(c.x,c.y,c.z);enableMeshPicking(add('skin',g));
+  }
+  rebuildSoftTissues(parts);
   for (const part of parts.values())
     new THREE.Box3().setFromObject(part.group).getCenter(part.anchor);
   return { root, parts };

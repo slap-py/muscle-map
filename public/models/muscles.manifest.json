@@ -1,0 +1,515 @@
+{
+  "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceUrl": "https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceBlendSha256": "9f08a17ea0115fed80b2a73ecdf0a1bc2ab2f6956f37c593ce23d513ea35afcd",
+  "license": "CC-BY-SA-4.0",
+  "attribution": [
+    "Z-Anatomy \u2014 The libre 3D atlas of anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
+    "BodyParts3D \u2014 The Database Center for Life Science \u2014 Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
+  ],
+  "sourceUnits": {
+    "system": "METRIC",
+    "metersPerUnit": 1.0
+  },
+  "gltfUnits": "meters",
+  "runtimeUnits": "millimeters; multiply by 1000 once",
+  "coordinateConvention": "Phase 1: +X anterior, +Y superior, +Z subject-right; fixed talus reference origin",
+  "registration": {
+    "method": "Proper basis rotation and translation; native physical scale, no per-bone repositioning or nonuniform scaling",
+    "sourceTalusDatumMeters": [
+      -0.07470057159662247,
+      0.03657284379005432,
+      0.06766913086175919
+    ],
+    "datumDefinition": "Source Talus.r world bounding-box center frozen before surface processing, mapped to the Phase 1 authored talus datum [0,0,0]; display registration, not a measured joint center",
+    "sourceWorldToGltfRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.03657284379005432
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.06766913086175919
+      ],
+      [
+        -1.0,
+        0.0,
+        0.0,
+        -0.07470057159662247
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "sourceWorldToBlenderRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.03657284379005432
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.07470057159662247
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.06766913086175919
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "exportYUp": true
+  },
+  "processing": [
+    "Right-side muscle selection; native scale and complete bellies",
+    "Remove Tendon material faces, cap muscle boundaries; FHL/abductor hallucis use documented seam-level cuts to preserve source belly surfaces",
+    "EDB distal slips cropped at X=65 mm; soleus repaired at 0.6 mm voxel resolution; remove tiny repair artifacts",
+    "Validate connected components, retained volume and manifold edges after mesh validation",
+    "Clean, outward normals, subdivision and decimation using Phase 2 budget",
+    "Identity transforms; same frozen source-to-GLB matrix as bones"
+  ],
+  "limitations": [
+    "Seam-derived junctions are approximate",
+    "Subdivision adds no measured detail",
+    "Proximal origins outside this regional skeleton are not reconstructed"
+  ],
+  "muscles": [
+    {
+      "atlasId": "anterior",
+      "sourceObject": "Tibialis anterior muscle.r",
+      "sourceBellyTriangles": 2616,
+      "removedTendonFaces": 925,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 99183.75508969567,
+      "retainedVolumeRatio": 0.9929301633249007,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          1.8780113458633423,
+          74.67040252685547,
+          7.864744186401367
+        ],
+        [
+          41.293663024902344,
+          343.0393981933594,
+          42.74040603637695
+        ]
+      ],
+      "junctionMm": [
+        16.907752990722656,
+        74.67040252685547,
+        9.14991283416748
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "fibularis",
+      "sourceObject": "Fibularis longus muscle.r",
+      "sourceBellyTriangles": 3578,
+      "removedTendonFaces": 1965,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 60412.81695128994,
+      "retainedVolumeRatio": 0.9925913406545477,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -27.102659225463867,
+          87.22894287109375,
+          33.877899169921875
+        ],
+        [
+          7.695827960968018,
+          340.1031494140625,
+          60.1775016784668
+        ]
+      ],
+      "junctionMm": [
+        -20.54971694946289,
+        87.22894287109375,
+        34.218101501464844
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "fibularis-brevis",
+      "sourceObject": "Fibularis brevis muscle.r",
+      "sourceBellyTriangles": 2256,
+      "removedTendonFaces": 1212,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 15857.08824976449,
+      "retainedVolumeRatio": 0.9834127523527658,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -28.88730239868164,
+          28.25082778930664,
+          17.20456314086914
+        ],
+        [
+          -2.883052349090576,
+          226.8054962158203,
+          44.646240234375
+        ]
+      ],
+      "junctionMm": [
+        -23.493688583374023,
+        28.25082778930664,
+        17.710176467895508
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "soleus-distal",
+      "sourceObject": "Soleus muscle.r",
+      "sourceBellyTriangles": 6400,
+      "removedTendonFaces": 437,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 0,
+      "triangles": 11984,
+      "components": 1,
+      "volumeMm3": 301996.5121738622,
+      "retainedVolumeRatio": 1.0006633999243584,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": 0.6,
+      "boundsMm": [
+        [
+          -42.35123825073242,
+          86.89439392089844,
+          -30.882686614990234
+        ],
+        [
+          12.53780746459961,
+          341.451171875,
+          54.09429168701172
+        ]
+      ],
+      "junctionMm": [
+        -32.92778396606445,
+        86.89439392089844,
+        -9.404494285583496
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "ehl",
+      "sourceObject": "Extensor hallucis longus.r",
+      "sourceBellyTriangles": 1338,
+      "removedTendonFaces": 1041,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 7964,
+      "components": 1,
+      "volumeMm3": 4565.858290483913,
+      "retainedVolumeRatio": 0.9791137947756435,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -4.739723205566406,
+          85.63037109375,
+          18.938871383666992
+        ],
+        [
+          6.342552185058594,
+          236.02818298339844,
+          36.800540924072266
+        ]
+      ],
+      "junctionMm": [
+        -1.5543627738952637,
+        85.63037109375,
+        24.691638946533203
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "edl",
+      "sourceObject": "Extensor digitorum longus.r",
+      "sourceBellyTriangles": 2746,
+      "removedTendonFaces": 454,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 28357.419446158787,
+      "retainedVolumeRatio": 0.9861538838111202,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -8.494915008544922,
+          76.48356628417969,
+          22.699960708618164
+        ],
+        [
+          24.039531707763672,
+          350.8228759765625,
+          44.780426025390625
+        ]
+      ],
+      "junctionMm": [
+        -1.2584240436553955,
+        76.88516998291016,
+        26.650753021240234
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "edb",
+      "sourceObject": "Extensor digitorum brevis.r",
+      "sourceBellyTriangles": 2166,
+      "removedTendonFaces": 452,
+      "bellyCropXMaxMm": 65,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 3,
+      "volumeMm3": 7611.070763241344,
+      "retainedVolumeRatio": 0.9717824533779438,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -0.08653168380260468,
+          -27.490554809570312,
+          16.70024299621582
+        ],
+        [
+          64.98927307128906,
+          6.110654830932617,
+          39.625404357910156
+        ]
+      ],
+      "junctionMm": [
+        63.901023864746094,
+        -14.426612854003906,
+        27.94468116760254
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "abductor-hallucis",
+      "sourceObject": "Abductor hallucis.r",
+      "sourceBellyTriangles": 1204,
+      "removedTendonFaces": 0,
+      "bellyCropXMaxMm": 65,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "seam-level spatial cut; retain belly aponeuroses",
+      "subdivisionLevels": 1,
+      "triangles": 7012,
+      "components": 1,
+      "volumeMm3": 9014.166301016281,
+      "retainedVolumeRatio": 0.9894999285004187,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -23.655834197998047,
+          -49.13594055175781,
+          -19.3858585357666
+        ],
+        [
+          64.9421615600586,
+          -26.408830642700195,
+          0.6157519817352295
+        ]
+      ],
+      "junctionMm": [
+        64.9421615600586,
+        -34.672691345214844,
+        -14.808820724487305
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "abductor-digiti",
+      "sourceObject": "Abductor digiti minimi of foot.r",
+      "sourceBellyTriangles": 1280,
+      "removedTendonFaces": 0,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 7680,
+      "components": 1,
+      "volumeMm3": 4820.083660879022,
+      "retainedVolumeRatio": 0.9774761092873862,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -31.865224838256836,
+          -57.3756217956543,
+          -5.7107930183410645
+        ],
+        [
+          95.24575805664062,
+          -41.1442756652832,
+          64.59022521972656
+        ]
+      ],
+      "junctionMm": [
+        92.74282836914062,
+        -55.033287048339844,
+        62.453609466552734
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "tibialis-posterior",
+      "sourceObject": "Tibialis posterior muscle.r",
+      "sourceBellyTriangles": 2658,
+      "removedTendonFaces": 2880,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 47492.326173712194,
+      "retainedVolumeRatio": 0.9910584839501316,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -20.540950775146484,
+          34.93312072753906,
+          -12.63064956665039
+        ],
+        [
+          11.569218635559082,
+          314.2503356933594,
+          33.01835632324219
+        ]
+      ],
+      "junctionMm": [
+        -19.01366424560547,
+        35.2254753112793,
+        -10.421975135803223
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "fdl",
+      "sourceObject": "Flexor digitorum longus.r",
+      "sourceBellyTriangles": 2946,
+      "removedTendonFaces": 3922,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": null,
+      "extractionMethod": "tendon-material separation",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 38351.51151606667,
+      "retainedVolumeRatio": 0.9860132969609581,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -26.013338088989258,
+          35.90678405761719,
+          -19.63079071044922
+        ],
+        [
+          6.185286998748779,
+          283.5967712402344,
+          10.952075004577637
+        ]
+      ],
+      "junctionMm": [
+        -20.983400344848633,
+        37.199806213378906,
+        -15.66187858581543
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    },
+    {
+      "atlasId": "fhl",
+      "sourceObject": "Flexor hallucis longus.r",
+      "sourceBellyTriangles": 3856,
+      "removedTendonFaces": 0,
+      "bellyCropXMaxMm": null,
+      "bellyCropYMinMm": 31,
+      "extractionMethod": "seam-level spatial cut; retain belly aponeuroses",
+      "subdivisionLevels": 1,
+      "triangles": 12000,
+      "components": 1,
+      "volumeMm3": 47371.97364225343,
+      "retainedVolumeRatio": 0.9930493645921672,
+      "nonManifoldEdges": 0,
+      "voxelRepairMm": null,
+      "boundsMm": [
+        [
+          -27.156639099121094,
+          31.04236602783203,
+          -3.3797898292541504
+        ],
+        [
+          -2.2814393043518066,
+          258.0186462402344,
+          40.05854797363281
+        ]
+      ],
+      "junctionMm": [
+        -22.645830154418945,
+        31.04236602783203,
+        1.477292537689209
+      ],
+      "junctionMethod": "Distal material seam or documented seam-level cut, projected onto processed belly; illustrative junction, not measured attachment",
+      "license": "CC-BY-SA-4.0"
+    }
+  ],
+  "glbSha256": "53544fca088a482d9a7bae23030b6c3dd9f459711f2744214640cb881cd18e5b"
+}
