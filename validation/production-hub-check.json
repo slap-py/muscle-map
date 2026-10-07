@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "production home card and dim preview render at 390 × 844 without scrolling",
+    "production credits page reloads directly and preserves attribution",
+    "home and credits do not request the viewer module or models"
+  ],
+  "errors": []
+}

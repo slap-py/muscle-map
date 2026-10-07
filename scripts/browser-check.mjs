@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { chromium } from "@playwright/test";
+import { viewerUrl } from './browser-url.mjs';
 
 const browser = await chromium.launch({ channel: "msedge", headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -16,7 +17,7 @@ page.on("console", m => {
 const settle = () => page.waitForTimeout(1100);
 const checks = [];
 try {
-  await page.goto(process.env.VIEWER_URL ?? "http://127.0.0.1:5176", { waitUntil: "networkidle" });
+  await page.goto(viewerUrl(), { waitUntil: "networkidle" });
   await page.locator("canvas").waitFor();
   await page.waitForFunction(() => document.querySelector("#viewport")?.dataset.boneAssets === "ready");
   assert.equal(await page.locator("#viewport").getAttribute("data-loaded-bones"), "30");
@@ -24,14 +25,14 @@ try {
   await settle();
   const cartilageCount = Number(await page.locator('[data-atlas-type="cartilage"] span').innerText());
   assert.equal(await page.locator('[data-atlas-type="cartilage"]').getAttribute('aria-pressed'), 'false');
-  assert.equal(await page.locator('.structure-row').count(), 107 - cartilageCount);
+  assert.equal(await page.locator('.structure-row').count(), 156 - cartilageCount);
   await page.locator('[data-atlas-type="cartilage"]').click();
-  assert.equal(await page.locator('.structure-row').count(), 107);
+  assert.equal(await page.locator('.structure-row').count(), 156);
   assert.equal(await page.locator('#labels').getAttribute('aria-pressed'), 'true');
   assert.equal(await page.locator("#render-error").isVisible(), false);
   await fs.mkdir("validation", { recursive: true });
   await page.screenshot({ path: "validation/phase4-overview.png" });
-  checks.push("107 atlas entries, default cartilage exclusion, labels on and production WebGL render");
+  checks.push("156 atlas entries, default cartilage exclusion, labels on and production WebGL render");
 
   for (const view of ["dorsal", "plantar", "medial", "lateral", "foot"]) {
     await page.locator('[data-view="' + view + '"]').click();
@@ -145,18 +146,15 @@ try {
   checks.push("reset restores labels and reduced-motion labels remain usable");
   await page.locator('#about').click();
   assert(await page.locator('#about-dialog').isVisible());
-  for (const tab of ['overview', 'controls', 'sources']) {
+  for (const tab of ['overview', 'controls']) {
     await page.locator(`[data-about-tab="${tab}"]`).click();
     assert.equal(await page.locator(`[data-about-tab="${tab}"]`).getAttribute('aria-selected'), 'true');
   }
-  assert(await page.locator('#about-dialog a[href^="https://"]:visible').count() > 0);
+  assert.equal(await page.locator('[data-about-tab="sources"]').count(), 0);
   await page.locator('.dialog-close').click();
   assert.equal(await page.locator('#about-dialog').isVisible(), false);
-  checks.push('About overview, controls and sources tabs with accessible state and source links');
+  checks.push('About overview and controls tabs with accessible state; global credits live on the home page');
   assert.deepEqual(errors, []);
   await fs.writeFile("validation/browser-check.json", JSON.stringify({ url: page.url(), browser: await browser.version(), checks, errors, incidental }, null, 2));
   console.log(JSON.stringify({ checks, errors, incidental }, null, 2));
 } finally { await browser.close(); }
-
-
-

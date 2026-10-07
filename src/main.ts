@@ -1,12 +1,16 @@
-import { version } from '../package.json';
-import { labelTier, tierForZoom } from './labels';
+import { loadingScreen } from "./loading";
+import type { RegionPack } from "./regions";
+import type { Tissue } from "./data";
+import type { Connection } from "./connections";
+import type { AssetReport } from "./assets";
+import { createViewerScope, disposeObject, viewerDiagnostics } from "./viewerResources";
+import { regionCatalog } from "./regions/catalog";
+import { regionHref } from "./router";
+import { createPickingWorker, intersectThinStructures } from "./picking";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { TAARenderPass } from "three/addons/postprocessing/TAARenderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-import { atlasTabs, atlasIds } from "./atlas";
 import { applyCoverage } from "./appearance";
-import { attachmentSources } from './attachments';
-import { connectionsFor, directlyAttachedIds, connectionHighlightIds, footprintDecal, connectionCameraPose, connectionOccluders, connectionClinicalPoints, type Connection } from './connections';
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
@@ -20,16 +24,10 @@ import {
   updateCamera,
   setInspectorInset,
 } from "./camera";
-import { structures, byId, tissueNames, colors, type Tissue } from "./data";
-import { createAnkle } from "./ankle";
-import { loadBoneAssets, loadMuscleAssets, loadExteriorAssets } from "./assets";
-import { rebuildSoftTissues } from "./softTissues";
-import { createCompass } from "./compass";
-import { relatedIds } from "./foot";
+import { createSlowFrameMonitor, graphicsSettings, readAutoOverride, readGraphicsChoice, resolveTier, saveAutoOverride, saveGraphicsChoice, weakDeviceReason, type AutoOverride, type GraphicsChoice, type GraphicsSettings, type GraphicsTier } from "./graphics";
 
-import { cameraPreset, legacyPointToMm } from "./coordinates";
+import { applySceneTheme, effectiveTheme, listenForThemeChanges, readThemeChoice, setThemeChoice, type ThemeChoice } from "./theme";
 
-const brandMark = '<svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 2c3-1 5 1 4 4l-2 5c-1 2 0 4-2 6-2 2-6 1-6-2 0-2 2-4 3-6s0-6 3-7Z"/><path d="m9 9 5 2"/></svg>';
 const icon = {
   search: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>',
   pan: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5v13M1.5 8h13M6 3.5l2-2 2 2M6 12.5l2 2 2-2M3.5 6l-2 2 2 2M12.5 6l2 2-2 2"/></svg>',
@@ -38,19 +36,36 @@ const icon = {
   home: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 7.5 8 3l5.5 4.5M4 6.5V13h8V6.5"/></svg>',
   close: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>',
 };
-const app = document.querySelector<HTMLDivElement>("#app")!;
+/** One mounted viewer owns all DOM, listeners, rendering and loading work. */
+export function mountViewer(pack: RegionPack, app: HTMLElement, initialSelection: string | null = null) {
+const scope = createViewerScope();
+const listen = scope.listen;
+let disposed = false;
+let frameRequest = 0;
+const worker = createPickingWorker(delta => { viewerDiagnostics.activeWorkers += delta; });
+const { structures, byId, tissueNames, colors, atlasIds, labelTier, tierForZoom,
+  createAnkle, rebuildSoftTissues, cameraPreset, createCompass, attachmentSources,
+  connectionsFor, directlyAttachedIds, connectionHighlightIds, footprintDecal,
+  connectionCameraPose, connectionOccluders, connectionClinicalPoints,
+  relatedIds, neurovascularTissues, isNeurovascular } = pack;
+const { loadBoneAssets, loadMuscleAssets, loadExteriorAssets, loadNeurovascularAssets, createAssetSceneLoader } = pack.loaders;
+const areaOptions = pack.atlasAreas.filter(area => !area.group).map(area => `<option value="${area.id}">${area.label}</option>`).join('') +
+  [...new Set(pack.atlasAreas.map(area => area.group).filter(Boolean))].map(group => `<optgroup label="${group}">${pack.atlasAreas.filter(area => area.group === group).map(area => `<option value="${area.id}">${area.label}</option>`).join('')}</optgroup>`).join('');
+
+const openingLoader = app.querySelector("#loading");
 app.innerHTML = `
 <header class="topbar">
-  <div class="brand">${brandMark}<span class="title">Foot &amp; Ankle Explorer</span><span class="brand-subtitle">Interactive anatomy</span></div>
-  <div class="segmented modes" aria-label="Tissue presets"><button data-mode="exterior">${brandMark}Exterior</button><button data-mode="anatomy" class="active"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13C3 4 13 2 13 3c0 9-9 11-10 10ZM4 12l8-8"/></svg>Anatomy</button><button data-mode="skeleton"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2a2 2 0 0 0-3 3l3 1 5 5 1 3a2 2 0 0 0 3-3l-3-1-5-5Z"/></svg>Skeleton</button></div>
-  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset (R)" aria-label="Reset"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About Foot &amp; Ankle Explorer" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
+  <div class="brand"><a class="viewer-home" href="#/" aria-label="Back to home" title="Back to home">${icon.home}</a><span class="title">${pack.title}</span><details class="region-menu"><summary aria-label="Choose region" title="Choose region">⌄</summary><nav class="region-menu-items" aria-label="Regions"><a href="#/">All regions</a>${regionCatalog.map(region => `<a href="${regionHref(region.id)}" ${region.id === pack.id ? 'aria-current="page"' : ''}>${region.id.split('-').map((word,index) => index ? word : word[0].toUpperCase() + word.slice(1)).join(' ')} · ${region.title}</a>`).join('')}</nav></details><span class="brand-subtitle">Interactive anatomy</span></div>
+  <div class="segmented modes" aria-label="Tissue presets">${pack.presets.map(preset => `<button data-mode="${preset.id}" class="${preset.id === pack.defaultMode ? 'active' : ''}">${preset.icon ?? ''}${preset.label}</button>`).join('')}</div>
+  <div class="segmented theme-control" aria-label="Color theme"><button data-theme-choice="system">System</button><button data-theme-choice="light">Light</button><button data-theme-choice="dark">Dim</button></div>
+  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><details class="graphics-menu"><summary class="tool-button" title="Graphics quality" aria-label="Graphics quality"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 11.5a5.5 5.5 0 1 1 11 0"/><path class="graphics-needle" d="m8 11.5 2.8-3.3"/></svg></summary><div class="graphics-popover" role="group" aria-labelledby="graphics-heading"><p id="graphics-heading" class="graphics-heading">Graphics quality</p><div class="segmented graphics-control"><button data-graphics-choice="auto">Auto</button><button data-graphics-choice="high">High</button><button data-graphics-choice="low">Low</button></div><p id="graphics-status" class="graphics-status" aria-live="polite"></p></div></details><button id="reset" class="tool-button" title="Reset (R)" aria-label="Reset"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
 </header>
 <main>
 <aside class="panel atlas" aria-label="Structures">
   <div class="atlas-head">
     <label class="search">${icon.search}<input id="search" placeholder="Search ${structures.length} structures" aria-label="Find a structure" type="search"/></label>
     <div id="type-filters" class="type-filters" aria-label="Structure types"></div>
-    <label class="area-filter" for="atlas-area">Area<select id="atlas-area">${atlasTabs.slice(0,4).map(([id,label]) => `<option value="${id}">${id === 'all' ? 'All areas' : label}</option>`).join('')}<optgroup label="Toes">${atlasTabs.slice(4).map(([id,label]) => `<option value="${id}">${label}</option>`).join('')}</optgroup></select></label>
+    <label class="area-filter" for="atlas-area">Area<select id="atlas-area">${areaOptions}</select></label>
     <label class="visible-filter"><input id="only-visible" type="checkbox"/>Only visible layers</label>
     <div class="filter-status"><span id="list-count"></span><button id="clear-filters" class="link-button" hidden>Clear filters</button></div>
   </div>
@@ -59,9 +74,10 @@ app.innerHTML = `
 <section id="viewport" aria-label="Interactive 3D anatomy model">
   <div id="label-layer"><svg class="label-leaders" aria-hidden="true"></svg></div>
   <div class="compass-wrap"><div id="compass" role="group" aria-label="Anatomical view compass"></div><span id="view-name">ANTERIOR VIEW</span></div>
-  <div class="view-controls segmented" aria-label="Camera views"><button data-view="foot" class="active">Overview</button><button data-view="dorsal">Dorsal</button><button data-view="plantar">Plantar</button><button data-view="medial">Medial</button><button data-view="lateral">Lateral</button></div>
+  <div class="view-controls segmented" aria-label="Camera views">${pack.viewPresets.map(view => `<button data-view="${view.id}" class="${view.id === pack.defaultView ? 'active' : ''}">${view.label}</button>`).join('')}</div>
   <div class="canvas-tools"><button id="pan" aria-pressed="false" aria-label="Pan mode" title="Pan mode (P). Right-drag or Shift-drag also pans.">${icon.pan}</button><button id="zoom-in" aria-label="Zoom in" title="Zoom in">${icon.plus}</button><button id="zoom-out" aria-label="Zoom out" title="Zoom out">${icon.minus}</button><button id="home" aria-label="Reset camera" title="Reset camera">${icon.home}</button></div>
   <div id="render-error" hidden></div>
+  <div id="graphics-prompt" class="graphics-prompt" role="status" hidden><p>The 3D view is running slowly on this device.</p><button data-graphics-prompt="low" class="tool-button active">Use Low graphics</button><button data-graphics-prompt="keep" class="tool-button">Keep High</button></div>
 </section>
 <aside class="panel inspector" aria-label="Details and layers">
   <div class="inspector-resize" role="separator" aria-orientation="vertical" aria-label="Resize details panel" tabindex="0" aria-valuemin="280" aria-valuemax="680"></div>
@@ -75,44 +91,41 @@ app.innerHTML = `
     <p id="highlight-connections-hint" class="sr-only">Highlight attached tendons and bones with your selection. Hidden connections appear temporarily.</p>
     <div class="slider-row"><label for="opacity">Muscle</label><input id="opacity" type="range" min="10" max="100" value="100"/><output id="opacity-value">100%</output></div>
     <div class="slider-row"><label for="skin-opacity">Skin</label><input id="skin-opacity" type="range" min="0" max="100" value="100"/><output id="skin-opacity-value">100%</output></div>
+    <div id="neurovascular-opacity-controls" hidden><div class="slider-row"><label for="neurovascular-opacity">Vessels &amp; nerves</label><input id="neurovascular-opacity" type="range" min="10" max="100" value="100"/><output id="neurovascular-opacity-value">100%</output></div></div>
+    <p id="neurovascular-status" role="status" hidden></p>
     <p id="layer-hint" class="layer-hint"></p>
   </section>
 </aside>
 </main>
-<dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close icon-button" aria-label="Close model information">${icon.close}</button><h2 id="about-title">Foot &amp; Ankle Explorer</h2>
-<div class="about-tabs" role="tablist" aria-label="About sections">${[['overview','Overview'],['controls','Controls'],['sources','Sources & credits']].map(([id,name])=>`<button id="about-tab-${id}" role="tab" data-about-tab="${id}" aria-controls="about-panel-${id}" aria-selected="${id==='overview'}" tabindex="${id==='overview'?0:-1}">${name}</button>`).join('')}</div>
-<section id="about-panel-overview" role="tabpanel" data-about-panel="overview" aria-labelledby="about-tab-overview">
-<p>Explore the right foot and ankle with selectable Z-Anatomy bones and muscle bellies. Zoom to reveal more labels, filter the grouped structure list by tissue or area, and resize or expand the details panel for a closer look at muscle anatomy and attachments.</p>
-<p class="stats">${structures.filter(s=>s.tissue==='bone').length} bones · ${structures.filter(s=>s.tissue==='muscle').length} muscles · ${structures.filter(s=>s.tissue==='tendon'||s.tissue==='ligament').length} tendons &amp; ligaments · ${structures.length} structures</p>
-<p>This is a simplified study model, not a clinical reference. Attachment footprint extents are illustrative surface fits. The model is static and makes no biomechanical predictions. Nerves, vessels, bursae and tendon sheaths are omitted; some ligament bundles are grouped.</p>
-<p>The exterior currently uses a fitted illustrative surface. The pinned source contains no skin mesh, so a real-skin replacement is pending. In Exterior, lower the skin opacity to see the skeleton.</p>
-</section>
-<section id="about-panel-controls" role="tabpanel" data-about-panel="controls" aria-labelledby="about-tab-controls" hidden>
-<dl class="shortcuts"><dt>Drag</dt><dd>Orbit the model</dd><dt>Right-drag / Shift-drag</dt><dd>Pan; P toggles pan mode</dd><dt>Scroll / pinch</dt><dd>Zoom; closer views reveal more labels</dd><dt>1–5</dt><dd>Overview, dorsal, plantar, medial, lateral</dd><dt>F</dt><dd>Focus selection</dd><dt>L</dt><dd>Toggle labels</dd><dt>R</dt><dd>Reset model, layers and filters</dd><dt>Esc</dt><dd>Restore surroundings and clear selection</dd><dt>Canvas arrows</dt><dd>Pan when the canvas has focus</dd><dt>List ↑ / ↓ / Enter</dt><dd>Move between visible rows and select</dd><dt>Inspector edge</dt><dd>Drag to resize; focus it and use ← / → for 24px steps</dd><dt>Inspector ↔</dt><dd>Expand to 640px or restore your saved width</dd><dt>Attachment card</dt><dd>Zoom to its footprint; select again to return</dd></dl>
-</section>
-<section id="about-panel-sources" role="tabpanel" data-about-panel="sources" aria-labelledby="about-tab-sources" hidden><h3>Credits</h3><p>Z-Anatomy — The libre 3D atlas of anatomy, Gauthier Kervyn, CC BY-SA 4.0. BodyParts3D — The Database Center for Life Science, original model Kousaku Okubo, CC BY-SA 2.1 Japan. Adaptations: right-side extraction, separated sesamoids, muscle/tendon material separation, capped bellies, local topology repair, surface cleanup/subdivision, decimation, frame registration and GLB export.</p><ul class="link-list"><li><a href="https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e" target="_blank" rel="noreferrer">Pinned Z-Anatomy source</a></li><li><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">Adapted bone and muscle assets · CC BY-SA 4.0</a></li><li><a href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html" target="_blank" rel="noreferrer">BodyParts3D source</a></li><li><a href="https://creativecommons.org/licenses/by-sa/2.1/jp/" target="_blank" rel="noreferrer">BodyParts3D · CC BY-SA 2.1 Japan</a></li></ul><h3>Reading</h3><ul class="link-list"><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/8-4-bones-of-the-lower-limb" target="_blank" rel="noreferrer">OpenStax · Bones of the lower limb</a></li><li><a href="https://openstax.org/books/anatomy-and-physiology-2e/pages/11-6-appendicular-muscles-of-the-pelvic-girdle-and-lower-limbs" target="_blank" rel="noreferrer">OpenStax · Muscles of the lower limb</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK545158/" target="_blank" rel="noreferrer">NCBI · Ankle joint and ligaments</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK539705/" target="_blank" rel="noreferrer">NCBI · Foot muscles and tendon paths</a></li></ul></section>
-<footer class="about-footer">Version ${version} · Updated October 2026</footer></dialog>`;
+<dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close icon-button" aria-label="Close model information">${icon.close}</button><h2 id="about-title">${pack.about.title}</h2>
+<div class="about-tabs" role="tablist" aria-label="About sections">${[['overview','Overview'],['controls','Controls']].map(([id,name])=>`<button id="about-tab-${id}" role="tab" data-about-tab="${id}" aria-controls="about-panel-${id}" aria-selected="${id==='overview'}" tabindex="${id==='overview'?0:-1}">${name}</button>`).join('')}</div>
+<section id="about-panel-overview" role="tabpanel" data-about-panel="overview" aria-labelledby="about-tab-overview">${pack.about.overviewHtml}</section>
+<section id="about-panel-controls" role="tabpanel" data-about-panel="controls" aria-labelledby="about-tab-controls" hidden>${pack.about.controlsHtml}</section>
+</dialog>${loadingScreen(pack.title)}`;
+// Keep the same loading element (and bar animation) through the lazy import.
+if (openingLoader) app.querySelector("#loading")!.replaceWith(openingLoader);
 const $ = <T extends HTMLElement = HTMLElement>(s: string) =>
-  document.querySelector<T>(s)!;
+  app.querySelector<T>(s)!;
 const compactActions=matchMedia('(max-width:699px)');
-function syncActionsMenu(){document.querySelector<HTMLDetailsElement>('.actions-menu')!.open=!compactActions.matches;}
-compactActions.addEventListener('change',syncActionsMenu);syncActionsMenu();
-const tissueKeys: Tissue[] = [
-  "skin",
-  "bone",
-  "muscle",
-  "tendon",
-  "ligament",
-  "fascia",
-  "cartilage",
-];
+function syncActionsMenu(){app.querySelector<HTMLDetailsElement>('.actions-menu')!.open=!compactActions.matches;}
+listen(compactActions, 'change',syncActionsMenu);syncActionsMenu();
+const tissueKeys: Tissue[] = [...pack.tissueKeys];
+let graphicsTier: GraphicsTier = "high";
+let graphics: GraphicsSettings = graphicsSettings.high;
+// Model loading state; updateAppearance consults it from the first render onward.
+let initialLoad: Promise<unknown> | undefined;
+let muscleRequest: Promise<AssetReport> | undefined;
+let exteriorRequest: Promise<AssetReport> | undefined;
+let muscleReport: AssetReport | undefined;
+let exteriorReport: AssetReport | undefined;
 const state = {
   selected: null as string | null,
   hovered: null as string | null,
-  layers: new Set<Tissue>(tissueKeys.filter(t => t !== "skin")),
+  layers: new Set<Tissue>(pack.presets.find(preset => preset.id === pack.defaultMode)!.tissues),
   atlasRegion: "all",
   atlasTypes: new Set<Tissue>(tissueKeys.filter(t => t !== "cartilage")),
   onlyVisible: false,
+  neurovascularOpacity: 1,
   skinOpacity: 1,
   opacity: 1,
   labels: true,
@@ -122,14 +135,13 @@ const state = {
   attachmentFade: false,
   focusedConnection: null as string | null,
   pan: false,
-  footView: false,
 
-  mode: "anatomy",
-  view: "anterior",
+  mode: pack.defaultMode,
+  view: pack.defaultView,
 };
 
-const atlasOrder: Tissue[] = ['bone','muscle','tendon','ligament','fascia','cartilage','skin'];
-const atlasNames = {...tissueNames, skin: 'Skin', fascia: 'Fascia'};
+const atlasOrder: Tissue[] = [...pack.atlasOrder];
+const atlasNames = pack.atlasNames;
 const collapsedTissues = new Set<string>();
 try { for (const value of JSON.parse(localStorage.getItem('atlas-collapsed') || '[]')) if (atlasOrder.includes(value)) collapsedTissues.add(value); } catch {}
 const escapeHtml = (text: string) => text.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!));
@@ -145,7 +157,7 @@ function renderList() {
   const ids = atlasIds(state.atlasRegion);
   const items = structures.filter(d => d.id === state.selected || (ids.has(d.id) && state.atlasTypes.has(d.tissue) && (!state.onlyVisible || state.layers.has(d.tissue)) && `${d.name} ${d.group} ${d.description}`.toLowerCase().includes(q)));
   $('#type-filters').innerHTML = atlasOrder.map(t => `<button data-atlas-type="${t}" aria-pressed="${state.atlasTypes.has(t)}"><i style="background:${colors[t]}"></i>${atlasNames[t]} <span>${structures.filter(d=>d.tissue===t).length}</span></button>`).join('');
-  document.querySelectorAll<HTMLButtonElement>('[data-atlas-type]').forEach(b=>b.onclick=()=>{const t=b.dataset.atlasType as Tissue;state.atlasTypes.has(t)?state.atlasTypes.delete(t):state.atlasTypes.add(t);renderList();});
+  app.querySelectorAll<HTMLButtonElement>('[data-atlas-type]').forEach(b=>b.onclick=()=>{const t=b.dataset.atlasType as Tissue;state.atlasTypes.has(t)?state.atlasTypes.delete(t):state.atlasTypes.add(t);renderList();});
   $<HTMLSelectElement>('#atlas-area').value=state.atlasRegion;
   $<HTMLInputElement>('#only-visible').checked=state.onlyVisible;
   $('#list-count').textContent=`Showing ${items.length} of ${structures.length}`;
@@ -156,7 +168,7 @@ function renderList() {
     const section=document.createElement('details');section.className='tissue-section';section.dataset.tissue=tissue;
     section.open=!!q || !collapsedTissues.has(tissue) || members.some(d=>d.id===state.selected);
     section.innerHTML=`<summary>${atlasNames[tissue]} <span>${members.length}</span></summary>`;
-    section.addEventListener('toggle',()=>{if(q)return;section.open?collapsedTissues.delete(tissue):collapsedTissues.add(tissue);try{localStorage.setItem('atlas-collapsed',JSON.stringify([...collapsedTissues]));}catch{}});
+    section.ontoggle=()=>{if(q || disposed)return;section.open?collapsedTissues.delete(tissue):collapsedTissues.add(tissue);try{localStorage.setItem('atlas-collapsed',JSON.stringify([...collapsedTissues]));}catch{}};
     for(const group of [...new Set(members.map(d=>d.group))].sort()) {
       const grouped=members.filter(d=>d.group===group).sort((a,b)=>a.name.localeCompare(b.name));
       const heading=document.createElement('h3');heading.innerHTML=`${marked(group,q)} <span>${grouped.length}</span>`;section.append(heading);
@@ -166,12 +178,12 @@ function renderList() {
   }
   if(!items.length)container.innerHTML='<p class="empty">No matches. Try “talus” or clear the filters.</p>';
   updateRows();
-  if(focusedRow)document.querySelector<HTMLButtonElement>(`.structure-row[data-id="${focusedRow}"]`)?.focus({preventScroll:true});
+  if(focusedRow)app.querySelector<HTMLButtonElement>(`.structure-row[data-id="${focusedRow}"]`)?.focus({preventScroll:true});
 }
 let lastScrolledSelection: string | null = null;
 function updateRows() {
   const highlighted=selectedConnectionHighlights();
-  document.querySelectorAll<HTMLButtonElement>('.structure-row').forEach(b=>{
+  app.querySelectorAll<HTMLButtonElement>('.structure-row').forEach(b=>{
     const selected=b.dataset.id===state.selected;
     b.classList.toggle('selected',selected);b.classList.toggle('connected',!selected&&highlighted.has(b.dataset.id!));b.classList.toggle('hovered',b.dataset.id===state.hovered);b.setAttribute('aria-pressed',String(selected));
     if(selected && lastScrolledSelection!==state.selected){b.closest('details')!.open=true;b.scrollIntoView({block:'nearest'});}
@@ -184,7 +196,7 @@ $<HTMLSelectElement>('#atlas-area').onchange=e=>{state.atlasRegion=(e.target as 
 $<HTMLInputElement>('#only-visible').onchange=e=>{state.onlyVisible=(e.target as HTMLInputElement).checked;renderList();};
 $('#structure-list').onkeydown=e=>{
   if(!['ArrowUp','ArrowDown','Enter'].includes(e.key))return;
-  const rows=[...document.querySelectorAll<HTMLButtonElement>('.tissue-section[open] .structure-row')];
+  const rows=[...app.querySelectorAll<HTMLButtonElement>('.tissue-section[open] .structure-row')];
   const current=rows.indexOf(document.activeElement as HTMLButtonElement);
   if(e.key==='Enter'){if(current>=0){e.preventDefault();rows[current].click();}return;}
   e.preventDefault();const next=current<0?0:Math.max(0,Math.min(rows.length-1,current+(e.key==='ArrowDown'?1:-1)));rows[next]?.focus();
@@ -201,7 +213,7 @@ function renderDetails() {
     const facts = [['Origin',d.origin],['Insertion',d.insertion],['Action',d.action],['Innervation',d.innervation],['Blood supply',d.bloodSupply],['Articulations',articulations?.join(', ')]];
     const quickFacts = facts.filter(([,value])=>value).map(([name,value])=>`<dt>${name}</dt><dd>${escapeHtml(value!)}</dd>`).join('');
     $("#details").innerHTML =
-      `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${d.region} · ${d.tissue}</div><h2>${d.name}</h2><p class="group-name">${d.group}</p><div class="selection-tools"><button id="focus-selected" class="button" title="Frame this structure (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only this structure">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button></div><div class="inspector-content">${quickFacts ? `<section class="quick-facts"><h3>Quick facts</h3><dl>${quickFacts}</dl></section>` : ''}<section class="structure-description"><h3>Description</h3><p>${escapeHtml(d.description)}</p><h3>Function</h3><p>${escapeHtml(d.role)}</p></section></div>`;
+      `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${d.region} · ${d.tissue}</div><h2>${d.name}</h2><p class="group-name">${d.group}</p><div class="selection-tools"><button id="focus-selected" class="button" title="Frame this structure (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only this structure">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button></div><div class="inspector-content">${quickFacts ? `<section class="quick-facts"><h3>Quick facts</h3><dl>${quickFacts}</dl></section>` : ''}<section class="structure-description"><h3>Description</h3><p>${escapeHtml(d.description)}</p></section></div>`;
     $("#isolate").onclick = () => {
       state.isolated = !state.isolated;
       state.connections = false;
@@ -214,7 +226,7 @@ function renderDetails() {
     const connections = connectionsFor(leg.parts, d.id);
     if (connections.length) {
       const section = document.createElement('details');
-      section.open = true;
+      section.open = false;
       section.className = 'attachment-details';
       section.innerHTML = '<summary>Attachments</summary><p class="footprint-key">Select one to zoom in; select again to return.</p>';
       // Bone insertions first, then junctions and soft-to-soft attachments.
@@ -293,6 +305,7 @@ function renderDetails() {
       }
       $("#details").append(links);
     }
+    if(d.facts?.length){const section=document.createElement('section');section.className='neurovascular-facts';section.innerHTML='<h3>Key facts</h3>';for(const fact of d.facts){const p=document.createElement('p');p.textContent=fact.text;section.append(p);}$('#details').append(section);}
     if(d.references?.length){const sources=document.createElement('section');sources.className='structure-references';sources.innerHTML='<h3>References</h3>';for(const reference of d.references){const a=document.createElement('a');a.href=reference.url;a.textContent=reference.title;a.target='_blank';a.rel='noreferrer';sources.append(a);}$('#details').append(sources);}
   }
 }
@@ -317,20 +330,46 @@ for (const tissue of tissueKeys) {
   $("#layers").append(label);
 }
 const viewport = $("#viewport");
+let neurovascularRequest: Promise<void> | undefined;
+function ensureNeurovascular(): Promise<void> {
+  if (neurovascularRequest) return neurovascularRequest;
+  viewport.dataset.neurovascularAssets='loading';
+  const status=$('#neurovascular-status');status.hidden=false;status.textContent='Loading vessels and nerves…';
+  neurovascularRequest=scope.track(loadNeurovascularAssets(leg.parts,pack.assets.neurovascular,createAssetSceneLoader(scope.signal),bvhBuilder())).then(report=>{
+    if (disposed) return;
+    viewport.dataset.neurovascularAssets=report.fallback.length ? 'fallback' : 'ready';
+    viewport.dataset.loadedNeurovascular=String(report.loaded.length);
+    for (const tissue of neurovascularTissues) {
+      const available=report.loaded.some(id=>byId[id].tissue===tissue);
+      const toggle=$<HTMLInputElement>(`[data-layer="${tissue}"]`);
+      toggle.disabled=!available;
+      if (!available) state.layers.delete(tissue);
+    }
+    status.hidden=!report.fallback.length;
+    status.textContent=report.fallback.length ? 'Some vessels or nerves are unavailable. Missing structures are hidden; reload to retry.' : '';
+    for(const warning of report.warnings) console.warn(warning);
+    updateAppearance();renderDetails();
+  });
+  return neurovascularRequest;
+}
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(34, 1, 10, 10000);
 let renderer: THREE.WebGLRenderer;
 try {
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  // The composer renders into its own targets, so canvas MSAA would only add cost; TAA smooths edges at rest.
+  renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
 } catch {
   $("#render-error").hidden = false;
   $("#render-error").textContent =
     "3D graphics could not start. Enable WebGL or try another browser.";
+  scope.dispose(); worker.dispose();
   throw new Error("WebGL unavailable");
 }
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// The key light is fixed in world space, so camera motion never changes shadows. Redraw them only on scene changes.
+renderer.shadowMap.autoUpdate = false;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.3;
@@ -338,9 +377,9 @@ viewport.prepend(renderer.domElement);
 renderer.domElement.tabIndex = 0;
 renderer.domElement.setAttribute(
   "aria-label",
-  "3D foot and ankle model. Drag to rotate, scroll to zoom, or select structures in the atlas.",
+  `${pack.title}. Drag to rotate, scroll to zoom, or select structures in the atlas.`,
 );
-camera.position.copy(legacyPointToMm(0.25, 6.1, 23));
+camera.position.copy(pack.scene.initialCamera);
 const controls = createCameraControls(camera, renderer.domElement);
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 function applyMotionPreference() {
@@ -348,9 +387,9 @@ function applyMotionPreference() {
   controls.draggingSmoothTime = reducedMotion.matches ? 0.01 : 0.125;
 }
 applyMotionPreference();
-reducedMotion.addEventListener("change", applyMotionPreference);
+listen(reducedMotion, "change", applyMotionPreference);
 // Capture applies Shift-pan before camera-controls reads the pointer mapping.
-renderer.domElement.addEventListener(
+listen(renderer.domElement,
   "pointerdown",
   (e) => {
     controls.mouseButtons.left =
@@ -360,7 +399,7 @@ renderer.domElement.addEventListener(
   },
   { capture: true },
 );
-renderer.domElement.addEventListener("keydown", (e) => {
+listen(renderer.domElement, "keydown", (e) => {
   const step = controls.distance * 0.025;
   const shifts: Record<string, [number, number]> = {
     ArrowLeft: [step, 0],
@@ -373,10 +412,11 @@ renderer.domElement.addEventListener("keydown", (e) => {
     void controls.truck(...shifts[e.key], true);
   }
 });
-scene.add(new THREE.HemisphereLight("#fff7e8", "#9d8d7b", 2.3));
+const hemisphere = new THREE.HemisphereLight("#fff7e8", "#9d8d7b", 2.3);
+scene.add(hemisphere);
 const key = new THREE.DirectionalLight("#fff2db", 3.4);
-key.position.copy(legacyPointToMm(-4, 12, 7));
-key.target.position.copy(legacyPointToMm(0, 0, 0));
+key.position.copy(pack.scene.keyPosition);
+key.target.position.copy(pack.scene.keyTarget);
 scene.add(key.target);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
@@ -390,18 +430,23 @@ key.shadow.camera.updateProjectionMatrix();
 key.shadow.normalBias = 2.5;
 scene.add(key);
 const fill = new THREE.DirectionalLight("#dcecf3", 1.6);
-fill.position.copy(legacyPointToMm(5, 6, -4));
-fill.target.position.copy(legacyPointToMm(0, 0, 0));
+fill.position.copy(pack.scene.fillPosition);
+fill.target.position.copy(pack.scene.fillTarget);
 scene.add(fill.target);
 scene.add(fill);
 controls.minPolarAngle = 0.001;
 controls.maxPolarAngle = Math.PI - 0.001;
-const updateCompass = createCompass($("#compass"), (view) => setView(view));
+const updateCompass = createCompass($("#compass"), (view) => setView(view), pack.directions);
 const composer = new EffectComposer(renderer);
 const taa = new TAARenderPass(scene, camera);
-taa.sampleLevel=2;
+// One scene render per frame: unjittered while moving, then one jittered TAA sample per frame until converged.
+taa.sampleLevel=0;
 composer.addPass(taa);composer.addPass(new OutputPass());
+let taaSamplesLeft=0;
 let appearanceDirty=true;
+let labelsDirty=true;
+/** Request a redraw after anything that changes what the scene or its labels show. */
+function invalidate(){appearanceDirty=true;labelsDirty=true;}
 const leg = createAnkle();
 scene.add(leg.root);
 const footprintGroup = new THREE.Group();
@@ -456,7 +501,7 @@ function toggleConnection(connection: Connection) {
     applyMotionPreference();
     void lookAtNearest(controls, saved.position, saved.target, !reducedMotion.matches);
     $("#view-name").textContent = saved.label;
-    document.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
+    app.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
       b.classList.toggle("active", b.dataset.view === saved.view);
       b.setAttribute("aria-pressed", String(b.dataset.view === saved.view));
     });
@@ -464,7 +509,7 @@ function toggleConnection(connection: Connection) {
   const scroll = $("#details").scrollTop;
   renderDetails();
   $("#details").scrollTop = scroll;
-  document.querySelector<HTMLButtonElement>(`[data-connection="${connection.key}"]`)?.focus({ preventScroll: true });
+  app.querySelector<HTMLButtonElement>(`[data-connection="${connection.key}"]`)?.focus({ preventScroll: true });
   updateAppearance();
 }
 function focusConnection(connection: Connection) {
@@ -472,7 +517,7 @@ function focusConnection(connection: Connection) {
     position: camera.position.clone(),
     target: controls.getTarget(new THREE.Vector3(), false),
     label: $("#view-name").textContent ?? "",
-    view: document.querySelector<HTMLButtonElement>("[data-view].active")?.dataset.view,
+    view: app.querySelector<HTMLButtonElement>("[data-view].active")?.dataset.view,
   };
   const keepKeyboardFocus = document.activeElement instanceof HTMLElement && document.activeElement.dataset.connection === connection.key;
   state.focusedConnection = connection.key;
@@ -486,11 +531,11 @@ function focusConnection(connection: Connection) {
   applyMotionPreference();
   void lookAtNearest(controls, position, target, !reducedMotion.matches);
   $("#view-name").textContent = 'ATTACHMENT CLOSE-UP';
-  document.querySelectorAll('[data-view]').forEach(b => {b.classList.remove('active'); b.setAttribute('aria-pressed', 'false');});
+  app.querySelectorAll('[data-view]').forEach(b => {b.classList.remove('active'); b.setAttribute('aria-pressed', 'false');});
   const scroll = $("#details").scrollTop;
   renderDetails();
   $("#details").scrollTop = scroll;
-  if (keepKeyboardFocus) document.querySelector<HTMLButtonElement>(`[data-connection="${connection.key}"]`)?.focus({ preventScroll: true });
+  if (keepKeyboardFocus) app.querySelector<HTMLButtonElement>(`[data-connection="${connection.key}"]`)?.focus({ preventScroll: true });
   updateAppearance();
 }
 
@@ -500,23 +545,142 @@ const floor = new THREE.Mesh(
   new THREE.ShadowMaterial({ color: "#6e583e", opacity: 0.12 }),
 );
 floor.rotation.x = -Math.PI / 2;
-floor.position.copy(legacyPointToMm(0, 0.06, 0));
+floor.position.copy(pack.scene.floorPosition);
 floor.receiveShadow = true;
 scene.add(floor);
+applySceneTheme({ renderer, hemisphere, key, fill, floor }, effectiveTheme());
+viewerDiagnostics.activeListeners += 2;
+scope.cleanup(listenForThemeChanges((theme) => { applySceneTheme({ renderer, hemisphere, key, fill, floor }, theme); invalidate(); }));
+scope.cleanup(() => { viewerDiagnostics.activeListeners -= 2; });
+
+// Graphics quality. Auto resolves to Low on weak devices, or after the user accepts the slow-frame prompt.
+let graphicsChoice: GraphicsChoice = readGraphicsChoice();
+let autoOverride: AutoOverride = readAutoOverride();
+const weakReason = weakDeviceReason({
+  gpu: (() => {
+    try {
+      const gl = renderer.getContext();
+      const info = gl.getExtension("WEBGL_debug_renderer_info");
+      return String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+    } catch { return undefined; }
+  })(),
+  memory: (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
+  automated: navigator.webdriver,
+});
+const slowFrames = createSlowFrameMonitor();
+let slowPromptShown = false;
+const restingPixelRatio = () => Math.min(devicePixelRatio, graphics.maxPixelRatio);
+function setRenderPixelRatio(ratio: number) {
+  if (renderer.getPixelRatio() === ratio) return false;
+  renderer.setPixelRatio(ratio);
+  composer.setPixelRatio(ratio);
+  return true;
+}
+/** Sheen and clearcoat make the skin the costliest shader; Low swaps in a standard material. */
+function applySkinMaterial(simple: boolean) {
+  for (const mesh of leg.parts.get("skin")?.meshes ?? []) {
+    const current = mesh.material as THREE.Material;
+    if (simple && current instanceof THREE.MeshPhysicalMaterial) {
+      const standard = new THREE.MeshStandardMaterial({
+        color: current.color, roughness: current.roughness, metalness: current.metalness, side: current.side,
+      });
+      standard.userData = { ...current.userData };
+      mesh.userData.fullMaterial = current;
+      mesh.material = standard;
+    } else if (!simple && mesh.userData.fullMaterial) {
+      current.dispose();
+      mesh.material = mesh.userData.fullMaterial;
+      delete mesh.userData.fullMaterial;
+    }
+  }
+}
+/** Renderer-level settings; appearance and labels are refreshed by the caller. */
+function configureGraphics() {
+  graphicsTier = resolveTier(graphicsChoice, weakReason, autoOverride);
+  graphics = graphicsSettings[graphicsTier];
+  viewport.dataset.graphics = graphicsTier;
+  viewport.dataset.graphicsChoice = graphicsChoice;
+  setRenderPixelRatio(restingPixelRatio());
+  key.castShadow = graphics.shadows;
+  floor.visible = graphics.shadows;
+  renderer.shadowMap.needsUpdate = true;
+  applySkinMaterial(graphics.simpleSkin);
+  taaSamplesLeft = 0;
+  slowFrames.reset();
+  syncGraphicsMenu();
+}
+function applyGraphics() {
+  configureGraphics();
+  updateAppearance();
+  buildLabels();
+}
+function syncGraphicsMenu() {
+  app.querySelectorAll<HTMLButtonElement>("[data-graphics-choice]").forEach((b) => {
+    const active = b.dataset.graphicsChoice === graphicsChoice;
+    b.classList.toggle("active", active);
+    b.setAttribute("aria-pressed", String(active));
+  });
+  const tier = graphicsTier === "low" ? "Low" : "High";
+  const summary = $(".graphics-menu > summary");
+  summary.dataset.graphics = graphicsTier;
+  summary.title = `Graphics quality: ${tier}`;
+  summary.setAttribute("aria-label", `Graphics quality: ${tier}`);
+  $("#graphics-status").textContent = graphicsChoice !== "auto"
+    ? graphicsTier === "low"
+      ? "No shadows, lower resolution and lighter loading."
+      : "Shadows, full resolution and smooth edges."
+    : weakReason ? `Auto is using Low: ${weakReason} detected.`
+    : autoOverride === "low" ? "Auto is using Low after slow frames on this device."
+    : `Auto is using ${tier}.`;
+}
+function offerLowGraphics() {
+  if (slowPromptShown || graphicsChoice !== "auto" || graphicsTier === "low" || autoOverride) return;
+  slowPromptShown = true;
+  $("#graphics-prompt").hidden = false;
+}
+app.querySelectorAll<HTMLButtonElement>("[data-graphics-choice]").forEach((button) => {
+  button.onclick = () => {
+    graphicsChoice = button.dataset.graphicsChoice as GraphicsChoice;
+    saveGraphicsChoice(graphicsChoice);
+    $("#graphics-prompt").hidden = true;
+    applyGraphics();
+  };
+});
+app.querySelectorAll<HTMLButtonElement>("[data-graphics-prompt]").forEach((button) => {
+  button.onclick = () => {
+    autoOverride = button.dataset.graphicsPrompt === "low" ? "low" : "keep";
+    saveAutoOverride(autoOverride);
+    $("#graphics-prompt").hidden = true;
+    applyGraphics();
+  };
+});
+const graphicsMenu = $<HTMLDetailsElement>(".graphics-menu");
+const regionMenu = $<HTMLDetailsElement>(".region-menu");
+listen(document, "pointerdown", (e) => {
+  if (graphicsMenu.open && !graphicsMenu.contains(e.target as Node)) graphicsMenu.open = false;
+  if (regionMenu.open && !regionMenu.contains(e.target as Node)) regionMenu.open = false;
+});
+listen(graphicsMenu, "keydown", (e) => {
+  if (e.key !== "Escape" || !graphicsMenu.open) return;
+  e.stopPropagation();
+  graphicsMenu.open = false;
+  graphicsMenu.querySelector("summary")!.focus();
+});
+configureGraphics();
 let overviewDistance=1000;
 let maxTier: 1 | 2 | 3 = 1;
 function setView(view: string, animate = true) {
   clearConnectionFocus();
   updateAppearance();
   renderDetails();
-  state.footView = true;
   state.view = view;
   applyMotionPreference();
   const { target, position: p } = cameraPreset(view, camera.aspect);
   // Full source shafts extend beyond the procedural distal-leg overview.
   // Fit the imported overview while keeping the regional view shortcuts intact.
-  if (view === "foot" && [...leg.parts.values()].some(part => part.meshes.some(mesh => mesh.userData.source === "z-anatomy"))) {
-    const bounds = new THREE.Box3().setFromObject(leg.root);
+  if (view === pack.defaultView && [...leg.parts.values()].some(part => part.meshes.some(mesh => mesh.userData.source === "z-anatomy"))) {
+    const bounds = new THREE.Box3();
+    for (const [id, part] of leg.parts) if (!isNeurovascular(byId[id].tissue)) bounds.union(new THREE.Box3().setFromObject(part.group));
     const direction = p.clone().sub(target).normalize();
     bounds.getCenter(target);
     const halfFov = Math.min(THREE.MathUtils.degToRad(camera.fov / 2),
@@ -524,12 +688,12 @@ function setView(view: string, animate = true) {
     const distance = bounds.getSize(new THREE.Vector3()).length() / 2 / Math.sin(halfFov) * 1.2;
     p.copy(target).addScaledVector(direction, distance);
   }
-  if(view === "foot") overviewDistance=p.distanceTo(target);
+  if(view === pack.defaultView) overviewDistance=p.distanceTo(target);
   void lookAtNearest(controls, p, target, animate && !reducedMotion.matches);
   buildLabels();
   $("#view-name").textContent =
-    view === "foot" ? "OBLIQUE OVERVIEW" : `${view.toUpperCase()} VIEW`;
-  document.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
+    view === pack.defaultView ? "OBLIQUE OVERVIEW" : `${view.toUpperCase()} VIEW`;
+  app.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
     b.classList.toggle("active", b.dataset.view === view);
     b.setAttribute("aria-pressed", String(b.dataset.view === view));
   });
@@ -537,7 +701,7 @@ function setView(view: string, animate = true) {
 controls.addEventListener("controlstart", () => {
   cameraTouched = true;
   $("#view-name").textContent = "FREE CAMERA";
-  document.querySelectorAll("[data-view]").forEach((b) => {
+  app.querySelectorAll("[data-view]").forEach((b) => {
     b.classList.remove("active");
     b.setAttribute("aria-pressed", "false");
   });
@@ -547,14 +711,15 @@ function resize() {
     h = viewport.clientHeight;
   renderer.setSize(w, h);
   composer.setSize(w,h);
-  appearanceDirty=true;
+  invalidate();
   camera.aspect = w / h;
   // On wide layouts the inspector floats over the canvas; centre the model in the free area.
   const covered = innerWidth > 900 ? $(".inspector").offsetWidth + parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gap") || "12") : 0;
   setInspectorInset(camera, w, h, covered);
   $('.compass-wrap').classList.toggle('compass--raised',innerWidth>900 && w-covered<530);
 }
-new ResizeObserver(resize).observe(viewport);
+const resizeObserver = new ResizeObserver(() => { if (!disposed) resize(); });
+resizeObserver.observe(viewport);
 let savedInspectorWidth=300, inspectorExpanded=false;
 try {const value=Number(localStorage.getItem('inspector-width'));if(Number.isFinite(value)&&value>=280&&value<=680)savedInspectorWidth=value;}catch{}
 function inspectorWidth(width: number, persist=false){
@@ -585,7 +750,7 @@ function setPan(pan: boolean) {
   $("#pan").classList.toggle("active", pan);
   renderer.domElement.style.cursor = pan ? "grab" : "default";
 }
-function focusParts(ids: string[], foot = false) {
+function focusParts(ids: string[]) {
   clearConnectionFocus();
   updateAppearance();
   renderDetails();
@@ -613,27 +778,24 @@ function focusParts(ids: string[], foot = false) {
     60,
     (size.length() / 2 / Math.sin(halfFov)) * 1.32,
   );
-  const direction = foot
-    ? new THREE.Vector3(1.8, 1.5, 0.8).normalize()
-    : camera.position
+  const direction = camera.position
         .clone()
         .sub(controls.getTarget(new THREE.Vector3(), false))
         .normalize();
   const destination = center.clone().addScaledVector(direction, distance);
   controls.smoothTime = reducedMotion.matches ? 0.01 : 0.28;
   void lookAtNearest(controls, destination, center, !reducedMotion.matches);
-  state.footView = foot || ids.every((id) => byId[id]?.region === "Foot");
-  $("#view-name").textContent = foot ? "FOOT & ANKLE" : "STRUCTURE CLOSE-UP";
-  document.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
-    const active = foot && b.dataset.view === "foot";
+  $("#view-name").textContent = "STRUCTURE CLOSE-UP";
+  app.querySelectorAll<HTMLButtonElement>("[data-view]").forEach((b) => {
+    const active = false;
     b.classList.toggle("active", active);
     b.setAttribute("aria-pressed", String(active));
   });
   buildLabels();
 }
-function focusFoot() {
+function focusOverview() {
   select(null);
-  setView("foot");
+  setView(pack.defaultView);
   state.atlasRegion = "all";
   $<HTMLInputElement>("#search").value = "";
   renderList();
@@ -662,7 +824,14 @@ function selectedConnectionHighlights() {
     : new Set<string>();
 }
 function updateAppearance() {
-  appearanceDirty=true;
+  invalidate();
+  if (viewport.dataset.neurovascularAssets === 'fallback') {
+    for (const tissue of neurovascularTissues)
+      if (![...leg.parts.values()].some(p => byId[p.id].tissue === tissue && p.meshes.length && !p.group.userData.unavailable)) state.layers.delete(tissue);
+  }
+  if (neurovascularTissues.some(t => state.layers.has(t))) void ensureNeurovascular();
+  ensureLayerAssets();
+  $("#neurovascular-opacity-controls").hidden = !neurovascularTissues.some(t => state.layers.has(t));
   cutAwayDirty = !!state.focusedConnection;
   const attached = state.attachmentFade && state.selected ? directlyAttachedIds(state.selected) : new Set<string>();
   const highlighted = selectedConnectionHighlights();
@@ -677,6 +846,7 @@ function updateAppearance() {
     const d = byId[id],
       selected = id === state.selected;
     part.group.visible =
+      part.meshes.length > 0 && !part.group.userData.unavailable &&
       ((state.attachmentFade && d.tissue !== "skin") || highlighted.has(id) || state.layers.has(d.tissue)) &&
       (!state.isolated || selected) &&
       (!state.connections || selected || highlighted.has(id) || related.has(id));
@@ -685,7 +855,7 @@ function updateAppearance() {
       mat.userData.connectionBaseColor ??= mat.color.clone();
       mat.color.copy(mat.userData.connectionBaseColor);
       if (highlighted.has(id) && !selected) mat.color.set("#64c6b2");
-      const tissueOpacity = d.tissue === "muscle" ? state.opacity : d.tissue === "skin" ? state.skinOpacity : 1;
+      const tissueOpacity = d.tissue === "muscle" ? state.opacity : d.tissue === "skin" ? state.skinOpacity : isNeurovascular(d.tissue) ? state.neurovascularOpacity : 1;
       let alpha = tissueOpacity;
       if (state.attachmentFade) alpha = attached.has(id) ? 1 : Math.min(alpha, 0.07);
       else if (state.selected && !selected && !state.isolated && !state.connections)
@@ -718,7 +888,11 @@ function updateAppearance() {
     .forEach(
       (el) => (el.checked = state.layers.has(el.dataset.layer as Tissue)),
     );
-  document.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((b) => {
+  // Layer toggles that match a preset's criteria switch that preset on.
+  const sameLayers = (tissues: Tissue[]) => state.layers.size === tissues.length && tissues.every(t => state.layers.has(t));
+  const layerMode = pack.presets.map(preset => preset.id).find(m => sameLayers(presetLayers(m)));
+  state.mode = layerMode ?? "custom";
+  app.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((b) => {
     const active = b.dataset.mode === state.mode;
     b.classList.toggle("active", active);
     b.setAttribute("aria-pressed", String(active));
@@ -727,31 +901,39 @@ function updateAppearance() {
   $("#labels").setAttribute("aria-pressed", String(state.labels));
   buildLabels();
 }
+function presetLayers(mode: string): Tissue[] {
+  return [...(pack.presets.find(preset => preset.id === mode)?.tissues ?? [])];
+}
 function preset(mode: string) {
   clearConnectionFocus();
   state.attachmentFade = false;
   state.mode = mode;
-  if(mode === "exterior"){state.skinOpacity=1;$<HTMLInputElement>("#skin-opacity").value="100";$("#skin-opacity-value").textContent="100%";}
+  const settings = pack.presets.find(preset => preset.id === mode);
+  if (settings?.skinOpacity !== undefined) {state.skinOpacity=settings.skinOpacity;$<HTMLInputElement>("#skin-opacity").value=String(settings.skinOpacity*100);$("#skin-opacity-value").textContent=`${settings.skinOpacity*100}%`;}
+  if (settings?.opacity !== undefined) {state.opacity=settings.opacity;$<HTMLInputElement>("#opacity").value=String(settings.opacity*100);$("#opacity-value").textContent=`${settings.opacity*100}%`;}
   state.selected = null;
   state.isolated = false;
   state.connections = false;
-  state.layers = new Set<Tissue>(
-    mode === "exterior" ? ["skin", "bone"] : mode === "skeleton"
-      ? ["bone", "cartilage"]
-      : tissueKeys.filter(t => t !== "skin"),
-  );
+  state.layers = new Set<Tissue>(presetLayers(mode));
   renderList();
   renderDetails();
   $("#details").scrollTop = 0;
   updateAppearance();
 }
+const themeChoice = readThemeChoice();
+app.querySelectorAll<HTMLButtonElement>("[data-theme-choice]").forEach((button) => {
+  const choice = button.dataset.themeChoice as ThemeChoice;
+  button.classList.toggle("active", choice === themeChoice);
+  button.setAttribute("aria-pressed", String(choice === themeChoice));
+  button.onclick = () => { setThemeChoice(choice); app.querySelectorAll<HTMLButtonElement>("[data-theme-choice]").forEach((b) => { const active = b.dataset.themeChoice === choice; b.classList.toggle("active", active); b.setAttribute("aria-pressed", String(active)); }); };
+});
 document
   .querySelectorAll<HTMLButtonElement>("[data-mode]")
   .forEach((b) => (b.onclick = () => preset(b.dataset.mode!)));
 document
   .querySelectorAll<HTMLButtonElement>("[data-view]")
   .forEach((b) => (b.onclick = () => setView(b.dataset.view!)));
-$("#search").addEventListener("input", renderList);
+listen($("#search"), "input", renderList);
 $("#clear").onclick = () => select(null);
 $("#highlight-connections").onclick = () => {
   state.highlightConnections = !state.highlightConnections;
@@ -761,7 +943,7 @@ $("#labels").onclick = () => {
   state.labels = !state.labels;
   updateAppearance();
 };
-$("#all-layers").onclick = () => { preset("anatomy");state.layers.add("skin");state.mode="custom";updateAppearance(); };
+$("#all-layers").onclick = () => { preset("anatomy");state.layers=new Set(tissueKeys);state.mode="custom";updateAppearance(); };
 $<HTMLInputElement>("#opacity").oninput = (e) => {
   state.opacity = Number((e.target as HTMLInputElement).value) / 100;
   $("#opacity-value").textContent = `${Math.round(state.opacity * 100)}%`;
@@ -772,7 +954,8 @@ $<HTMLInputElement>("#skin-opacity").oninput = e => {
   $("#skin-opacity-value").textContent=`${Math.round(state.skinOpacity*100)}%`;
   updateAppearance();
 };
-$("#home").onclick = () => setView("foot");
+$<HTMLInputElement>("#neurovascular-opacity").oninput = e => {state.neurovascularOpacity=Number((e.target as HTMLInputElement).value)/100;$("#neurovascular-opacity-value").textContent=`${Math.round(state.neurovascularOpacity*100)}%`;updateAppearance();};
+$("#home").onclick = () => setView(pack.defaultView);
 $("#zoom-in").onclick = () => {
   zoomBy(controls, 0.84);
 };
@@ -784,6 +967,9 @@ function reset() {
   state.highlightConnections = false;
   clearFilters();
 
+  state.neurovascularOpacity = 1;
+  $<HTMLInputElement>("#neurovascular-opacity").value="100";
+  $("#neurovascular-opacity-value").textContent="100%";
   state.skinOpacity = 1;
   $<HTMLInputElement>("#skin-opacity").value="100";
   $("#skin-opacity-value").textContent="100%";
@@ -794,17 +980,17 @@ function reset() {
   $<HTMLInputElement>("#search").value = "";
   renderList();
   preset("anatomy");
-  setView("foot");
+  setView(pack.defaultView);
 
 }
 $("#reset").onclick = reset;
 const dialog = $<HTMLDialogElement>("#about-dialog");
 $("#about").onclick = () => dialog.showModal();
-function showAboutTab(id: string){document.querySelectorAll<HTMLButtonElement>('[data-about-tab]').forEach(tab=>{const active=tab.dataset.aboutTab===id;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;});document.querySelectorAll<HTMLElement>('[data-about-panel]').forEach(panel=>panel.hidden=panel.dataset.aboutPanel!==id);}
-const aboutTabs=[...document.querySelectorAll<HTMLButtonElement>('[data-about-tab]')];
+function showAboutTab(id: string){app.querySelectorAll<HTMLButtonElement>('[data-about-tab]').forEach(tab=>{const active=tab.dataset.aboutTab===id;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;});app.querySelectorAll<HTMLElement>('[data-about-panel]').forEach(panel=>panel.hidden=panel.dataset.aboutPanel!==id);}
+const aboutTabs=[...app.querySelectorAll<HTMLButtonElement>('[data-about-tab]')];
 aboutTabs.forEach((tab,index)=>{tab.onclick=()=>showAboutTab(tab.dataset.aboutTab!);tab.onkeydown=e=>{const next=e.key==='ArrowRight'?(index+1)%aboutTabs.length:e.key==='ArrowLeft'?(index+aboutTabs.length-1)%aboutTabs.length:e.key==='Home'?0:e.key==='End'?aboutTabs.length-1:-1;if(next>=0){e.preventDefault();aboutTabs[next].click();aboutTabs[next].focus();}};});
 $(".dialog-close").onclick = () => dialog.close();
-dialog.addEventListener("click", (e) => {
+listen(dialog, "click", (e) => {
   if (e.target === dialog) dialog.close();
 });
 const raycaster = new THREE.Raycaster(),
@@ -829,10 +1015,15 @@ function pickStructure(clientX: number, clientY: number, hoverOnly = false): str
     .filter((p) => p.group.visible && (!hoverIds || hoverIds.has(p.id)))
     .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber));
   const hits = raycaster.intersectObjects(targets, false);
-  // Match click selection: the selected solid structure takes priority over ghosted tissue.
-  const chosen =
-    hits.find((h) => h.object.userData.id === state.selected) ?? hits[0];
-  return chosen?.object.userData.id ?? null;
+  // Preserve exact selected-surface priority before assisting neighboring tubes.
+  const selectedHit = hits.find(hit => hit.object.userData.id === state.selected);
+  if (selectedHit) return selectedHit.object.userData.id;
+  const opaque = hits.find(hit => (hit.object.parent?.userData.alpha ?? 1) >= .99);
+  const directThin = hits.find(hit => hit.object.userData.thinStructure && (!opaque || hit.distance <= opaque.distance + .05));
+  if (directThin) return directThin.object.userData.id;
+  // Low graphics keeps the 48-ray assist for clicks, where it matters, and skips it on hover.
+  const thinHit = hoverOnly && !graphics.thinHoverAssist ? undefined : intersectThinStructures(raycaster, camera, mouse, rect.width, rect.height, targets);
+  return (thinHit ?? hits[0])?.object.userData.id ?? null;
 }
 let pendingHover: string | null | undefined;
 let hoverTimer: number | undefined;
@@ -856,15 +1047,16 @@ function requestHovered(id: string | null) {
   if (state.hovered === id) return;
   // Briefly settle on a structure to avoid flashing labels at tissue boundaries.
   pendingHover = id;
-  hoverTimer = window.setTimeout(
+  hoverTimer = scope.timeout(
     () => setHovered(id),
     reducedMotion.matches ? 0 : id ? 60 : 90,
   );
 }
 let down = { x: 0, y: 0, picking: false, moved: false };
 let hoverPointer: { x: number; y: number } | null = null;
+let hoverPickPending = false;
 const pointers = new Set<number>();
-renderer.domElement.addEventListener("pointerdown", (e) => {
+listen(renderer.domElement, "pointerdown", (e) => {
   hoverPointer = null;
   setHovered(null);
   pointers.add(e.pointerId);
@@ -881,23 +1073,25 @@ renderer.domElement.addEventListener("pointerdown", (e) => {
     moved: false,
   };
 });
-renderer.domElement.addEventListener("pointermove", (e) => {
+listen(renderer.domElement, "pointermove", (e) => {
   if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 5) down.moved = true;
   if (e.pointerType === "touch" || e.buttons || pointers.size) return;
   hoverPointer = { x: e.clientX, y: e.clientY };
-  requestHovered(pickStructure(e.clientX, e.clientY, true));
+  // Throttled hover picks once in the next frame, however fast the pointer reports.
+  if (graphics.throttleHover) hoverPickPending = true;
+  else requestHovered(pickStructure(e.clientX, e.clientY, true));
 });
-renderer.domElement.addEventListener("pointerleave", () => {
+listen(renderer.domElement, "pointerleave", () => {
   hoverPointer = null;
   setHovered(null);
 });
-renderer.domElement.addEventListener("pointercancel", (e) => {
+listen(renderer.domElement, "pointercancel", (e) => {
   pointers.delete(e.pointerId);
   down.picking = false;
   hoverPointer = null;
   setHovered(null);
 });
-renderer.domElement.addEventListener("pointerup", (e) => {
+listen(renderer.domElement, "pointerup", (e) => {
   pointers.delete(e.pointerId);
   if (
     !down.picking ||
@@ -914,9 +1108,63 @@ type LabelNode = {
   x?: number;
   y?: number;
   retiringAt?: number;
+  alpha?: number;
 };
 const labelNodes: LabelNode[] = [];
+/** Structures with a visible surface in the viewport, from a coarse ray grid plus each anchor's own ray. */
+let seenPoints = new Map<string, THREE.Vector3>();
+let seenAt = -Infinity;
+const seenRaycaster = new THREE.Raycaster();
+seenRaycaster.firstHitOnly = true;
+function updateSeenIds(time: number, freeWidth: number, height: number) {
+  seenAt = time;
+  const targets = [...leg.parts.values()]
+    .filter((p) => p.group.visible && (p.group.userData.alpha ?? 1) >= .5)
+    .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber));
+  const hits = new Map<string, { x: number; y: number; point: THREE.Vector3 }[]>();
+  const width = viewport.clientWidth, ndc = new THREE.Vector2();
+  const firstHit = (px: number, py: number) => {
+    ndc.set((px / width) * 2 - 1, -(py / height) * 2 + 1);
+    seenRaycaster.setFromCamera(ndc, camera);
+    return seenRaycaster.intersectObjects(targets, false)[0];
+  };
+  const cast = (px: number, py: number) => {
+    const hit = firstHit(px, py);
+    if (!hit) return;
+    const id = hit.object.userData.id as string;
+    (hits.get(id) ?? hits.set(id, []).get(id)!).push({ x: px, y: py, point: hit.point.clone() });
+  };
+  const cols = 40, rows = 24;
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) cast(((i + .5) / cols) * freeWidth, ((j + .5) / rows) * height);
+  // Thin structures can slip between grid rays, so also test each anchor's pixel.
+  for (const { id } of labelNodes) {
+    const p = leg.parts.get(id)!.anchor.clone().project(camera);
+    const ax = (p.x * .5 + .5) * width, ay = (-p.y * .5 + .5) * height;
+    if (p.z >= -1 && p.z <= 1 && ax >= 0 && ax <= freeWidth && ay >= 0 && ay <= height) cast(ax, ay);
+  }
+  // Labels track a fixed 3D surface point so they move smoothly with the camera. The point is only
+  // replaced when it stops being visible, so resampling never makes a label jump.
+  const points = new Map<string, THREE.Vector3>();
+  for (const [id, pts] of hits) {
+    if (pts.length < 2) continue;
+    const old = seenPoints.get(id);
+    if (old) {
+      const p = old.clone().project(camera);
+      const px = (p.x * .5 + .5) * width, py = (-p.y * .5 + .5) * height;
+      if (p.z >= -1 && p.z <= 1 && px >= 24 && px <= freeWidth - 24 && py >= 24 && py <= height - 24) {
+        const hit = firstHit(px, py);
+        if (hit && hit.object.userData.id === id && hit.point.distanceTo(old) < 1.5) { points.set(id, old); continue; }
+      }
+    }
+    const cx = pts.reduce((s, q) => s + q.x, 0) / pts.length, cy = pts.reduce((s, q) => s + q.y, 0) / pts.length;
+    const best = pts.reduce((b, q) => Math.hypot(q.x - cx, q.y - cy) < Math.hypot(b.x - cx, b.y - cy) ? q : b);
+    points.set(id, best.point);
+  }
+  seenPoints = points;
+}
 function buildLabels() {
+  seenAt = -Infinity;
+  labelsDirty = true;
   const existing = new Map(labelNodes.map((label) => [label.id, label]));
   const next: LabelNode[] = [];
   const ids = state.labels ? Object.keys(labelTier).filter(id=>labelTier[id]<=maxTier) : [];
@@ -955,15 +1203,17 @@ function buildLabels() {
     label.retiringAt ??= performance.now() + 220;
     label.node.classList.add("leaving");
     label.node.classList.remove("shown");
+    label.node.style.opacity = "0";
     label.node.inert = true;
     next.push(label);
   }
   labelNodes.splice(0, labelNodes.length, ...next);
 }
-document.addEventListener("keydown", (e) => {
+listen(document, "keydown", (e) => {
   if (e.key === "Escape" && !dialog.open) {
-    select(null);
-
+    if (regionMenu.open) { regionMenu.open = false; regionMenu.querySelector("summary")!.focus(); }
+    else if (state.selected || state.attachmentFade || state.isolated || state.connections) select(null);
+    else location.hash = "#/";
     return;
   }
   if (
@@ -972,11 +1222,11 @@ document.addEventListener("keydown", (e) => {
   )
     return;
   const k = e.key.toLowerCase();
-  if (k === "1") focusFoot();
-  if (k === "2") setView("dorsal");
-  if (k === "3") setView("plantar");
-  if (k === "4") setView("medial");
-  if (k === "5") setView("lateral");
+  const viewIndex = Number(k) - 1;
+  if (/^[1-9]$/.test(k) && pack.viewPresets[viewIndex]) {
+    const view = pack.viewPresets[viewIndex].id;
+    if (view === pack.defaultView) focusOverview(); else setView(view);
+  }
   if (k === "p") setPan(!state.pan);
   if (k === "f" && state.selected) focusParts(state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : [state.selected]);
   if (k === "l") $("#labels").click();
@@ -987,19 +1237,32 @@ renderList();
 renderDetails();
 updateAppearance();
 resize();
-setView("foot", false);
+setView(pack.defaultView, false);
 let lastTime = 0;
+let labelsAnimating = false;
+// Safety net: UI controls may change state without passing through updateAppearance.
+for (const type of ["input", "change", "click"] as const) listen(document, type, invalidate, { capture: true });
+let lastFrameMoved = false;
 function frame(time: number) {
-  requestAnimationFrame(frame);
-  const dt = Math.min((time - lastTime) / 1000, 0.05);
+  if (disposed) return;
+  frameRequest = requestAnimationFrame(frame);
+  const elapsed = time - lastTime;
+  const dt = Math.min(elapsed / 1000, 0.05);
   lastTime = time;
-  if (document.hidden) return;
+  if (document.hidden) { lastFrameMoved = false; return; }
   const cameraChanged = updateCamera(controls, camera, dt);
+  // Back-to-back moving frames measure real render cost for Auto's slow-device prompt.
+  if (cameraChanged && lastFrameMoved && slowFrames.add(elapsed)) offerLowGraphics();
+  lastFrameMoved = cameraChanged;
+  // Low graphics draws motion at a reduced resolution and restores it once the camera rests.
+  if (setRenderPixelRatio(cameraChanged && graphics.movingPixelRatio !== null
+    ? Math.min(devicePixelRatio, graphics.movingPixelRatio) : restingPixelRatio())) invalidate();
   const nextTier=tierForZoom(controls.distance/overviewDistance);
   if(nextTier!==maxTier){maxTier=nextTier;buildLabels();}
   viewport.dataset.labelTier=String(maxTier);
-  if (cameraChanged && hoverPointer)
+  if ((cameraChanged || hoverPickPending) && hoverPointer)
     requestHovered(pickStructure(hoverPointer.x, hoverPointer.y, true));
+  hoverPickPending = false;
   if (cameraChanged && state.focusedConnection) cutAwayDirty = true;
   if (cutAwayDirty && time - lastCutAwayTime > 100) {
     lastCutAwayTime = time;
@@ -1012,73 +1275,202 @@ function frame(time: number) {
     }
     cutAwayDirty = false;
   }
-  taa.accumulate=!cameraChanged && !appearanceDirty;
-  composer.render();
-  appearanceDirty=false;
-  updateCompass(camera.quaternion);
+  const sceneChanged = cameraChanged || appearanceDirty;
+  if (sceneChanged || taaSamplesLeft > 0) {
+    // Camera-only motion reuses the previous shadow map.
+    if (appearanceDirty) renderer.shadowMap.needsUpdate = true;
+    taa.accumulate = !sceneChanged && graphics.taaSamples > 0;
+    composer.render();
+    viewerDiagnostics.geometries = renderer.info.memory.geometries;
+    taaSamplesLeft = sceneChanged ? graphics.taaSamples : taaSamplesLeft - 1;
+    appearanceDirty = false;
+  }
+  if (cameraChanged) updateCompass(camera.quaternion);
+  if (!cameraChanged && !labelsDirty && !labelsAnimating) return;
+  labelsDirty = false;
+  labelsAnimating = labelNodes.some(l => l.retiringAt !== undefined);
   const occupied: {x:number;y:number;w:number;h:number}[]=[];
   const labelInset=innerWidth>900?$('.inspector').offsetWidth+12:0;
   const freeWidth=Math.max(100,viewport.clientWidth-labelInset), height=viewport.clientHeight;
   const leaders=$<HTMLElement>('.label-leaders');leaders.setAttribute('viewBox',`0 0 ${viewport.clientWidth} ${height}`);leaders.replaceChildren();
   for(let i=labelNodes.length-1;i>=0;i--){const label=labelNodes[i];if(label.retiringAt!==undefined&&time>=label.retiringAt){label.node.remove();labelNodes.splice(i,1);}}
+  scene.updateMatrixWorld(true);
+  if(time-seenAt>150)updateSeenIds(time,freeWidth,height);
+  // Camera moved since the last visibility sample: run one more pass after it settles.
+  else if(cameraChanged)labelsDirty=true;
   const projected=labelNodes.filter(l=>l.retiringAt===undefined).map(label=>{
-    const p=leg.parts.get(label.id)!.anchor.clone().project(camera);
+    const p=(seenPoints.get(label.id)??leg.parts.get(label.id)!.anchor).clone().project(camera);
     return {label,p,ax:(p.x*.5+.5)*viewport.clientWidth,ay:(-p.y*.5+.5)*height};
   }).sort((a,b)=>{
     const priority=(id:string)=>id===state.selected?-2:id===state.hovered?-1:labelTier[id]??3;
     return priority(a.label.id)-priority(b.label.id)||Math.hypot(a.ax-freeWidth/2,a.ay-height/2)-Math.hypot(b.ax-freeWidth/2,b.ay-height/2);
   });
+  // Passive labels are capped so the view stays calm; zooming in allows a few more.
+  const passiveCap=Math.min(maxTier===1?6:maxTier===2?9:12,graphics.maxPassiveLabels);
+  let passiveShown=0;
+  const hoverOnly=(id:string)=>id===state.hovered&&id!==state.selected;
+  const ease=1-Math.exp(-dt*14);
+  const clampX=(v:number,w:number)=>THREE.MathUtils.clamp(v,w/2+8,Math.max(w/2+8,freeWidth-w/2-8));
+  const clampY=(v:number,h:number)=>THREE.MathUtils.clamp(v,h/2+(innerWidth<=900?60:10),height-h/2-65);
   for(const {label,p,ax,ay} of projected){
     const {id,node}=label,part=leg.parts.get(id)!;
     const important=id===state.selected||id===state.hovered;
     const w=node.offsetWidth,h=node.offsetHeight,side=ax>=freeWidth/2?1:-1;
-    const x=THREE.MathUtils.clamp(ax+side*(w/2+20),w/2+8,Math.max(w/2+8,freeWidth-w/2-8));
-    const y=THREE.MathUtils.clamp(ay+(ay-height/2)*.08,h/2+10,height-h/2-65);
-    const overlap=occupied.some(q=>Math.abs(q.x-x)<(q.w+w)/2+6&&Math.abs(q.y-y)<(q.h+h)/2+5);
-    const shown=part.group.visible&&(part.group.userData.alpha??1)>=.5&&p.z>=-1&&p.z<=1&&ax>=0&&ax<=freeWidth&&ay>=0&&ay<=height&&(important||!overlap);
-    node.style.left=`${x}px`;node.style.top=`${y}px`;node.classList.toggle('shown',shown);node.inert=!shown;
-    if(!shown)continue;
-    occupied.push({x,y,w,h});
+    const onScreen=p.z>=-1&&p.z<=1&&ax>=24&&ax<=freeWidth-24&&ay>=24&&ay<=height-24;
+    let x:number,y:number;
+    if(hoverOnly(id)){
+      // Stay beside the structure when visible, else slide to the nearest on-screen spot; dodge other labels.
+      const cx=THREE.MathUtils.clamp(ax,24,freeWidth-24),cy=THREE.MathUtils.clamp(ay,24,height-70);
+      const spots=[[side*(w/2+20),0],[-side*(w/2+20),0],[0,-(h/2+22)],[0,h/2+22]];
+      const fits=spots.map(([dx,dy])=>({x:clampX(cx+dx,w),y:clampY(cy+dy,h)}));
+      const hit=(c:{x:number;y:number})=>occupied.some(q=>Math.abs(q.x-c.x)<(q.w+w)/2+6&&Math.abs(q.y-c.y)<(q.h+h)/2+4);
+      ({x,y}=fits.find(c=>!hit(c))??fits[0]);
+    }else{
+      x=clampX(ax+side*(w/2+20),w);
+      y=THREE.MathUtils.clamp(ay+(ay-height/2)*.08,h/2+10,height-h/2-65);
+    }
+    const overlap=occupied.some(q=>Math.abs(q.x-x)<(q.w+w)/2+14&&Math.abs(q.y-y)<(q.h+h)/2+10);
+    const visibleTissue=part.group.visible&&(part.group.userData.alpha??1)>=.5;
+    const inView=seenPoints.has(id);
+    const shown=visibleTissue&&(hoverOnly(id)||(onScreen&&(important||(inView&&!overlap&&passiveShown<passiveCap))));
+    // Eased opacity fades the label and its leader together.
+    const target=shown?1:0;
+    label.alpha=reducedMotion.matches?target:(label.alpha??0)+(target-(label.alpha??0))*ease;
+    if(Math.abs(target-label.alpha)<.01)label.alpha=target;else labelsAnimating=true;
+    node.style.left=`${x}px`;node.style.top=`${y}px`;node.style.opacity=String(label.alpha);node.classList.toggle('shown',shown);node.inert=!shown;
+    if(!shown&&label.alpha===0)continue;
+    if(shown){if(!important)passiveShown++;occupied.push({x,y,w,h});}
+    if(!onScreen)continue;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('opacity',String(label.alpha));
     const line=document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1',String(ax));line.setAttribute('y1',String(ay));line.setAttribute('x2',String(THREE.MathUtils.clamp(ax,x-w/2,x+w/2)));line.setAttribute('y2',String(THREE.MathUtils.clamp(ay,y-h/2,y+h/2)));leaders.append(line);
+    line.setAttribute('x1',String(ax));line.setAttribute('y1',String(ay));line.setAttribute('x2',String(THREE.MathUtils.clamp(ax,x-w/2,x+w/2)));line.setAttribute('y2',String(THREE.MathUtils.clamp(ay,y-h/2,y+h/2)));
+    if(important)line.setAttribute('class','active');
+    const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx',String(ax));dot.setAttribute('cy',String(ay));dot.setAttribute('r','2.5');if(important)dot.setAttribute('class','active');
+    g.append(line,dot);leaders.append(g);
   }
 }
-requestAnimationFrame(frame);
+frameRequest = requestAnimationFrame(frame);
 
 
 // Start after controls, state and labels exist, so late loads preserve user interaction.
 viewport.dataset.boneAssets = "loading";
 viewport.dataset.softTissues = "loading";
-const loadingBytes=Array.from({length:3},()=>({loaded:0,total:0}));
-const modelProgress=(index:number)=>(loaded:number,total:number)=>{
-  loadingBytes[index]={loaded,total};const el=document.getElementById('loading');if(!el)return;
-  const known=loadingBytes.every(p=>p.total>0);el.classList.toggle('determinate',known);
-  if(known){const percent=Math.min(100,Math.round(loadingBytes.reduce((n,p)=>n+p.loaded,0)/loadingBytes.reduce((n,p)=>n+p.total,0)*100));el.style.setProperty('--progress',`${percent}%`);el.querySelector('p')!.textContent=`Loading models… ${percent}%`;}
-};
-void Promise.all([loadBoneAssets(leg.parts,undefined,undefined,modelProgress(0)), loadMuscleAssets(leg.parts,undefined,undefined,modelProgress(1)), loadExteriorAssets(leg.parts,modelProgress(2))]).then(([report, muscles, exterior]) => {
-  viewport.dataset.exteriorAssets = exterior.fallback.length ? "fallback" : "ready";
+const bvhBuilder = () => graphics.workerBvh ? worker.build : undefined;
+// Low graphics defers muscle and exterior models until something can show them.
+// Gastrocnemius ships in the exterior model, so muscles need both files.
+const muscleShown = () => state.layers.has("muscle") || state.attachmentFade || state.highlightConnections ||
+  (!!state.selected && byId[state.selected].tissue === "muscle");
+const needsMuscles = () => !graphics.lazyLayers || muscleShown();
+const needsExterior = () => needsMuscles() || state.layers.has("skin");
+const requestMuscles = (progress?: (loaded: number, total: number) => void) =>
+  muscleRequest ??= scope.track(loadMuscleAssets(leg.parts, pack.assets.muscles, createAssetSceneLoader(scope.signal, progress), progress, bvhBuilder())).then(r => { if (!disposed) { r.warnings.forEach(w => console.warn(w)); muscleReport = r; } return r; });
+const requestExterior = (progress?: (loaded: number, total: number) => void) =>
+  exteriorRequest ??= scope.track(loadExteriorAssets(leg.parts, progress, bvhBuilder(), pack.assets.exterior, createAssetSceneLoader(scope.signal, progress))).then(r => { if (!disposed) { r.warnings.forEach(w => console.warn(w)); exteriorReport = r; } return r; });
+/** Called from updateAppearance: fetch deferred layers once something needs them. */
+function ensureLayerAssets() {
+  if (disposed) return;
+  if (!initialLoad) return;
+  const pending = [
+    ...(needsMuscles() && !muscleRequest ? [requestMuscles()] : []),
+    ...(needsExterior() && !exteriorRequest ? [requestExterior()] : []),
+  ];
+  if (!pending.length) return;
+  viewport.dataset.layerAssets = "loading";
+  void Promise.all([initialLoad, ...pending]).then(() => {
+    if (disposed) return;
+    refreshAfterAssets();
+    viewport.dataset.layerAssets = "ready";
+  });
+}
+/** Tendons, ligaments and cartilage fit whatever bones and muscles are installed. */
+function refreshAfterAssets(beforeAppearance?: () => void) {
+  if (disposed) return;
+  if (exteriorReport) viewport.dataset.exteriorAssets = exteriorReport.fallback.length ? "fallback" : "ready";
   const soft = rebuildSoftTissues(leg.parts);
   footprintSelection = undefined;
   cutAwayIds.clear();
   viewport.dataset.softTissues = soft.warnings.length ? "partial" : "ready";
-  viewport.dataset.loadedMuscles = String(muscles.loaded.length + Number(exterior.loaded.includes("gastrocnemius")));
+  viewport.dataset.loadedMuscles = String((muscleReport?.loaded.length ?? 0) + Number(!!exteriorReport?.loaded.includes("gastrocnemius")));
   viewport.dataset.cartilagePatches = String(soft.cartilagePatches);
-  for (const warning of [...muscles.warnings, ...exterior.warnings, ...soft.warnings]) console.warn(warning);
-  viewport.dataset.boneAssets = report.fallback.length ? "fallback" : "ready";
-  viewport.dataset.loadedBones = String(report.loaded.length);
-  if (report.loaded.length && state.view === "foot" && !state.selected && !cameraTouched) setView("foot", false);
-  for (const warning of report.warnings) console.warn(warning);
+  for (const warning of soft.warnings) console.warn(warning);
+  applySkinMaterial(graphics.simpleSkin);
+  beforeAppearance?.();
   const focused = activeConnection();
   if (focused) focusConnection(focused);
   else renderDetails();
   updateAppearance();
   buildLabels();
   if (hoverPointer) requestHovered(pickStructure(hoverPointer.x, hoverPointer.y, true));
-  hideLoading(!!(report.fallback.length || muscles.fallback.length || exterior.fallback.length));
+}
+const initialLoads: Promise<AssetReport>[] = [];
+const loadingBytes: { loaded: number; total: number }[] = [];
+const modelProgress=(index:number)=>(loaded:number,total:number)=>{
+  if (disposed) return;loadingBytes[index]={loaded,total};const el=app.querySelector<HTMLElement>('#loading');if(!el)return;
+  const known=loadingBytes.every(p=>p.total>0);el.classList.toggle('determinate',known);
+  if(known){const percent=Math.min(99,Math.round(loadingBytes.reduce((n,p)=>n+p.loaded,0)/loadingBytes.reduce((n,p)=>n+p.total,0)*100));el.style.setProperty('--progress',`${percent}%`);el.querySelector('p')!.textContent=`Loading models… ${percent}%`;}
+};
+function startLoad(load: (progress: (loaded: number, total: number) => void) => Promise<AssetReport>) {
+  const index = loadingBytes.push({ loaded: 0, total: 0 }) - 1;
+  initialLoads.push(load(modelProgress(index)));
+}
+startLoad(progress => scope.track(loadBoneAssets(leg.parts, pack.assets.bones, createAssetSceneLoader(scope.signal, progress), progress, bvhBuilder())));
+// Low shows the skeleton first; once it is ready, ensureLayerAssets fetches what the layers need.
+if (!graphics.lazyLayers) { startLoad(requestMuscles); startLoad(requestExterior); }
+initialLoad = Promise.all(initialLoads).then(([report]) => {
+  if (disposed) return;
+  refreshAfterAssets(() => {
+    viewport.dataset.boneAssets = report.fallback.length ? "fallback" : "ready";
+    viewport.dataset.loadedBones = String(report.loaded.length);
+    // Fit the overview after soft tissues are rebuilt, since they extend the bounds.
+    if (report.loaded.length && state.view === pack.defaultView && !state.selected && !cameraTouched) setView(pack.defaultView, false);
+    for (const warning of report.warnings) console.warn(warning);
+  });
+  hideLoading(!!(report.fallback.length || muscleReport?.fallback.length || exteriorReport?.fallback.length));
 }, () => hideLoading(true));
 function hideLoading(failed = false) {
-  const el = document.getElementById("loading");
+  if (disposed) return;
+  const el = app.querySelector<HTMLElement>("#loading");
   if (!el) return;
-  const finish=()=>{el.classList.add('done');window.setTimeout(()=>el.remove(),400);};
-  if(failed){el.querySelector('p')!.textContent="Some models couldn't load — showing simplified shapes.";el.classList.add('load-failed');window.setTimeout(finish,2500);}else finish();
+  const finish=()=>{
+    if(!failed){el.classList.add('determinate');el.style.setProperty('--progress','100%');el.querySelector('p')!.textContent='Loading models… 100%';}
+    scope.timeout(()=>{el.classList.add('done');scope.timeout(()=>el.remove(),400);},failed?0:150);
+  };
+  if(failed){el.querySelector('p')!.textContent="Some models couldn't load — showing simplified shapes.";el.classList.add('load-failed');scope.timeout(finish,2500);}else finish();
+}
+
+viewerDiagnostics.activeViewers++;
+if (initialSelection && Object.hasOwn(byId, initialSelection)) select(initialSelection);
+return {
+  ready: initialLoad,
+  select(id: string | null) { if (!disposed) select(id && Object.hasOwn(byId, id) ? id : null); },
+  dispose() {
+    if (disposed) return;
+    disposed = true;
+    cancelAnimationFrame(frameRequest);
+    scope.dispose();
+    worker.dispose();
+    resizeObserver.disconnect();
+    slowFrames.reset();
+    controls.dispose();
+    window.clearTimeout(hoverTimer);
+    labelNodes.length = 0;
+    seenPoints.clear();
+    $("#label-layer").replaceChildren();
+    disposeObject(scene);
+    key.shadow.dispose();
+    for (const pass of composer.passes) pass.dispose();
+    composer.dispose();
+    renderer.renderLists.dispose();
+    viewerDiagnostics.lastDisposedGeometries = renderer.info.memory.geometries;
+    renderer.dispose();
+    renderer.forceContextLoss();
+    viewerDiagnostics.geometries = viewerDiagnostics.lastDisposedGeometries;
+    viewerDiagnostics.activeViewers--;
+    for (const node of [app, ...app.querySelectorAll<HTMLElement>('*')]) {
+      for (const key in node) if (key.startsWith('on') && typeof (node as any)[key] === 'function') (node as any)[key] = null;
+    }
+    app.replaceChildren();
+  },
+};
 }

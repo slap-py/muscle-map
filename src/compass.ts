@@ -6,54 +6,54 @@ export const directions = [
     short: "M",
     label: "Medial · inner side",
     v: anatomicalDirections.medial,
-    color: "#8e694e",
+    color: "var(--compass-medial)",
   },
   {
     id: "lateral",
     short: "L",
     label: "Lateral · outer side",
     v: anatomicalDirections.lateral,
-    color: "#8e694e",
+    color: "var(--compass-medial)",
   },
   {
     id: "dorsal",
     short: "D",
     label: "Dorsal · top of foot",
     v: anatomicalDirections.dorsal,
-    color: "#698168",
+    color: "var(--compass-dorsal)",
   },
   {
     id: "plantar",
     short: "Pl",
     label: "Plantar · sole",
     v: anatomicalDirections.plantar,
-    color: "#698168",
+    color: "var(--compass-dorsal)",
   },
   {
     id: "anterior",
     short: "A",
     label: "Anterior · toward toes",
     v: anatomicalDirections.anterior,
-    color: "#547f93",
+    color: "var(--compass-anterior)",
   },
   {
     id: "posterior",
     short: "P",
     label: "Posterior · toward heel",
     v: anatomicalDirections.posterior,
-    color: "#547f93",
+    color: "var(--compass-anterior)",
   },
 ];
-export function projectDirection(v: number[], q: THREE.Quaternion) {
+export function projectDirection(v: readonly number[], q: THREE.Quaternion) {
   return new THREE.Vector3(...v).applyQuaternion(q.clone().invert());
 }
-export function createCompass(host: HTMLElement, onView: (id: string) => void) {
+export function createCompass(host: HTMLElement, onView: (id: string) => void, regionDirections: readonly { id: string; short: string; label: string; v: readonly number[]; color: string }[] = directions) {
   const svgNS = "http://www.w3.org/2000/svg",
     svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("viewBox", "0 0 110 110");
   svg.setAttribute("aria-hidden", "true");
   host.append(svg);
-  const nodes = directions.map((d) => {
+  const nodes = regionDirections.map((d) => {
     const line = document.createElementNS(svgNS, "line");
     line.setAttribute("x1", "55");
     line.setAttribute("y1", "55");
@@ -73,7 +73,7 @@ export function createCompass(host: HTMLElement, onView: (id: string) => void) {
   dot.setAttribute("cx", "55");
   dot.setAttribute("cy", "55");
   dot.setAttribute("r", "3");
-  dot.setAttribute("fill", "#9b978e");
+  dot.setAttribute("fill", "var(--faint)");
   svg.append(dot);
   return (q: THREE.Quaternion) => {
     for (const { d, line, b } of nodes) {
@@ -87,7 +87,7 @@ export function createCompass(host: HTMLElement, onView: (id: string) => void) {
       b.style.top = `${(y / 110) * 100}%`;
       b.style.opacity = p.z < 0 ? ".45" : "1";
       b.style.zIndex = String(Math.round((p.z + 1) * 10));
-      b.style.background = p.z < 0 ? "#f2f1ee" : "#ffffff";
+      b.style.background = p.z < 0 ? "var(--compass-back-hidden)" : "var(--compass-back)";
     }
   };
 }

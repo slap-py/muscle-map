@@ -1,17 +1,19 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {chromium} from '@playwright/test';
+import { viewerUrl } from './browser-url.mjs';
 const browser=await chromium.launch({channel:'msedge',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
 const errors=[], checks=[];
 page.on('pageerror',e=>errors.push(e.message));
 page.on('console',m=>{if(m.type()==='error' && /THREE|shader|WebGL/i.test(m.text()))errors.push(m.text());});
 const data=()=>page.locator('#viewport').evaluate(el=>({...el.dataset}));
-const choose=async id=>{await page.locator(`.structure-row[data-id="${id}"]`).click();};
-const focus=async key=>{await page.locator(`[data-connection="${key}"]`).click();await page.waitForTimeout(220);};
+const expandClosed=async selector=>{await page.locator(selector).evaluateAll(sections=>sections.forEach(section=>{if(!section.open)section.querySelector('summary')?.click();}));};
+const choose=async id=>{await page.locator('.structure-row[data-id="'+id+'"]').click();await expandClosed('.attachment-details,.connection-links');};
+const focus=async key=>{await expandClosed('.attachment-details');await page.locator('[data-connection="'+key+'"]').click();await page.waitForTimeout(220);};
 const layers=()=>page.locator('[data-layer]').evaluateAll(els=>els.map(el=>[el.dataset.layer,el.checked]));
 try {
- await page.goto(process.env.VIEWER_URL??'http://127.0.0.1:5176',{waitUntil:'networkidle',timeout:60000});
+ await page.goto(viewerUrl(),{waitUntil:'networkidle',timeout:60000});
  await page.waitForFunction(()=>document.querySelector('#viewport')?.dataset.softTissues==='ready');
  for(const id of ['soleus-distal','achilles','atfl','deltoid','fibularis-longus-tendon','lisfranc']){
   await choose(id);assert(Number((await data()).footprints)>0,id+' bone decals');
@@ -74,7 +76,7 @@ try {
  checks.push('bone and muscle asset 404 fallbacks retain focus and footprint');
  await page.unroute('**/models/*.glb');
  await page.route('**/models/*.glb',async route=>{await new Promise(resolve=>setTimeout(resolve,2500));await route.continue();});
- await page.goto(process.env.VIEWER_URL??'http://127.0.0.1:5176',{waitUntil:'domcontentloaded',timeout:60000});
+ await page.reload({waitUntil:'domcontentloaded',timeout:60000});
  // State/refit scenario: the loading overlay intentionally blocks ordinary pointer input.
  await page.locator('.structure-row[data-id="achilles"]').evaluate(element=>element.click());
  await page.locator('[data-connection="achilles:common-calcaneal:to"]').evaluate(element=>element.click());

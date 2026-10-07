@@ -1,3 +1,4 @@
+import neurovascularCatalog from './neurovascularCatalog.json';
 import { structures, byId } from './data';
 import { relatedIds } from './foot';
 import { attachmentRecords } from './attachments';
@@ -21,6 +22,13 @@ export function atlasIds(tab: string): Set<string> {
   if(tab === 'leg') return new Set(structures.filter(s=>s.region==='Lower leg' || ['fdl','fhl','tibialis-posterior','cartilage-tibia','cartilage-fibula'].includes(s.id)).map(s=>s.id));
   const bones = tab === 'ankle' ? ['talus','calcaneus','tibia','fibula'] : ['navicular','cuboid','cuneiform-medial','cuneiform-intermediate','cuneiform-lateral'];
   const ids = new Set(bones);
+  // The source stores digital branches as whole-foot groups: do not invent
+  // per-toe membership or relationship edges. Foot entries remain discoverable
+  // in Midfoot, with ankle-crossing leg trunks also visible in Ankle & heel.
+  for (const entry of neurovascularCatalog) {
+    if (tab === 'midfoot' && entry.group !== 'Leg') ids.add(entry.id);
+    if (tab === 'ankle' && (entry.group === 'Leg' || entry.sourceObject.includes('Calcaneal'))) ids.add(entry.id);
+  }
   for(const id of bones) for(const other of relatedIds(id)) if(byId[other].tissue !== 'bone') ids.add(other);
   return ids;
 }

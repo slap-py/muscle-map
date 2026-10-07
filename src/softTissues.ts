@@ -44,6 +44,9 @@ function replace(parts:AnatomyParts,id:string,meshes:THREE.Mesh[]) {
   const part=parts.get(id);if(!part) throw new Error(`Unknown soft tissue ${id}`);
   for(const old of part.meshes) {
     part.group.remove(old);old.geometry.dispose();
+    old.customDepthMaterial?.dispose();
+    old.customDistanceMaterial?.dispose();
+    (old.userData.fullMaterial as THREE.Material | undefined)?.dispose();
     for(const m of Array.isArray(old.material)?old.material:[old.material])m.dispose();
   }
   part.meshes.splice(0,part.meshes.length,...meshes);part.group.add(...meshes);

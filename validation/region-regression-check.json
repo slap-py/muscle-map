@@ -1,0 +1,63 @@
+[
+  {
+    "check": "browser-check.mjs",
+    "passed": true,
+    "seconds": 48
+  },
+  {
+    "check": "bone-browser-check.mjs",
+    "passed": true,
+    "seconds": 46
+  },
+  {
+    "check": "connection-browser-check.mjs",
+    "passed": true,
+    "seconds": 52
+  },
+  {
+    "check": "exterior-browser-check.mjs",
+    "passed": true,
+    "seconds": 34
+  },
+  {
+    "check": "hover-connections-browser-check.mjs",
+    "passed": true,
+    "seconds": 14
+  },
+  {
+    "check": "hub-browser-check.mjs",
+    "passed": true,
+    "seconds": 57
+  },
+  {
+    "check": "lifecycle-browser-check.mjs",
+    "passed": true,
+    "seconds": 204
+  },
+  {
+    "check": "misc-browser-check.mjs",
+    "passed": true,
+    "seconds": 50
+  },
+  {
+    "check": "neurovascular-browser-check.mjs",
+    "passed": true,
+    "seconds": 81
+  },
+  {
+    "check": "revamp-browser-check.mjs",
+    "passed": true,
+    "seconds": 69,
+    "rerun": "Updated stale assertions for the requested title"
+  },
+  {
+    "check": "soft-browser-check.mjs",
+    "passed": true,
+    "seconds": 111
+  },
+  {
+    "check": "theme-browser-check.mjs",
+    "passed": true,
+    "seconds": 37
+  }
+]

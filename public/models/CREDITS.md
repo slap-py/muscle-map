@@ -1,6 +1,6 @@
 # Credits and asset licensing
 
-Updated 2026-10-04. Phases 2–4 ship 30 bone and 12 muscle-belly meshes adapted from Z-Anatomy / BodyParts3D. Tendons, ligaments, fascia and cartilage are procedural surface fits. No upstream definitions or application code are imported.
+Updated 2026-10-05. Registered bone, muscle-belly and neurovascular meshes are adapted from Z-Anatomy / BodyParts3D. Tendons, ligaments, fascia and cartilage are procedural surface fits. No upstream definitions or application code are imported.
 
 ## Z-Anatomy decision
 
@@ -101,3 +101,104 @@ terms and attribution as the source anatomy. Rebuild with Blender:
 The Blender 5.2 MCP source inspection found no skin/integument mesh in the pinned Startup.blend. Skin and Dermis collections are empty; Integument contains hair and nail appendages. The real-skin replacement is pending. The exterior GLB and manifest were preserved, and the procedural surface must not be attributed as extracted Z-Anatomy skin.
 
 The viewer now uses a skin physical material and a skin-plus-bone Exterior preset. These visual changes do not change the geometry's provenance. The running MCP extension can be inspected through `python scripts/blender-command.py scripts/inspect-exterior.py` after saving open Blender work.
+
+## Neurovascular adaptations
+
+`neurovascular.glb` adds 49 selectable right lower-leg and foot source objects
+(19 arterial, 14 venous and 16 peripheral nerve objects) from
+`assets/source/Startup.blend`, revision
+`b722f392d2b09d21f0527229fe1338f27a3bc04e`. A source object may contain a
+whole named branch group; the count is of source objects, not individual branches.
+
+Attribution: **BodyParts3D — The Database Center for Life Science — CC BY-SA 2.1 Japan**
+(original model: Kousaku Okubo) and **Z-Anatomy — The libre 3D atlas of anatomy —
+CC BY-SA 4.0** (design, 3D and anatomy: Gauthier Kervyn). Source and license links
+above apply. The adapted neurovascular assets are distributed under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+Changes: explicit source-object selection; curve-to-mesh conversion with source
+bevel and point radii retained; reduced tube tessellation; cropping and capping
+at the viewer's full-tibia upper boundary; the frozen bone source-to-viewer
+registration and millimetre/ISB coordinate contract; triangulation and GLB export.
+The reproducible processing, exact object mapping, triangle counts and output hash
+are recorded in `neurovascular.manifest.json` beside the deployed model
+(`public/models/neurovascular.manifest.json` in the repository).
+
+The exact list below was checked against the exception list in the pinned
+`assets/source/Z-Anatomy-License.txt`. These are lower-limb cardiovascular and
+peripheral nerve objects. No Dundee cranial nerves/foramina or inner ear,
+Lissie Cowley kidney, University of Washington Brainder or white matter objects
+are included. The foot nerves use the upstream blanket model license; upstream
+does not provide separate object-level authorship. No upstream definition text
+is imported. Independently summarized study facts and their individual source
+links are in `src/neurovascularFacts.ts`.
+
+One verified right-foot nerve object, `Common plantar digital branches of medial
+plantar nerve`, has no `.r` suffix in the source. It is included explicitly by name,
+with its right-side location documented in the manifest.
+
+**Lymph is unavailable for this region in this dataset.** The pinned source has no
+lymphatic vessels below the hip. The only lymph objects in range are three
+mid-shin nodes; these are excluded. No lymphatic anatomy is modeled by hand.
+This is a source-data limitation, not an anatomical claim that the foot lacks
+lymphatic vessels.
+
+### Included neurovascular source objects
+
+Arteries:
+
+- `Anterior tibial artery.r`
+- `Arcuate artery.r`
+- `Calcaneal branches of fibular artery.r`
+- `Calcaneal branches of posterior tibial artery.r`
+- `Common plantar digital arteries.r`
+- `Deep plantar artery.r`
+- `Dorsal digital arteries of foot.r`
+- `Dorsal metatarsal arteries.r`
+- `Dorsalis pedis artery.r`
+- `Fibular artery.r`
+- `Lateral plantar artery.r`
+- `Lateral tarsal artery.r`
+- `Medial plantar artery.r`
+- `Perforating branches of plantar metatarsal arteries.r`
+- `Plantar arch.r`
+- `Plantar metatarsal arteries.r`
+- `Posterior tibial artery.r`
+- `Proper plantar digital arteries.r`
+- `Superficial branch of medial plantar artery.r`
+
+Veins:
+
+- `Anterior tibial veins.r`
+- `Dorsal digital veins of foot.r`
+- `Dorsal metatarsal veins.r`
+- `Dorsal venous arch of foot.r`
+- `Fibular veins.r`
+- `Great saphenous vein.r`
+- `Intercapitular veins of foot.r`
+- `Lateral plantar veins.r`
+- `Medial plantar veins.r`
+- `Plantar digital veins.r`
+- `Plantar metatarsal veins.r`
+- `Plantar venous arch.r`
+- `Posterior tibial veins.r`
+- `Small saphenous vein.r`
+
+Nerves:
+
+- `Common plantar digital branches of lateral plantar nerve.r`
+- `Common plantar digital branches of medial plantar nerve`
+- `Deep fibular nerve.r`
+- `Dorsal digital branches of deep fibular nerve.r`
+- `Dorsal digital branches of superficial fibular nerve.r`
+- `Intermediate dorsal cutaneous nerve of foot.r`
+- `Lateral plantar nerve.r`
+- `Medial dorsal cutaneous nerve of foot.r`
+- `Medial plantar nerve.r`
+- `Muscular branches of deep fibular nerve.r`
+- `Proper plantar digital branches of lateral plantar nerve.r`
+- `Proper plantar digital branches of medial plantar nerve.r`
+- `Saphenous nerve.r`
+- `Superficial fibular nerve.r`
+- `Sural nerve.r`
+- `Tibial nerve.r`

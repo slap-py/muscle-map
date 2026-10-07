@@ -27,7 +27,7 @@ for name,mesh in prepared:
  records.append({'sourceObject':name,'boundsMm':[[min(p[i] for p in points) for i in range(3)],[max(p[i] for p in points) for i in range(3)]],'triangles':sum(len(p.vertices)-2 for p in o.data.polygons)})
  heads.append(o);o.select_set(False)
 # Imported registered surfaces supply cross-section extents, not measured skin.
-for asset in ['bones','muscles']:bpy.ops.import_scene.gltf(filepath=str(OUT/(asset+'.glb')))
+for asset in ['bones','muscles','neurovascular']:bpy.ops.import_scene.gltf(filepath=str(OUT/(asset+'.glb')))
 objects=[o for o in bpy.context.scene.objects if o.type=='MESH']
 points=[Vector((p.x,p.z,-p.y))*1000 for o in objects for v in o.data.vertices for p in [o.matrix_world@v.co]]
 verts=[];faces=[]
@@ -42,31 +42,77 @@ def envelope(rings,axis):
   for j in range(n):
    a=base+k*n+j;b=base+k*n+(j+1)%n;faces.append((a,b,b+n,a+n))
  faces.append(tuple(base+j for j in reversed(range(n))));faces.append(tuple(base+(len(rings)-1)*n+j for j in range(n)))
-# Slightly generous ellipses enclose asymmetric anatomy; remeshing blends ankle and heel.
-for axis,levels in [('y',range(-40,446,5))]:
- rings=[]
+# Skin follows the convex outline of every registered source cross-section plus a soft-tissue margin,
+# so no bone, muscle or ankle structure can poke through. Radii are smoothed along the limb.
+N=64
+def hull(pts):
+ pts=sorted(set(pts))
+ if len(pts)<3:return pts
+ cross=lambda o,a,b:(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0])
+ lo=[];up=[]
+ for q in pts:
+  while len(lo)>=2 and cross(lo[-2],lo[-1],q)<=0:lo.pop()
+  lo.append(q)
+ for q in reversed(pts):
+  while len(up)>=2 and cross(up[-2],up[-1],q)<=0:up.pop()
+  up.append(q)
+ return lo[:-1]+up[:-1]
+def ray(poly,c,d):
+ best=0
+ for k in range(len(poly)):
+  p,q=poly[k],poly[(k+1)%len(poly)];ex,ey=q[0]-p[0],q[1]-p[1]
+  den=d[0]*ey-d[1]*ex
+  if abs(den)<1e-9:continue
+  s=((p[0]-c[0])*ey-(p[1]-c[1])*ex)/den;u=((p[0]-c[0])*d[1]-(p[1]-c[1])*d[0])/den
+  if s>0 and -1e-6<=u<=1+1e-6:best=max(best,s)
+ return best
+def smooth(seq,passes,keep=0):
+ for _ in range(passes):
+  seq=[seq[0]]+[[sum(seq[j][c] for j in (k-1,k,k+1))/3 for c in range(len(seq[k]))] for k in range(1,len(seq)-1)]+[seq[-1]]
+ return seq
+def fit(levels,select,coords,margin,passes):
+ """levels along the limb axis; select(t) -> source points; coords -> 2D section coordinates."""
+ ts=[];centers=[];polys=[]
  for t in levels:
-  pts=[p for p in points if abs(p[1 if axis=='y' else 0]-t)<7 and (p.x<48 if axis=='y' else p.y<25)]
-  if not pts:continue
-  i,j=(0,2) if axis=='y' else (1,2)
-  lo=[min(p[k] for p in pts) for k in [i,j]];hi=[max(p[k] for p in pts) for k in [i,j]]
-  a,b=[(lo[k]+hi[k])/2 for k in range(2)];ra,rb=[(hi[k]-lo[k])/2+6 for k in range(2)]
-  factor=max(1,max(math.sqrt(((p[i]-a)/ra)**2+((p[j]-b)/rb)**2) for p in pts))
-  if t<=30:
-   blend=max(0,min(1,(t+40)/70))
-   rings.append((t,-12,6,20+10*blend,20+8*blend))
-  elif t>=355:
-   rings.append((t,-5,12,51,55))
-  else:rings.append((t,a,b,ra*factor+2,rb*factor+2))
- # Average neighboring cross-sections to remove source-mesh scalloping.
- for _ in range(12):
-  rings=[rings[0]]+[tuple([rings[k][0]]+[sum(rings[j][c] for j in [k-1,k,k+1])/3 for c in range(1,5)]) for k in range(1,len(rings)-1)]+[rings[-1]]
- envelope(rings,axis)
-envelope([
- (-73,-30,0,1,1),(-65,-30,0,18,18),(-48,-28,0,31,28),(-23,-24,3,38,35),
- (0,-26,10,33,39),(25,-29,17,27,43),(55,-35,24,22,46),(82,-40,29,17,47),
- (100,-44,31,13,41),(112,-46,27,8,30),(122,-47,20,1,19),
-],'x')
+  pts=[coords(p) for p in select(t)]
+  if len(pts)<4:continue
+  ts.append(t);polys.append(hull(pts))
+  xs=[q[0] for q in polys[-1]];ys=[q[1] for q in polys[-1]];centers.append([(min(xs)+max(xs))/2,(min(ys)+max(ys))/2])
+ centers=smooth(centers,passes)
+ raw=[];radii=[]
+ for poly,c in zip(polys,centers):
+  r=[ray(poly,c,(math.cos(2*math.pi*j/N),math.sin(2*math.pi*j/N)))+margin for j in range(N)]
+  raw.append(r);radii.append(r)
+ radii=smooth(radii,passes)
+ radii=[[max(a,b-1) for a,b in zip(sm,rw)] for sm,rw in zip(radii,raw)]  # never retreat inside the source outline
+ for r in radii:  # light circular smoothing removes ray-sampling facets
+  r[:]=[(r[j-1]+2*r[j]+r[(j+1)%N])/4 for j in range(N)]
+ return ts,centers,radii
+def ring_envelope(ts,centers,radii,axis,taper=None):
+ base=len(verts)
+ for k,t in enumerate(ts):
+  f=taper(k,len(ts)) if taper else 1
+  for j in range(N):
+   u=2*math.pi*j/N;aa=centers[k][0]+radii[k][j]*f*math.cos(u);bb=centers[k][1]+radii[k][j]*f*math.sin(u)
+   p=(aa,t,bb) if axis=='y' else (t,aa,bb)
+   verts.append((p[0]/1000,-p[2]/1000,p[1]/1000))
+ for k in range(len(ts)-1):
+  for j in range(N):
+   a=base+k*N+j;b=base+k*N+(j+1)%N;faces.append((a,b,b+N,a+N))
+ faces.append(tuple(base+j for j in reversed(range(N))));faces.append(tuple(base+(len(ts)-1)*N+j for j in range(N)))
+phal=[p for o in objects if o.get('atlasId',o.name).startswith('phalanx-') for v in o.data.vertices for p in [Vector((lambda w:(w.x,w.z,-w.y))(o.matrix_world@v.co))*1000]]
+xlim=sorted(p.x for p in phal)[len(phal)//10] if phal else 90
+# Leg and hindfoot: sections perpendicular to the tibial axis.
+ts,cs,rs=fit(range(-40,446,5),lambda t:[p for p in points if abs(p.y-t)<7 and p.x<xlim-10],lambda p:(p.x,p.z),7,10)
+# The source stops mid-thigh-shaped ragged ends; hold the clean section below the cut so the open top is level.
+hold=ts.index(max(t for t in ts if t<=350))
+for k in range(len(ts)):
+ if ts[k]>350:cs[k]=cs[hold];rs[k]=rs[hold]
+ts=ts+[450];cs=cs+[cs[-1]];rs=rs+[rs[-1]]
+ring_envelope(ts,cs,rs,'y')
+# Foot: sections perpendicular to the long axis, tapering into the toe envelopes.
+ts,cs,rs=fit(range(-76,int(xlim)+1,4),lambda t:[p for p in points if abs(p.x-t)<6 and p.y<36],lambda p:(p.y,p.z),6,3)
+ring_envelope(ts,cs,rs,'x',lambda k,n:min(1,.12+(k+1)/7)*min(1,.5+(n-1-k)/10))
 # Individually outlined toes extend from their metatarsal heads to distal tips.
 for toe in range(1,6):
  pts=[]

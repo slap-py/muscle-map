@@ -99,7 +99,7 @@ describe('registered soft tissues',()=>{
   const second=rebuildSoftTissues(model.parts);expect(second.warnings).toEqual([]);
   expect(previous.parent).toBeNull();expect(previous.geometry.boundsTree).toBeUndefined();
   expect(part.group).toBe(group);expect(part.anchor).toBe(anchor);
-  expect([...model.parts.values()].every(p=>p.meshes.length>0)).toBe(true);
+  expect([...model.parts.values()].filter(p=>!['artery','vein','nerve'].includes(structures.find(s=>s.id===p.id)!.tissue)).every(p=>p.meshes.length>0)).toBe(true);
   expect(model.parts.size).toBe(structures.length);
  });
 });

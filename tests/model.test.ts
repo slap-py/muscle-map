@@ -33,14 +33,16 @@ describe("regional anatomy geometry", () => {
     }
   });
 
-  it("provides finite selectable geometry for every regional atlas entry", () => {
+  it("provides finite base geometry and empty placeholders for lazy neurovascular entries", () => {
     const model = createAnkle();
     expect(
       structures.some((s) => s.id === "femur" || s.region === "Knee"),
     ).toBe(false);
     expect(new Set(structures.map((s) => s.id)).size).toBe(structures.length);
-    for (const s of structures)
-      expect(model.parts.get(s.id)!.meshes.length).toBeGreaterThan(0);
+    for (const s of structures) {
+      if (['artery','vein','nerve'].includes(s.tissue)) expect(model.parts.get(s.id)!.meshes).toHaveLength(0);
+      else expect(model.parts.get(s.id)!.meshes.length).toBeGreaterThan(0);
+    }
 
     for (const part of model.parts.values())
       for (const mesh of part.meshes) {

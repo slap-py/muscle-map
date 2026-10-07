@@ -1,3 +1,4 @@
+import { neurovascularStructures, type NeurovascularFact } from './neurovascularFacts';
 import { muscleFacts } from './muscleFacts';
 import { softTissueStructures } from './softTissueData';
 export { attachmentRecords, attachmentsFor, attachmentSources } from './attachments';
@@ -5,7 +6,7 @@ export type { AttachmentRecord, Footprint, GuidePoint } from './attachments';
 import { ankleStructures } from "./ankleDetails";
 import { footStructures } from "./foot";
 export type Tissue =
-  "skin" | "muscle" | "bone" | "tendon" | "ligament" | "fascia" | "cartilage";
+  "skin" | "muscle" | "bone" | "tendon" | "ligament" | "fascia" | "cartilage" | "artery" | "vein" | "nerve";
 export type Region = "Thigh" | "Knee" | "Lower leg" | "Foot";
 export interface Structure {
   id: string;
@@ -24,6 +25,7 @@ export interface Structure {
   bloodSupply?: string;
   articulations?: string[];
   clinical?: string;
+  facts?: NeurovascularFact[];
   references?: {title: string; url: string}[];
 }
 export const tissueNames: Record<Tissue, string> = {
@@ -34,6 +36,9 @@ export const tissueNames: Record<Tissue, string> = {
   ligament: "Ligaments",
   fascia: "Fascia & retinacula",
   cartilage: "Cartilage",
+  artery: "Arteries",
+  vein: "Veins",
+  nerve: "Nerves",
 };
 export const colors: Record<Tissue, string> = {
   skin: "#c99c80",
@@ -43,6 +48,9 @@ export const colors: Record<Tissue, string> = {
   ligament: "#bca16b",
   fascia: "#9bb8bd",
   cartilage: "#6caac3",
+  artery: "#c0392b",
+  vein: "#2f5d9e",
+  nerve: "#e0b43a",
 };
 export const allStructures: Structure[] = [
   {
@@ -300,6 +308,7 @@ export const structures: Structure[] = [
   {id:"skin",name:"Skin exterior",tissue:"skin",region:"Lower leg",group:"Outer surface",description:"An illustrative outer contour covering the lower leg, ankle, foot and five toes, fitted around the registered anatomy. This is not scanned skin.",role:"Shows the external shape and helps relate deeper structures to the surface.",connection:"Continuous exterior over the leg and foot",hint:"Use Exterior or the skin layer toggle. Lower skin opacity to reveal anatomy beneath; nails and skin creases are not modeled."},
   ...ankleStructures,
   ...softTissueStructures,
+  ...neurovascularStructures,
 ];
 for (const d of structures) {
   if (d.id === "tibia")

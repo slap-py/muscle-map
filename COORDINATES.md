@@ -89,3 +89,29 @@ GLB world matrices and multiplies by 1000 once; the legacy matrix is never appli
 Full source tibia/fibula are retained; Overview fits their larger extent. Regional
 view shortcuts retain Phase 1 directions. Soft tissues stay procedural and do not
 represent registered attachments to the new surfaces.
+
+## Neurovascular source registration
+
+`neurovascular.glb` uses the unchanged bone registration and fixed talus datum.
+The 49 explicit source objects in `src/neurovascularCatalog.json` are converted
+from curves while preserving their bevel depth and per-point radii. Six-sided
+tubes use longitudinal resolution 6. The source control-point radii range from
+0.2 to 3.0 mm; most peripheral nerves have a 0.5 mm radius. No anatomy is scaled
+or moved independently to fit the viewer.
+
+Long curves are cropped and capped at the processed full-tibia upper boundary,
+Y = 365.344494581 mm. Exported GLB positions remain meters, with identity node
+transforms; ingestion multiplies by 1000 exactly once before bounds and BVHs.
+The exact matrices, source names, output hash, bounds, counts and processing are
+recorded in `public/models/neurovascular.manifest.json`.
+
+The source object `Common plantar digital branches of medial plantar nerve`
+lacks the usual `.r` suffix. Its collection and negative source-X bounds locate
+it in the right foot; this explicit exception completes the 16-nerve inventory.
+The other 33 objects are vessels (19 arteries and 14 veins).
+
+Exterior validation is an axis-aligned envelope check, not a claim of containment
+inside measured skin. The existing exterior is illustrative and voxelized at
+1.2 mm. Plantar digital veins extend 0.533 mm below its minimum Y; all new vertices
+fit the exterior bounds with a documented 1 mm tolerance. The anatomy is retained
+unchanged rather than distorted to fit that illustrative contour.

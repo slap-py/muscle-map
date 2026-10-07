@@ -107,5 +107,5 @@
     "method": "Elliptical envelopes fitted around registered source cross-sections; separate toe envelopes; voxel union and smoothing",
     "limitation": "Illustrative outer contour, not scanned skin. Nails and skin creases are not modeled."
   },
-  "glbSha256": "717b9c8270e6401453c396eb106b4730124cccad727a521dc6d9758f2dcb3d6c"
+  "glbSha256": "468571581213eb8718fc141cc5ad229c1915cf2233a1c0ee499ce03a2a5b85bf"
 }

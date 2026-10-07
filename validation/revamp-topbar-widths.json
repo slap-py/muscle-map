@@ -1,0 +1,72 @@
+[
+  {
+    "width": 901,
+    "scrollWidth": 901,
+    "groups": [
+      {
+        "name": "brand",
+        "left": 12,
+        "right": 172.5625,
+        "top": 11.5,
+        "bottom": 39.5
+      },
+      {
+        "name": "segmented modes",
+        "left": 178.5625,
+        "right": 537.75,
+        "top": 8.5,
+        "bottom": 42.5
+      },
+      {
+        "name": "segmented theme-control",
+        "left": 543.75,
+        "right": 691.4375,
+        "top": 8.5,
+        "bottom": 42.5
+      },
+      {
+        "name": "topbar-actions",
+        "left": 697.4375,
+        "right": 891,
+        "top": 10.5,
+        "bottom": 40.5
+      }
+    ],
+    "overlaps": []
+  },
+  {
+    "width": 1024,
+    "scrollWidth": 1024,
+    "groups": [
+      {
+        "name": "brand",
+        "left": 12,
+        "right": 194.84375,
+        "top": 11.5,
+        "bottom": 39.5
+      },
+      {
+        "name": "segmented modes",
+        "left": 301.5625,
+        "right": 660.75,
+        "top": 8.5,
+        "bottom": 42.5
+      },
+      {
+        "name": "segmented theme-control",
+        "left": 666.75,
+        "right": 814.4375,
+        "top": 8.5,
+        "bottom": 42.5
+      },
+      {
+        "name": "topbar-actions",
+        "left": 820.4375,
+        "right": 1014,
+        "top": 10.5,
+        "bottom": 40.5
+      }
+    ],
+    "overlaps": []
+  }
+]

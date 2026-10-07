@@ -1,0 +1,1371 @@
+[
+  {
+    "sourceObject": "Anterior tibial artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.10814942419528961,
+        0.008123425766825676,
+        0.08437052369117737
+      ],
+      [
+        -0.07008159905672073,
+        0.054654862731695175,
+        0.3879941701889038
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Anterior tibial veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.11495798826217651,
+        0.0129778403788805,
+        0.11918734014034271
+      ],
+      [
+        -0.08812350779771805,
+        0.060246191918849945,
+        0.4105082154273987
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Arcuate artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.11017594486474991,
+        -0.021915780380368233,
+        0.03692588955163956
+      ],
+      [
+        -0.07973794639110565,
+        0.014734474942088127,
+        0.06701880693435669
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Calcaneal branches of fibular artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.08555443584918976,
+        0.06552918255329132,
+        0.044109899550676346
+      ],
+      [
+        -0.07697729021310806,
+        0.0727737620472908,
+        0.05492856726050377
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Calcaneal branches of posterior tibial artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.06341487169265747,
+        0.05343141779303551,
+        0.03858393058180809
+      ],
+      [
+        -0.05418179929256439,
+        0.0755845308303833,
+        0.05029510706663132
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Common plantar digital arteries.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.12296552211046219,
+        -0.08303631842136383,
+        0.011959069408476353
+      ],
+      [
+        -0.08329722285270691,
+        -0.04227568209171295,
+        0.025852398946881294
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Common plantar digital branches of lateral plantar nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lateral plantar nerve",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-1"
+    ],
+    "bounds": [
+      [
+        -0.1338709592819214,
+        -0.06727228313684464,
+        0.013164160773158073
+      ],
+      [
+        -0.09493954479694366,
+        -0.0029962118715047836,
+        0.023005761206150055
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Deep fibular nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Deep fibular nerve",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.12322097271680832,
+        -0.056368421763181686,
+        0.043433234095573425
+      ],
+      [
+        -0.06869275867938995,
+        0.046879708766937256,
+        0.3855966031551361
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Deep plantar artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.08832576870918274,
+        -0.03743879497051239,
+        0.03967713192105293
+      ],
+      [
+        -0.07936273515224457,
+        -0.016046764329075813,
+        0.057668786495923996
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal digital arteries of foot.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.14635354280471802,
+        -0.1316325068473816,
+        0.011680292896926403
+      ],
+      [
+        -0.08334843814373016,
+        0.014733076095581055,
+        0.038223717361688614
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal digital branches of deep fibular nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Deep fibular nerve",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.09767648577690125,
+        -0.12681584060192108,
+        0.014485061168670654
+      ],
+      [
+        -0.07615765929222107,
+        -0.055816713720560074,
+        0.044274985790252686
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal digital branches of superficial fibular nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve",
+      "Superficial fibular nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.1375795602798462,
+        -0.12482840567827225,
+        0.013723790645599365
+      ],
+      [
+        -0.061066947877407074,
+        -0.04029664397239685,
+        0.03850215673446655
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal digital veins of foot.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.14635400474071503,
+        -0.13163407146930695,
+        0.013570498675107956
+      ],
+      [
+        -0.08334887772798538,
+        -0.054620467126369476,
+        0.03026052750647068
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal metatarsal arteries.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.12129957228899002,
+        -0.08289128541946411,
+        0.019024968147277832
+      ],
+      [
+        -0.08082039654254913,
+        0.005522639956325293,
+        0.062341734766960144
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal metatarsal veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.13850879669189453,
+        -0.08290934562683105,
+        0.019539320841431618
+      ],
+      [
+        -0.07739348709583282,
+        0.0007624253630638123,
+        0.06361641734838486
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsal venous arch of foot.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.11270396411418915,
+        -0.0345115140080452,
+        0.04393315315246582
+      ],
+      [
+        -0.06718412041664124,
+        0.03015897423028946,
+        0.06393498927354813
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Dorsalis pedis artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.08388788998126984,
+        -0.04951236769556999,
+        0.05159986391663551
+      ],
+      [
+        -0.0701119676232338,
+        0.016313334926962852,
+        0.08525857329368591
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Fibular artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.11311329156160355,
+        0.04765117168426514,
+        0.05461403727531433
+      ],
+      [
+        -0.08981379866600037,
+        0.07679370790719986,
+        0.3751196563243866
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Fibular veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.10722367465496063,
+        0.040669046342372894,
+        0.03298178315162659
+      ],
+      [
+        -0.08379659801721573,
+        0.0730714350938797,
+        0.3543980121612549
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Great saphenous vein.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.07191061228513718,
+        -0.057529158890247345,
+        0.05828738212585449
+      ],
+      [
+        -0.01926094852387905,
+        0.06162805110216141,
+        0.8551643490791321
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Intercapitular veins of foot.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.12394559383392334,
+        -0.07206039130687714,
+        0.013427488505840302
+      ],
+      [
+        -0.08162864297628403,
+        -0.0014947876334190369,
+        0.04394517093896866
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Intermediate dorsal cutaneous nerve of foot.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve",
+      "Superficial fibular nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.12162303924560547,
+        -0.052918169647455215,
+        0.029020249843597412
+      ],
+      [
+        -0.10417468845844269,
+        0.03218603879213333,
+        0.0950666069984436
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Lateral plantar artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.10381680727005005,
+        0.010667592287063599,
+        0.02002790942788124
+      ],
+      [
+        -0.06311102211475372,
+        0.031138496473431587,
+        0.040450699627399445
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Lateral plantar nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lateral plantar nerve",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-1"
+    ],
+    "bounds": [
+      [
+        -0.0957956314086914,
+        -0.0036582015454769135,
+        0.02201789617538452
+      ],
+      [
+        -0.057433150708675385,
+        0.05531846359372139,
+        0.05798918008804321
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Lateral plantar veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.10277393460273743,
+        0.010567475110292435,
+        0.015029187314212322
+      ],
+      [
+        -0.06308337301015854,
+        0.030748333781957626,
+        0.035980913788080215
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Lateral tarsal artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.10929282754659653,
+        0.013328098691999912,
+        0.03675815835595131
+      ],
+      [
+        -0.07064268738031387,
+        0.02245633862912655,
+        0.08610360324382782
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Medial dorsal cutaneous nerve of foot.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve",
+      "Superficial fibular nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.10592043399810791,
+        -0.08220669627189636,
+        0.02687126398086548
+      ],
+      [
+        -0.06110009551048279,
+        0.03205487132072449,
+        0.09530305862426758
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Medial plantar artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.06800004839897156,
+        -0.010247332975268364,
+        0.03670728951692581
+      ],
+      [
+        -0.05905533209443092,
+        0.030983854085206985,
+        0.04361038655042648
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Medial plantar nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Medial plantar nerve",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-1"
+    ],
+    "bounds": [
+      [
+        -0.07704443484544754,
+        -0.024680186063051224,
+        0.02571803331375122
+      ],
+      [
+        -0.057433150708675385,
+        0.05531846359372139,
+        0.05798918008804321
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Medial plantar veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.06800087541341782,
+        -0.06877647340297699,
+        0.018225761130452156
+      ],
+      [
+        -0.058554232120513916,
+        0.030984755605459213,
+        0.0390961691737175
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Muscular branches of deep fibular nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Deep fibular nerve",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.10526515543460846,
+        0.01058143749833107,
+        0.05031615495681763
+      ],
+      [
+        -0.08319553732872009,
+        0.014538101851940155,
+        0.07988202571868896
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Perforating branches of plantar metatarsal arteries.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.12103885412216187,
+        -0.07174287736415863,
+        0.015763644129037857
+      ],
+      [
+        -0.08093242347240448,
+        -0.005948711186647415,
+        0.04341631755232811
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Plantar arch.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.10409046709537506,
+        -0.01803293637931347,
+        0.019900072365999222
+      ],
+      [
+        -0.05975446477532387,
+        0.011736379936337471,
+        0.04292215779423714
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Plantar digital veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.14402145147323608,
+        -0.13625551760196686,
+        0.0034456164576113224
+      ],
+      [
+        -0.061081670224666595,
+        0.01161821186542511,
+        0.01946089044213295
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Plantar venous arch.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.10322389751672745,
+        -0.018434125930070877,
+        0.015028219670057297
+      ],
+      [
+        -0.05884389951825142,
+        0.01167984027415514,
+        0.03869687765836716
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Posterior tibial artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.09647613763809204,
+        0.030305564403533936,
+        0.03859412670135498
+      ],
+      [
+        -0.052654482424259186,
+        0.061773236840963364,
+        0.37508413195610046
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Proper plantar digital branches of lateral plantar nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lateral plantar nerve",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-1"
+    ],
+    "bounds": [
+      [
+        -0.14625553786754608,
+        -0.1187785416841507,
+        0.0068795871920883656
+      ],
+      [
+        -0.10884420573711395,
+        -0.04713156819343567,
+        0.021994177252054214
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Proper plantar digital branches of medial plantar nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Medial plantar nerve",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-1"
+    ],
+    "bounds": [
+      [
+        -0.11455157399177551,
+        -0.13025932013988495,
+        0.008871376514434814
+      ],
+      [
+        -0.05915088951587677,
+        -0.06372424215078354,
+        0.02006298303604126
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Common plantar digital branches of medial plantar nerve",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Medial plantar nerve",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-1"
+    ],
+    "bounds": [
+      [
+        -0.09840166568756104,
+        -0.07588811218738556,
+        0.013856269419193268
+      ],
+      [
+        -0.059649478644132614,
+        -0.023993048816919327,
+        0.030987907201051712
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Saphenous nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbar plexus",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Saphenous nerve"
+    ],
+    "materials": [
+      "Nerve-5"
+    ],
+    "bounds": [
+      [
+        -0.07305168360471725,
+        -0.0476180724799633,
+        0.10408008098602295
+      ],
+      [
+        -0.03090670146048069,
+        0.10542243719100952,
+        0.8618177175521851
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Plantar metatarsal arteries.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.11540114879608154,
+        -0.06402840465307236,
+        0.015540401451289654
+      ],
+      [
+        -0.0829462930560112,
+        0.0013550780713558197,
+        0.04283944517374039
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Plantar metatarsal veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.12296006828546524,
+        -0.08303628861904144,
+        0.008756277151405811
+      ],
+      [
+        -0.0829421654343605,
+        0.001354902982711792,
+        0.0395929180085659
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Posterior tibial veins.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.10166297852993011,
+        0.030703015625476837,
+        0.03399251401424408
+      ],
+      [
+        -0.04862450435757637,
+        0.06293267011642456,
+        0.3755130171775818
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Proper plantar digital arteries.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.14365217089653015,
+        -0.1318659484386444,
+        0.008137660101056099
+      ],
+      [
+        -0.08329614996910095,
+        0.011699564754962921,
+        0.02124115638434887
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Small saphenous vein.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic veins"
+    ],
+    "materials": [
+      "Vein"
+    ],
+    "bounds": [
+      [
+        -0.10824215412139893,
+        0.028724346309900284,
+        0.03410758078098297
+      ],
+      [
+        -0.07314154505729675,
+        0.10415884107351303,
+        0.4904976487159729
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Superficial branch of medial plantar artery.r",
+    "collections": [
+      "5: Cardiovascular system",
+      "Right foot",
+      "Right lower limb",
+      "Systemic arteries"
+    ],
+    "materials": [
+      "Artery"
+    ],
+    "bounds": [
+      [
+        -0.06343066692352295,
+        -0.07341838628053665,
+        0.020090622827410698
+      ],
+      [
+        -0.058699555695056915,
+        -0.00979328528046608,
+        0.038474466651678085
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Superficial fibular nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve",
+      "Superficial fibular nerve"
+    ],
+    "materials": [
+      "Nerve-2"
+    ],
+    "bounds": [
+      [
+        -0.1232009008526802,
+        0.03124096803367138,
+        0.0947510153055191
+      ],
+      [
+        -0.10289661586284637,
+        0.046966131776571274,
+        0.3854701519012451
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Sural nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Saphenous nerve",
+      "Sciatic nerve"
+    ],
+    "materials": [
+      "Nerve-8"
+    ],
+    "bounds": [
+      [
+        -0.14480376243591309,
+        -0.07936949282884598,
+        0.012979477643966675
+      ],
+      [
+        -0.07031671702861786,
+        0.10274491459131241,
+        0.4103415012359619
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  },
+  {
+    "sourceObject": "Tibial nerve.r",
+    "collections": [
+      "7: Nervous system & Sense organs",
+      "Lumbosacral plexus",
+      "Nerves",
+      "Peripheral nervous system",
+      "Right lower limb",
+      "Sciatic nerve",
+      "Tibial nerve"
+    ],
+    "materials": [
+      "Nerve-6"
+    ],
+    "bounds": [
+      [
+        -0.09613089263439178,
+        0.03782620280981064,
+        0.05752897262573242
+      ],
+      [
+        -0.0563412606716156,
+        0.06589599698781967,
+        0.5404989719390869
+      ]
+    ],
+    "bevelDepth": 0.0005000000237487257,
+    "resolution": 12,
+    "bevelResolution": 4
+  }
+]

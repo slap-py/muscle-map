@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import { chromium } from '@playwright/test';
+import { viewerUrl } from './browser-url.mjs';
 
 const browser = await chromium.launch({channel: 'msedge', headless: true});
 const page = await browser.newPage({viewport: {width: 1440, height: 1000}, reducedMotion: 'reduce'});
@@ -11,11 +12,14 @@ page.on('console', message => {
 });
 const data = () => page.locator('#viewport').evaluate(element => ({...element.dataset}));
 const highlighted = async () => (await data()).highlightedStructures.split(',').filter(Boolean);
-const choose = id => page.locator(`.structure-row[data-id="${id}"]`).click();
+const choose = async id => {
+  await page.locator(`.structure-row[data-id="${id}"]`).click();
+  await page.locator(".attachment-details").evaluateAll(sections => sections.forEach(section => { if (!section.open) section.querySelector("summary")?.click(); }));
+};
 const layers = () => page.locator('[data-layer]').evaluateAll(elements => elements.map(element => [element.dataset.layer, element.checked]));
 const ready = () => page.waitForFunction(() => document.querySelector('#viewport')?.dataset.softTissues === 'ready');
 try {
-  await page.goto(process.env.VIEWER_URL ?? 'http://127.0.0.1:5176', {waitUntil: 'networkidle'});
+  await page.goto(viewerUrl(), {waitUntil: 'networkidle'});
   await ready();
   await choose('edl');
   assert.deepEqual(await highlighted(), []);

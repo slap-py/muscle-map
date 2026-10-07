@@ -9,6 +9,9 @@ const allowed: Record<Exclude<Tissue, 'skin'>, readonly string[]> = {
   tendon: ['Extensor tendons', 'Flexor tendons', 'Fibular tendons', 'Achilles'],
   fascia: ['Retinacula', 'Plantar fascia'],
   cartilage: ['Articular cartilage'],
+  artery: ['Leg', 'Dorsal foot', 'Plantar foot'],
+  vein: ['Leg', 'Dorsal foot', 'Plantar foot'],
+  nerve: ['Leg', 'Dorsal foot', 'Plantar foot'],
 };
 
 const members: Record<string, string[]> = {

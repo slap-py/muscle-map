@@ -1,0 +1,18 @@
+{
+  "canvasSize": [
+    1180,
+    948
+  ],
+  "changedPixelsAbove5": 0,
+  "baselineBackground": [
+    239,
+    237,
+    232
+  ],
+  "currentBackground": [
+    239,
+    237,
+    232
+  ],
+  "excluded": "DOM labels, inspector, compass and controls; exact new UI cannot match old layer list"
+}

@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" />
-    <title>Foot &amp; Ankle Explorer</title>
+    <script>(function(){try{var c=localStorage.getItem("muscle-map-theme");if(c==="light"||c==="dark")document.documentElement.dataset.theme=c;}catch(_){}})();</script>
+    <title>Muscle Map</title>
       <style>
-:root{--bg:#efede8;--border:#e2dfd8;--muted:#6d6a63;--accent:#2b62a0}
-body{margin:0;font:13px/1.5 system-ui,sans-serif;background:var(--bg)}
+ :root{--bg:#efede8;--border:#e2dfd8;--muted:#6d6a63;--text:#1f1e1b;--accent:#2b62a0} @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#2a2f36;--border:#4a525c;--muted:#a9b0b8;--text:#e6e8eb;--accent:#86b8ff}} :root[data-theme="dark"]{--bg:#2a2f36;--border:#4a525c;--muted:#a9b0b8;--text:#e6e8eb;--accent:#86b8ff}
+body{margin:0;font:13px/1.5 system-ui,sans-serif;color:var(--text);background:var(--bg)}
 /* Loading screen */
 #loading {
   position: fixed;
@@ -63,7 +64,6 @@ body{margin:0;font:13px/1.5 system-ui,sans-serif;background:var(--bg)}
   </head>
   <body>
     <div id="app"></div>
-    <div id="loading" role="status" aria-live="polite"><svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M12 2c3-1 5 1 4 4l-2 5c-1 2 0 4-2 6-2 2-6 1-6-2 0-2 2-4 3-6s0-6 3-7Z"/><path d="m9 9 5 2"/></svg><h1>Foot &amp; Ankle Explorer</h1><div class="loading-bar" aria-hidden="true"></div><p>Loading models…</p></div>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/app.ts"></script>
   </body>
 </html>

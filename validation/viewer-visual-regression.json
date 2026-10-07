@@ -1,0 +1,15 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "canvas": {
+    "width": 1180,
+    "height": 948
+  },
+  "changedPixels": 0,
+  "totalPixels": 1118640,
+  "baseline": "test-results/baseline/canvas.png",
+  "current": "test-results/baseline/final-canvas.png",
+  "note": "Canvas includes model, labels, compass, controls and overlaid inspector. New region menu is outside the canvas."
+}

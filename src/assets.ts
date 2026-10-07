@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { structures, colors, byId } from "./data";
-import { enableMeshPicking } from "./picking";
+import { structures, colors, byId, type Tissue } from "./data";
+import { enableMeshPicking, type BvhBuilder } from "./picking";
 import type { createAnkle } from "./ankle";
+import { disposeObject } from "./viewerResources";
 
 type Parts = ReturnType<typeof createAnkle>["parts"];
 export const boneIds = structures.filter(s => s.tissue === "bone").map(s => s.id);
@@ -17,13 +18,39 @@ function disposeMeshes(meshes: THREE.Mesh[]) {
   for (const mesh of meshes) {
     mesh.geometry.dispose();
     mesh.customDepthMaterial?.dispose();
+    // Low graphics parks the full skin material here while a simpler one renders.
+    (mesh.userData.fullMaterial as THREE.Material | undefined)?.dispose();
     for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material])
       material.dispose();
   }
 }
 
+interface StagedAssets {
+  report: AssetReport;
+  staged: Map<string, THREE.Mesh[]>;
+  invalid: Set<string>;
+  sourceMeshes: THREE.Mesh[];
+}
+
 /** Consume a meter-scale GLTF scene. Keep each existing part/group/anchor identity. */
-function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: "bone" | "muscle" | "skin"): AssetReport {
+function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue): AssetReport {
+  return commitAssets(stageAssets(scene, parts, ids, tissue, true), parts, ids);
+}
+
+/** As installAssets, but picking BVHs are built by `bvh` before any mesh joins the scene. */
+async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh: BvhBuilder): Promise<AssetReport> {
+  const assets = stageAssets(scene, parts, ids, tissue, false);
+  try {
+    await bvh([...assets.staged.values()].flat());
+    return commitAssets(assets, parts, ids);
+  } catch (error) {
+    disposeMeshes([...assets.staged.values()].flat());
+    disposeObject(scene);
+    throw error;
+  }
+}
+
+function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, pick: boolean): StagedAssets {
   const report: AssetReport = { loaded: [], fallback: [], warnings: [] };
   const staged = new Map<string, THREE.Mesh[]>();
   const invalid = new Set<string>();
@@ -75,7 +102,7 @@ function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissu
       mesh.userData = { id, atlasId: id, fiber: false, source: byId[id].tissue === "skin" ? "illustrative-envelope" : "z-anatomy" };
       mesh.castShadow = byId[id].tissue !== "skin";
       mesh.receiveShadow = true;
-      enableMeshPicking(mesh);
+      if (pick) enableMeshPicking(mesh);
       const list = staged.get(id) ?? [];
       list.push(mesh);
       staged.set(id, list);
@@ -86,6 +113,10 @@ function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissu
       report.warnings.push(`${id}: ${String(error)}`);
     }
   });
+  return { report, staged, invalid, sourceMeshes };
+}
+
+function commitAssets({ report, staged, invalid, sourceMeshes }: StagedAssets, parts: Parts, ids: string[]): AssetReport {
   for (const id of ids) {
     const meshes = staged.get(id);
     const part = parts.get(id);
@@ -115,15 +146,22 @@ function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissu
   return report;
 }
 
+/** Install synchronously, or with worker-built BVHs when a builder is given. */
+const install = (scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh?: BvhBuilder) =>
+  bvh ? installAssetsAsync(scene, parts, ids, tissue, bvh) : installAssets(scene, parts, ids, tissue);
+const exteriorIds = ['skin', 'gastrocnemius'];
+const importedMuscleIds = muscleIds.filter(id => id !== "gastrocnemius");
+
 /** Missing/corrupt assets leave the immediately available procedural model intact. */
 export async function loadBoneAssets(
   parts: Parts,
   url = `${import.meta.env.BASE_URL}models/bones.glb`,
   loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded,e.total))).scene,
   onProgress?: (loaded: number, total: number) => void,
+  bvh?: BvhBuilder,
 ): Promise<AssetReport> {
   try {
-    return installBoneAssets(await loadScene(url), parts);
+    return await install(await loadScene(url), parts, boneIds, 'bone', bvh);
   } catch (error) {
     return { loaded: [], fallback: [...boneIds], warnings: [`Bone asset unavailable: ${String(error)}`] };
   }
@@ -131,14 +169,84 @@ export async function loadBoneAssets(
 
 
 export const installBoneAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, boneIds, 'bone');
-export const installMuscleAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, muscleIds.filter(id => id !== "gastrocnemius"), 'muscle');
-export async function loadMuscleAssets(parts: Parts, url = `${import.meta.env.BASE_URL}models/muscles.glb`, loadScene: (url:string)=>Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded,e.total))).scene, onProgress?: (loaded:number,total:number)=>void):Promise<AssetReport> {
-  try { return installMuscleAssets(await loadScene(url), parts); }
-  catch(error) { return {loaded:[], fallback:muscleIds.filter(id => id !== "gastrocnemius"), warnings:[`Muscle asset unavailable: ${String(error)}`]}; }
+export const installMuscleAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, importedMuscleIds, 'muscle');
+export async function loadMuscleAssets(parts: Parts, url = `${import.meta.env.BASE_URL}models/muscles.glb`, loadScene: (url:string)=>Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded,e.total))).scene, onProgress?: (loaded:number,total:number)=>void, bvh?: BvhBuilder):Promise<AssetReport> {
+  try { return await install(await loadScene(url), parts, importedMuscleIds, 'muscle', bvh); }
+  catch(error) { return {loaded:[], fallback:[...importedMuscleIds], warnings:[`Muscle asset unavailable: ${String(error)}`]}; }
 }
 
-export async function loadExteriorAssets(parts: Parts, onProgress?: (loaded:number,total:number)=>void): Promise<AssetReport> {
-  try { return installExteriorAssets((await new GLTFLoader().loadAsync(`${import.meta.env.BASE_URL}models/exterior.glb`, e => onProgress?.(e.loaded,e.total))).scene, parts); }
-  catch(error) { return {loaded:[],fallback:['skin','gastrocnemius'],warnings:[`Exterior asset unavailable: ${String(error)}`]}; }
+export async function loadExteriorAssets(parts: Parts, onProgress?: (loaded:number,total:number)=>void, bvh?: BvhBuilder, url = `${import.meta.env.BASE_URL}models/exterior.glb`, loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded,e.total))).scene): Promise<AssetReport> {
+  try { return await install(await loadScene(url), parts, exteriorIds, 'skin', bvh); }
+  catch(error) { return {loaded:[],fallback:[...exteriorIds],warnings:[`Exterior asset unavailable: ${String(error)}`]}; }
 }
-export const installExteriorAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, ['skin','gastrocnemius'], 'skin');
+export const installExteriorAssets = (scene: THREE.Object3D, parts: Parts) => installAssets(scene, parts, exteriorIds, 'skin');
+
+/** Supplemental layers have no invented fallback geometry. Fetch only on demand. */
+export const neurovascularTissues: Tissue[] = ['artery', 'vein', 'nerve'];
+export const isNeurovascular = (tissue: Tissue) => neurovascularTissues.includes(tissue);
+export const neurovascularIds = structures.filter(s => isNeurovascular(s.tissue)).map(s => s.id);
+function markNeurovascular(report: AssetReport, parts: Parts): AssetReport {
+  for (const id of neurovascularIds) {
+    const part = parts.get(id);
+    if (!part) continue;
+    part.group.userData.unavailable = !report.loaded.includes(id);
+    if (part.group.userData.unavailable) part.group.visible = false;
+    for (const mesh of part.meshes) mesh.userData.thinStructure = true;
+  }
+  return report;
+}
+export const installNeurovascularAssets = (scene: THREE.Object3D, parts: Parts) =>
+  markNeurovascular(installAssets(scene, parts, neurovascularIds, 'artery'), parts);
+export async function loadNeurovascularAssets(
+  parts: Parts,
+  url = `${import.meta.env.BASE_URL}models/neurovascular.glb`,
+  loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path)).scene,
+  bvh?: BvhBuilder,
+): Promise<AssetReport> {
+  try { return markNeurovascular(await install(await loadScene(url), parts, neurovascularIds, 'artery', bvh), parts); }
+  catch (error) {
+    for (const id of neurovascularIds) {
+      const part = parts.get(id);
+      if (part) { part.group.visible = false; part.group.userData.unavailable = true; }
+    }
+    return { loaded: [], fallback: [...neurovascularIds], warnings: [`Neurovascular assets unavailable: ${String(error)}`] };
+  }
+}
+
+
+/** Abortable fetch and parse for a mounted viewer. A late parse never installs into a disposed scene. */
+export function createAssetSceneLoader(signal: AbortSignal, onProgress?: (loaded: number, total: number) => void) {
+  return async (url: string): Promise<THREE.Object3D> => {
+    signal.throwIfAborted();
+    const response = await fetch(url, { signal });
+    if (!response.ok) throw new Error(`Asset fetch failed: ${response.status}`);
+    const total = Number(response.headers.get('content-length') || 0);
+    const reader = response.body?.getReader();
+    const chunks: Uint8Array[] = [];
+    let loaded = 0;
+    if (reader) {
+      try {
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          chunks.push(value); loaded += value.length;
+          onProgress?.(loaded, total);
+        }
+      } finally { reader.releaseLock(); }
+    } else {
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      chunks.push(bytes); loaded = bytes.length;
+      onProgress?.(loaded, total);
+    }
+    signal.throwIfAborted();
+    const bytes = new Uint8Array(loaded);
+    let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+    const gltf = await new GLTFLoader().parseAsync(bytes.buffer, new URL('.', new URL(url, location.href)).href);
+    if (signal.aborted) {
+      gltf.scenes.forEach(disposeObject);
+      signal.throwIfAborted();
+    }
+    return gltf.scene;
+  };
+}

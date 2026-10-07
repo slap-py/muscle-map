@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import { chromium } from '@playwright/test';
+import { viewerUrl } from './browser-url.mjs';
 const manifest=JSON.parse(await fs.readFile('public/models/bones.manifest.json','utf8'));
 const browser=await chromium.launch({channel:'msedge',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
-const url=process.env.VIEWER_URL??'http://127.0.0.1:5176';
+const url=viewerUrl();
 const checked=[];
+let currentBone;
 try {
   await page.goto(url,{waitUntil:'networkidle'});
   await page.waitForFunction(()=>document.querySelector('#viewport')?.dataset.boneAssets==='ready');
@@ -17,6 +19,7 @@ try {
   const inspector=await page.locator('.inspector').boundingBox();
   const freeCenterX=(bounds.x+Math.min(bounds.x+bounds.width,inspector.x))/2;
   for(const {atlasId:id} of manifest.bones){
+    currentBone=id;
     await page.locator('.structure-row[data-id="'+id+'"]').click();
     await page.locator('#isolate').click();
     await page.locator('#focus-selected').click();
@@ -43,14 +46,18 @@ try {
   await page.waitForFunction(()=>document.querySelector('#viewport')?.dataset.boneAssets==='fallback');
   assert.equal(await page.locator('#viewport').getAttribute('data-loaded-bones'),'0');
   await page.locator('[data-atlas-type="cartilage"]').click();
-  assert.equal(await page.locator('.structure-row').count(),107);
+  assert.equal(await page.locator('.structure-row').count(),156);
   await page.locator('.structure-row[data-id="talus"]').click();
   await page.locator('#isolate').click();await page.locator('#focus-selected').click();
   await page.waitForTimeout(200);
   await page.mouse.move(freeCenterX,bounds.y+bounds.height/2);await page.waitForTimeout(150);
   assert(await page.locator('.structure-row.hovered[data-id="talus"]').count()>0);
   assert.deepEqual(errors,[]);
-  const result={checkedBones:checked.length,selectionHoverIsolateFocusLabels:checked,fallback:'404 keeps all 107 records; procedural talus remains pickable',errors};
+  const result={checkedBones:checked.length,selectionHoverIsolateFocusLabels:checked,fallback:'404 keeps all 156 records; procedural talus remains pickable',errors};
   await fs.writeFile('validation/bone-browser-check.json',JSON.stringify(result,null,2));
   console.log(JSON.stringify(result,null,2));
+} catch(error) {
+  console.error(JSON.stringify({currentBone,checked,errors,selected:await page.locator('.structure-row.selected').getAttribute('data-id').catch(()=>null)},null,2));
+  await page.screenshot({path:'validation/bone-browser-failure.png'}).catch(()=>{});
+  throw error;
 } finally {await browser.close();}

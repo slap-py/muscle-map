@@ -1,0 +1,20 @@
+{
+  "checks": [
+    "collapsed structure breakdown excludes skin; home credits route preserves attribution and stays lazy across reload",
+    "thumbnail follows live system theme changes",
+    "hub is lazy and renders dark and light at 390px, 820px and 1440px without horizontal overflow",
+    "proper loading screen persists unchanged from lazy import through model loading",
+    "quality gauge follows Low, High and Auto; inspector expand is rightmost; explorer About excludes global credits",
+    "region card opens the lower-leg viewer and saves the last region",
+    "region menu exposes its links and closes with Escape",
+    "Escape from a neutral viewer returns to the hub",
+    "visible home button returns to the hub",
+    "deep link selects talus in the lower-leg viewer",
+    "selection Escape clears talus while staying in the viewer",
+    "viewer dark and light theme choices apply on the deep link",
+    "browser Back returns from the viewer to the hub",
+    "invalid deep-link IDs leave a usable viewer and return to the hub"
+  ],
+  "errors": [],
+  "generated": false
+}

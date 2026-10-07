@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "light: lazy 49-object load; all searchable with sourced facts; layers, preset, opacity, Escape, thin canvas picking",
+    "light: narrow layout and graceful 404",
+    "dark: lazy 49-object load; all searchable with sourced facts; layers, preset, opacity, Escape, thin canvas picking",
+    "dark: narrow layout and graceful 404"
+  ],
+  "errors": [],
+  "shaderErrors": []
+}

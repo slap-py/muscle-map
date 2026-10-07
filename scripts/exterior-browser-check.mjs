@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import {chromium} from '@playwright/test';
+import { viewerUrl } from './browser-url.mjs';
 const browser=await chromium.launch({channel:'msedge',headless:true});
 const page=await browser.newPage({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
 const errors=[];page.on('pageerror',e=>errors.push(e.message));
 try {
-await page.goto(process.env.VIEWER_URL ?? 'http://127.0.0.1:5176',{waitUntil:'networkidle'});
+await page.goto(viewerUrl(),{waitUntil:'networkidle'});
 await page.waitForFunction(()=>document.querySelector('#viewport').dataset.exteriorAssets==='ready');
 assert.equal(await page.locator('#viewport').getAttribute('data-loaded-muscles'),'13');
 await page.locator('[data-mode="exterior"]').click();await page.waitForTimeout(800);
