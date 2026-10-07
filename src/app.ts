@@ -35,7 +35,7 @@ function renderHub(error?: string) {
       <a class="region-thumbnail" href="${regionHref(region.id)}" tabindex="-1" aria-hidden="true"><img class="thumbnail-light" src="${region.thumbnail}" alt="" width="720" height="560"/><img class="thumbnail-dim" src="${region.dimThumbnail}" alt="" width="720" height="560"/></a>
       <div class="region-card-content"><div class="region-card-heading"><h2>${region.title}</h2>${lastRegion === region.id ? '<span class="last-region">Last opened</span>' : ""}</div>
       <p class="region-description">${region.description}</p>
-      <details class="region-counts"><summary><strong>${region.structureCounts.total}</strong> structures <span>Breakdown</span></summary><dl>${Object.entries(region.structureCounts.byTissue).filter(([tissue]) => tissue !== "skin").map(([tissue,count]) => `<div><dt>${tissueLabels[tissue] ?? tissue}</dt><dd>${count}</dd></div>`).join("")}</dl></details>
+      <details class="region-counts"><summary><strong>${region.structureCounts.total}</strong> structures</summary><dl>${Object.entries(region.structureCounts.byTissue).filter(([tissue]) => tissue !== "skin").map(([tissue,count]) => `<div><dt>${tissueLabels[tissue] ?? tissue}</dt><dd>${count}</dd></div>`).join("")}</dl></details>
       <a class="button primary open-region" href="${regionHref(region.id)}">Open <span aria-hidden="true">→</span></a>
       </div></article>`).join("")}</div>
     </main>

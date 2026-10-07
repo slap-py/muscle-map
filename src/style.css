@@ -1081,7 +1081,6 @@ body[data-page="hub"] { overflow: auto; }
 .region-description { margin-top: 10px; color: var(--muted); }
 .region-counts { margin: 16px 0; }
 .region-counts > summary { cursor: pointer; font-size: 12px; color: var(--muted); }
-.region-counts > summary > span { float: right; padding-top: 5px; font-size: 11px; }
 .region-counts[open] > summary { margin-bottom: 12px; }
 .region-counts strong { color: var(--text); font-size: 20px; font-weight: 600; margin-right: 3px; }
 .region-counts dl { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; margin: 0; }
