@@ -4,8 +4,7 @@ import type { Tissue } from "./data";
 import type { Connection } from "./connections";
 import type { AssetReport } from "./assets";
 import { createViewerScope, disposeObject, viewerDiagnostics } from "./viewerResources";
-import { regionCatalog } from "./regions/catalog";
-import { regionHref } from "./router";
+import { resolveStructureId, restoreViewerSession, selectionAliases, type ViewerSession } from "./viewerSession";
 import { createPickingWorker, intersectThinStructures } from "./picking";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { TAARenderPass } from "three/addons/postprocessing/TAARenderPass.js";
@@ -27,6 +26,10 @@ import {
 import { createSlowFrameMonitor, graphicsSettings, readAutoOverride, readGraphicsChoice, resolveTier, saveAutoOverride, saveGraphicsChoice, weakDeviceReason, type AutoOverride, type GraphicsChoice, type GraphicsSettings, type GraphicsTier } from "./graphics";
 
 import { applySceneTheme, effectiveTheme, listenForThemeChanges, readThemeChoice, setThemeChoice, type ThemeChoice } from "./theme";
+import { MAX_LABELS, MIN_LABELS, passiveLabelCap, readSettings, saveSettings } from "./settings";
+
+/** The skin exterior is not functional yet. Its loaders, materials and data stay; only its controls are hidden. */
+const SKIN_UI_ENABLED = false;
 
 const icon = {
   search: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>',
@@ -37,7 +40,8 @@ const icon = {
   close: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>',
 };
 /** One mounted viewer owns all DOM, listeners, rendering and loading work. */
-export function mountViewer(pack: RegionPack, app: HTMLElement, initialSelection: string | null = null) {
+export function mountViewer(pack: RegionPack, app: HTMLElement, initialSelection: string | null = null, session?: ViewerSession) {
+const restored = restoreViewerSession(pack, session);
 const scope = createViewerScope();
 const listen = scope.listen;
 let disposed = false;
@@ -52,13 +56,14 @@ const { loadBoneAssets, loadMuscleAssets, loadExteriorAssets, loadNeurovascularA
 const areaOptions = pack.atlasAreas.filter(area => !area.group).map(area => `<option value="${area.id}">${area.label}</option>`).join('') +
   [...new Set(pack.atlasAreas.map(area => area.group).filter(Boolean))].map(group => `<optgroup label="${group}">${pack.atlasAreas.filter(area => area.group === group).map(area => `<option value="${area.id}">${area.label}</option>`).join('')}</optgroup>`).join('');
 
+const viewerSettings = readSettings();
+const presets = pack.presets.filter(preset => SKIN_UI_ENABLED || !preset.tissues.includes("skin"));
 const openingLoader = app.querySelector("#loading");
 app.innerHTML = `
 <header class="topbar">
-  <div class="brand"><a class="viewer-home" href="#/" aria-label="Back to home" title="Back to home">${icon.home}</a><span class="title">${pack.title}</span><details class="region-menu"><summary aria-label="Choose region" title="Choose region">⌄</summary><nav class="region-menu-items" aria-label="Regions"><a href="#/">All regions</a>${regionCatalog.map(region => `<a href="${regionHref(region.id)}" ${region.id === pack.id ? 'aria-current="page"' : ''}>${region.id.split('-').map((word,index) => index ? word : word[0].toUpperCase() + word.slice(1)).join(' ')} · ${region.title}</a>`).join('')}</nav></details><span class="brand-subtitle">Interactive anatomy</span></div>
-  <div class="segmented modes" aria-label="Tissue presets">${pack.presets.map(preset => `<button data-mode="${preset.id}" class="${preset.id === pack.defaultMode ? 'active' : ''}">${preset.icon ?? ''}${preset.label}</button>`).join('')}</div>
-  <div class="segmented theme-control" aria-label="Color theme"><button data-theme-choice="system">System</button><button data-theme-choice="light">Light</button><button data-theme-choice="dark">Dim</button></div>
-  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><details class="graphics-menu"><summary class="tool-button" title="Graphics quality" aria-label="Graphics quality"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 11.5a5.5 5.5 0 1 1 11 0"/><path class="graphics-needle" d="m8 11.5 2.8-3.3"/></svg></summary><div class="graphics-popover" role="group" aria-labelledby="graphics-heading"><p id="graphics-heading" class="graphics-heading">Graphics quality</p><div class="segmented graphics-control"><button data-graphics-choice="auto">Auto</button><button data-graphics-choice="high">High</button><button data-graphics-choice="low">Low</button></div><p id="graphics-status" class="graphics-status" aria-live="polite"></p></div></details><button id="reset" class="tool-button" title="Reset (R)" aria-label="Reset"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
+  <div class="brand"><a class="viewer-home" href="#/" aria-label="Back to home" title="Back to home">${icon.home}</a><span class="title">${pack.title}</span><span class="brand-subtitle">Interactive anatomy</span></div>
+  <div class="segmented modes" aria-label="Tissue presets">${presets.map(preset => `<button data-mode="${preset.id}" class="${preset.id === pack.defaultMode ? 'active' : ''}">${preset.icon ?? ''}${preset.label}</button>`).join('')}</div>
+  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset (R)" aria-label="Reset"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
 </header>
 <main>
 <aside class="panel atlas" aria-label="Structures">
@@ -76,6 +81,7 @@ app.innerHTML = `
   <div class="compass-wrap"><div id="compass" role="group" aria-label="Anatomical view compass"></div><span id="view-name">ANTERIOR VIEW</span></div>
   <div class="view-controls segmented" aria-label="Camera views">${pack.viewPresets.map(view => `<button data-view="${view.id}" class="${view.id === pack.defaultView ? 'active' : ''}">${view.label}</button>`).join('')}</div>
   <div class="canvas-tools"><button id="pan" aria-pressed="false" aria-label="Pan mode" title="Pan mode (P). Right-drag or Shift-drag also pans.">${icon.pan}</button><button id="zoom-in" aria-label="Zoom in" title="Zoom in">${icon.plus}</button><button id="zoom-out" aria-label="Zoom out" title="Zoom out">${icon.minus}</button><button id="home" aria-label="Reset camera" title="Reset camera">${icon.home}</button></div>
+  <div id="fps-meter" class="fps-meter" role="status" aria-label="Frames per second" hidden><span id="fps-value">-- FPS</span><br><span class="fps-version">v1.0</span></div>
   <div id="render-error" hidden></div>
   <div id="graphics-prompt" class="graphics-prompt" role="status" hidden><p>The 3D view is running slowly on this device.</p><button data-graphics-prompt="low" class="tool-button active">Use Low graphics</button><button data-graphics-prompt="keep" class="tool-button">Keep High</button></div>
 </section>
@@ -90,7 +96,7 @@ app.innerHTML = `
     <button id="highlight-connections" class="toggle-row" aria-pressed="false" aria-describedby="highlight-connections-hint"><span>Highlight connections</span><span class="switch" aria-hidden="true"></span></button>
     <p id="highlight-connections-hint" class="sr-only">Highlight attached tendons and bones with your selection. Hidden connections appear temporarily.</p>
     <div class="slider-row"><label for="opacity">Muscle</label><input id="opacity" type="range" min="10" max="100" value="100"/><output id="opacity-value">100%</output></div>
-    <div class="slider-row"><label for="skin-opacity">Skin</label><input id="skin-opacity" type="range" min="0" max="100" value="100"/><output id="skin-opacity-value">100%</output></div>
+    <div class="slider-row" ${SKIN_UI_ENABLED ? '' : 'hidden'}><label for="skin-opacity">Skin</label><input id="skin-opacity" type="range" min="0" max="100" value="100"/><output id="skin-opacity-value">100%</output></div>
     <div id="neurovascular-opacity-controls" hidden><div class="slider-row"><label for="neurovascular-opacity">Vessels &amp; nerves</label><input id="neurovascular-opacity" type="range" min="10" max="100" value="100"/><output id="neurovascular-opacity-value">100%</output></div></div>
     <p id="neurovascular-status" role="status" hidden></p>
     <p id="layer-hint" class="layer-hint"></p>
@@ -98,9 +104,16 @@ app.innerHTML = `
 </aside>
 </main>
 <dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close icon-button" aria-label="Close model information">${icon.close}</button><h2 id="about-title">${pack.about.title}</h2>
-<div class="about-tabs" role="tablist" aria-label="About sections">${[['overview','Overview'],['controls','Controls']].map(([id,name])=>`<button id="about-tab-${id}" role="tab" data-about-tab="${id}" aria-controls="about-panel-${id}" aria-selected="${id==='overview'}" tabindex="${id==='overview'?0:-1}">${name}</button>`).join('')}</div>
+<div class="about-tabs" role="tablist" aria-label="About sections">${[['overview','Overview'],['controls','Controls'],['settings','Settings']].map(([id,name])=>`<button id="about-tab-${id}" role="tab" data-about-tab="${id}" aria-controls="about-panel-${id}" aria-selected="${id==='overview'}" tabindex="${id==='overview'?0:-1}">${name}</button>`).join('')}</div>
 <section id="about-panel-overview" role="tabpanel" data-about-panel="overview" aria-labelledby="about-tab-overview">${pack.about.overviewHtml}</section>
 <section id="about-panel-controls" role="tabpanel" data-about-panel="controls" aria-labelledby="about-tab-controls" hidden>${pack.about.controlsHtml}</section>
+<section id="about-panel-settings" class="settings-panel" role="tabpanel" data-about-panel="settings" aria-labelledby="about-tab-settings" hidden>
+  <div class="setting-block"><p class="setting-title" id="graphics-heading">Graphics quality</p><div class="segmented graphics-control" role="group" aria-labelledby="graphics-heading"><button data-graphics-choice="auto">Auto</button><button data-graphics-choice="high">High</button><button data-graphics-choice="low">Low</button></div><p id="graphics-status" class="setting-note" aria-live="polite"></p></div>
+  <div class="setting-block"><p class="setting-title" id="theme-heading">Theme</p><div class="segmented theme-control" role="group" aria-labelledby="theme-heading"><button data-theme-choice="system">System</button><button data-theme-choice="light">Light</button><button data-theme-choice="dark">Dim</button></div></div>
+  <div class="setting-block"><button id="setting-labels-default" class="toggle-row" aria-pressed="false"><span>Labels on by default</span><span class="switch" aria-hidden="true"></span></button><p class="setting-note">Applies when a region opens or is reset. The Labels button still toggles them while you explore.</p></div>
+  <div class="setting-block"><div class="slider-row"><label for="setting-max-labels">Max labels</label><input id="setting-max-labels" type="range" min="${MIN_LABELS}" max="${MAX_LABELS}" step="1"/><output id="setting-max-labels-value"></output></div><p class="setting-note">Most passive labels shown at once when zoomed in. Fewer appear when zoomed out. Selected and hovered structures are always labeled.</p></div>
+  <div class="setting-block"><button id="setting-fps" class="toggle-row" aria-pressed="false"><span>Show FPS meter</span><span class="switch" aria-hidden="true"></span></button></div>
+</section>
 </dialog>${loadingScreen(pack.title)}`;
 // Keep the same loading element (and bar animation) through the lazy import.
 if (openingLoader) app.querySelector("#loading")!.replaceWith(openingLoader);
@@ -109,7 +122,7 @@ const $ = <T extends HTMLElement = HTMLElement>(s: string) =>
 const compactActions=matchMedia('(max-width:699px)');
 function syncActionsMenu(){app.querySelector<HTMLDetailsElement>('.actions-menu')!.open=!compactActions.matches;}
 listen(compactActions, 'change',syncActionsMenu);syncActionsMenu();
-const tissueKeys: Tissue[] = [...pack.tissueKeys];
+const tissueKeys: Tissue[] = pack.tissueKeys.filter(tissue => SKIN_UI_ENABLED || tissue !== "skin");
 let graphicsTier: GraphicsTier = "high";
 let graphics: GraphicsSettings = graphicsSettings.high;
 // Model loading state; updateAppearance consults it from the first render onward.
@@ -128,7 +141,7 @@ const state = {
   neurovascularOpacity: 1,
   skinOpacity: 1,
   opacity: 1,
-  labels: true,
+  labels: viewerSettings.labelsDefault,
   isolated: false,
   connections: false,
   highlightConnections: false,
@@ -140,7 +153,24 @@ const state = {
   view: pack.defaultView,
 };
 
-const atlasOrder: Tissue[] = [...pack.atlasOrder];
+if (restored) {
+  state.layers = new Set(restored.layers.filter(tissue => SKIN_UI_ENABLED || tissue !== "skin"));
+  state.atlasTypes = new Set(restored.atlasTypes.filter(tissue => SKIN_UI_ENABLED || tissue !== "skin"));
+  state.atlasRegion = restored.atlasRegion;
+  state.onlyVisible = restored.onlyVisible;
+  state.opacity = restored.opacity;
+  state.skinOpacity = restored.skinOpacity;
+  state.neurovascularOpacity = restored.neurovascularOpacity;
+  state.labels = restored.labels;
+  state.highlightConnections = restored.highlightConnections;
+  state.view = restored.view;
+  $<HTMLInputElement>('#search').value = restored.search;
+  for (const [id, value] of [['opacity', state.opacity], ['skin-opacity', state.skinOpacity], ['neurovascular-opacity', state.neurovascularOpacity]] as const) {
+    $<HTMLInputElement>('#' + id).value = String(Math.round(value * 100));
+    $('#' + id + '-value').textContent = Math.round(value * 100) + '%';
+  }
+}
+const atlasOrder: Tissue[] = pack.atlasOrder.filter(tissue => SKIN_UI_ENABLED || tissue !== "skin");
 const atlasNames = pack.atlasNames;
 const collapsedTissues = new Set<string>();
 try { for (const value of JSON.parse(localStorage.getItem('atlas-collapsed') || '[]')) if (atlasOrder.includes(value)) collapsedTissues.add(value); } catch {}
@@ -209,11 +239,15 @@ function renderDetails() {
     $("#details").innerHTML =
       `<p class="empty-inspector">Select a structure to see details.</p>`;
   } else {
+    const coverage = pack.structureRegions?.[d.id];
+    const spansRegions = coverage && coverage.length > 1 && isNeurovascular(d.tissue);
+    const regionNote = spansRegions
+      ? '<p class="structure-coverage">Spans ' + coverage.map(escapeHtml).join(' + ') + '</p>' : '';
     const articulations = d.tissue === 'bone' ? [...relatedIds(d.id)].filter(id=>byId[id].tissue==='bone').map(id=>byId[id].name) : d.articulations;
     const facts = [['Origin',d.origin],['Insertion',d.insertion],['Action',d.action],['Innervation',d.innervation],['Blood supply',d.bloodSupply],['Articulations',articulations?.join(', ')]];
     const quickFacts = facts.filter(([,value])=>value).map(([name,value])=>`<dt>${name}</dt><dd>${escapeHtml(value!)}</dd>`).join('');
     $("#details").innerHTML =
-      `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${d.region} · ${d.tissue}</div><h2>${d.name}</h2><p class="group-name">${d.group}</p><div class="selection-tools"><button id="focus-selected" class="button" title="Frame this structure (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only this structure">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button></div><div class="inspector-content">${quickFacts ? `<section class="quick-facts"><h3>Quick facts</h3><dl>${quickFacts}</dl></section>` : ''}<section class="structure-description"><h3>Description</h3><p>${escapeHtml(d.description)}</p></section></div>`;
+      `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${spansRegions ? 'Across regions' : d.region} · ${d.tissue}</div><h2>${d.name}</h2><p class="group-name">${d.group}</p>${regionNote}<div class="selection-tools"><button id="focus-selected" class="button" title="Frame this structure (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only this structure">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button></div><div class="inspector-content">${quickFacts ? `<section class="quick-facts"><h3>Quick facts</h3><dl>${quickFacts}</dl></section>` : ''}<section class="structure-description"><h3>Description</h3><p>${escapeHtml(d.description)}</p></section></div>`;
     $("#isolate").onclick = () => {
       state.isolated = !state.isolated;
       state.connections = false;
@@ -443,6 +477,7 @@ const taa = new TAARenderPass(scene, camera);
 taa.sampleLevel=0;
 composer.addPass(taa);composer.addPass(new OutputPass());
 let taaSamplesLeft=0;
+let taaAccumulated=false;
 let appearanceDirty=true;
 let labelsDirty=true;
 /** Request a redraw after anything that changes what the scene or its labels show. */
@@ -578,7 +613,7 @@ function setRenderPixelRatio(ratio: number) {
 }
 /** Sheen and clearcoat make the skin the costliest shader; Low swaps in a standard material. */
 function applySkinMaterial(simple: boolean) {
-  for (const mesh of leg.parts.get("skin")?.meshes ?? []) {
+  for (const mesh of [...leg.parts.values()].filter(part => byId[part.id].tissue === "skin").flatMap(part => part.meshes)) {
     const current = mesh.material as THREE.Material;
     if (simple && current instanceof THREE.MeshPhysicalMaterial) {
       const standard = new THREE.MeshStandardMaterial({
@@ -621,10 +656,6 @@ function syncGraphicsMenu() {
     b.setAttribute("aria-pressed", String(active));
   });
   const tier = graphicsTier === "low" ? "Low" : "High";
-  const summary = $(".graphics-menu > summary");
-  summary.dataset.graphics = graphicsTier;
-  summary.title = `Graphics quality: ${tier}`;
-  summary.setAttribute("aria-label", `Graphics quality: ${tier}`);
   $("#graphics-status").textContent = graphicsChoice !== "auto"
     ? graphicsTier === "low"
       ? "No shadows, lower resolution and lighter loading."
@@ -654,18 +685,6 @@ app.querySelectorAll<HTMLButtonElement>("[data-graphics-prompt]").forEach((butto
     applyGraphics();
   };
 });
-const graphicsMenu = $<HTMLDetailsElement>(".graphics-menu");
-const regionMenu = $<HTMLDetailsElement>(".region-menu");
-listen(document, "pointerdown", (e) => {
-  if (graphicsMenu.open && !graphicsMenu.contains(e.target as Node)) graphicsMenu.open = false;
-  if (regionMenu.open && !regionMenu.contains(e.target as Node)) regionMenu.open = false;
-});
-listen(graphicsMenu, "keydown", (e) => {
-  if (e.key !== "Escape" || !graphicsMenu.open) return;
-  e.stopPropagation();
-  graphicsMenu.open = false;
-  graphicsMenu.querySelector("summary")!.focus();
-});
 configureGraphics();
 let overviewDistance=1000;
 let maxTier: 1 | 2 | 3 = 1;
@@ -678,7 +697,7 @@ function setView(view: string, animate = true) {
   const { target, position: p } = cameraPreset(view, camera.aspect);
   // Full source shafts extend beyond the procedural distal-leg overview.
   // Fit the imported overview while keeping the regional view shortcuts intact.
-  if (view === pack.defaultView && [...leg.parts.values()].some(part => part.meshes.some(mesh => mesh.userData.source === "z-anatomy"))) {
+  if ((pack.regionIds || view === pack.defaultView) && [...leg.parts.values()].some(part => part.meshes.some(mesh => mesh.userData.source === "z-anatomy"))) {
     const bounds = new THREE.Box3();
     for (const [id, part] of leg.parts) if (!isNeurovascular(byId[id].tissue)) bounds.union(new THREE.Box3().setFromObject(part.group));
     const direction = p.clone().sub(target).normalize();
@@ -761,7 +780,8 @@ function focusParts(ids: string[]) {
     for (const mesh of part.meshes) {
       if (mesh.userData.fiber) continue;
       mesh.geometry.computeBoundingBox();
-      bounds.union(mesh.geometry.boundingBox!);
+      mesh.updateWorldMatrix(true, false);
+      bounds.union(mesh.geometry.boundingBox!.clone().applyMatrix4(mesh.matrixWorld));
     }
   }
   if (bounds.isEmpty()) return;
@@ -802,6 +822,7 @@ function focusOverview() {
 }
 $("#pan").onclick = () => setPan(!state.pan);
 function select(id: string | null, revealLayer = true) {
+  id = resolveStructureId(pack, id);
   clearConnectionFocus();
   state.attachmentFade = false;
   state.selected = id;
@@ -863,7 +884,11 @@ function updateAppearance() {
       if (highlighted.has(id) && !selected) alpha = 1;
       if (cutAwayIds.has(id)) alpha = Math.min(alpha, 0.025);
       if (selected) alpha = tissueOpacity;
-      if (!mesh.userData.fiber) part.group.userData.alpha = alpha;
+      if (!mesh.userData.fiber) {
+        part.group.userData.alpha = alpha;
+        // Joined structures retain a local group for each region's asset loader.
+        if (mesh.parent) mesh.parent.userData.alpha = alpha;
+      }
       if (mesh.userData.fiber) alpha *= 0.22;
       applyCoverage(mesh, alpha);
       mesh.visible = alpha > 0;
@@ -890,7 +915,7 @@ function updateAppearance() {
     );
   // Layer toggles that match a preset's criteria switch that preset on.
   const sameLayers = (tissues: Tissue[]) => state.layers.size === tissues.length && tissues.every(t => state.layers.has(t));
-  const layerMode = pack.presets.map(preset => preset.id).find(m => sameLayers(presetLayers(m)));
+  const layerMode = presets.map(preset => preset.id).find(m => sameLayers(presetLayers(m)));
   state.mode = layerMode ?? "custom";
   app.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((b) => {
     const active = b.dataset.mode === state.mode;
@@ -935,14 +960,35 @@ document
   .forEach((b) => (b.onclick = () => setView(b.dataset.view!)));
 listen($("#search"), "input", renderList);
 $("#clear").onclick = () => select(null);
+/** Highlighting only recolours the scene around a selection; without one there is nothing to redraw. */
+const highlightAffectsScene = () => !!state.selected && !state.isolated;
 $("#highlight-connections").onclick = () => {
   state.highlightConnections = !state.highlightConnections;
-  updateAppearance();
+  if (highlightAffectsScene()) updateAppearance();
+  else $("#highlight-connections").setAttribute("aria-pressed", String(state.highlightConnections));
 };
 $("#labels").onclick = () => {
   state.labels = !state.labels;
   updateAppearance();
 };
+const fpsMeter = $("#fps-meter");
+const fpsValue = $("#fps-value");
+let fpsFrames = 0, fpsSince = 0;
+function syncSettings() {
+  $("#setting-labels-default").setAttribute("aria-pressed", String(viewerSettings.labelsDefault));
+  $("#setting-fps").setAttribute("aria-pressed", String(viewerSettings.showFps));
+  $<HTMLInputElement>("#setting-max-labels").value = String(viewerSettings.maxLabels);
+  $("#setting-max-labels-value").textContent = String(viewerSettings.maxLabels);
+  fpsMeter.hidden = !viewerSettings.showFps;
+  fpsFrames = 0; fpsSince = 0;
+}
+$("#setting-labels-default").onclick = () => { viewerSettings.labelsDefault = !viewerSettings.labelsDefault; saveSettings(viewerSettings); syncSettings(); };
+$("#setting-fps").onclick = () => { viewerSettings.showFps = !viewerSettings.showFps; saveSettings(viewerSettings); syncSettings(); };
+$<HTMLInputElement>("#setting-max-labels").oninput = e => {
+  viewerSettings.maxLabels = Number((e.target as HTMLInputElement).value);
+  saveSettings(viewerSettings); syncSettings(); invalidate();
+};
+syncSettings();
 $("#all-layers").onclick = () => { preset("anatomy");state.layers=new Set(tissueKeys);state.mode="custom";updateAppearance(); };
 $<HTMLInputElement>("#opacity").oninput = (e) => {
   state.opacity = Number((e.target as HTMLInputElement).value) / 100;
@@ -974,7 +1020,7 @@ function reset() {
   $<HTMLInputElement>("#skin-opacity").value="100";
   $("#skin-opacity-value").textContent="100%";
   state.opacity = 1;
-  state.labels = true;
+  state.labels = viewerSettings.labelsDefault;
   $<HTMLInputElement>("#opacity").value = "100";
   $("#opacity-value").textContent = "100%";
   $<HTMLInputElement>("#search").value = "";
@@ -1211,8 +1257,7 @@ function buildLabels() {
 }
 listen(document, "keydown", (e) => {
   if (e.key === "Escape" && !dialog.open) {
-    if (regionMenu.open) { regionMenu.open = false; regionMenu.querySelector("summary")!.focus(); }
-    else if (state.selected || state.attachmentFade || state.isolated || state.connections) select(null);
+    if (state.selected || state.attachmentFade || state.isolated || state.connections) select(null);
     else location.hash = "#/";
     return;
   }
@@ -1237,11 +1282,15 @@ renderList();
 renderDetails();
 updateAppearance();
 resize();
-setView(pack.defaultView, false);
+setView(state.view, false);
 let lastTime = 0;
 let labelsAnimating = false;
 // Safety net: UI controls may change state without passing through updateAppearance.
-for (const type of ["input", "change", "click"] as const) listen(document, type, invalidate, { capture: true });
+// Redrawing restarts temporal anti-aliasing, which shows as a brief flicker on translucent muscles, so the no-op highlight toggle is exempt.
+for (const type of ["input", "change", "click"] as const) listen(document, type, event => {
+  if (!highlightAffectsScene() && (event.target as Element | null)?.closest?.("#highlight-connections")) return;
+  invalidate();
+}, { capture: true });
 let lastFrameMoved = false;
 function frame(time: number) {
   if (disposed) return;
@@ -1249,7 +1298,12 @@ function frame(time: number) {
   const elapsed = time - lastTime;
   const dt = Math.min(elapsed / 1000, 0.05);
   lastTime = time;
-  if (document.hidden) { lastFrameMoved = false; return; }
+  if (document.hidden) { lastFrameMoved = false; fpsFrames = 0; fpsSince = 0; return; }
+  if (viewerSettings.showFps) {
+    fpsFrames++;
+    if (!fpsSince) { fpsSince = time; fpsFrames = 0; }
+    else if (time - fpsSince >= 500) { fpsValue.textContent = `${Math.round(fpsFrames * 1000 / (time - fpsSince))} FPS`; fpsFrames = 0; fpsSince = time; }
+  }
   const cameraChanged = updateCamera(controls, camera, dt);
   // Back-to-back moving frames measure real render cost for Auto's slow-device prompt.
   if (cameraChanged && lastFrameMoved && slowFrames.add(elapsed)) offerLowGraphics();
@@ -1280,6 +1334,10 @@ function frame(time: number) {
     // Camera-only motion reuses the previous shadow map.
     if (appearanceDirty) renderer.shadowMap.needsUpdate = true;
     taa.accumulate = !sceneChanged && graphics.taaSamples > 0;
+    // A still scene change gets a supersampled first image, so translucent muscles do not flash grainy before TAA converges.
+    // TAA renders its first held image right after a non-accumulating frame.
+    taa.sampleLevel = !cameraChanged && graphics.taaSamples > 0 && (sceneChanged || !taaAccumulated) ? 2 : 0;
+    taaAccumulated = taa.accumulate;
     composer.render();
     viewerDiagnostics.geometries = renderer.info.memory.geometries;
     taaSamplesLeft = sceneChanged ? graphics.taaSamples : taaSamplesLeft - 1;
@@ -1305,8 +1363,8 @@ function frame(time: number) {
     const priority=(id:string)=>id===state.selected?-2:id===state.hovered?-1:labelTier[id]??3;
     return priority(a.label.id)-priority(b.label.id)||Math.hypot(a.ax-freeWidth/2,a.ay-height/2)-Math.hypot(b.ax-freeWidth/2,b.ay-height/2);
   });
-  // Passive labels are capped so the view stays calm; zooming in allows a few more.
-  const passiveCap=Math.min(maxTier===1?6:maxTier===2?9:12,graphics.maxPassiveLabels);
+  // Passive labels are capped (Settings → Max labels) so the view stays calm; zooming in allows more.
+  const passiveCap=passiveLabelCap(viewerSettings.maxLabels,maxTier);
   let passiveShown=0;
   const hoverOnly=(id:string)=>id===state.hovered&&id!==state.selected;
   const ease=1-Math.exp(-dt*14);
@@ -1356,7 +1414,7 @@ frameRequest = requestAnimationFrame(frame);
 // Start after controls, state and labels exist, so late loads preserve user interaction.
 viewport.dataset.boneAssets = "loading";
 viewport.dataset.softTissues = "loading";
-const bvhBuilder = () => graphics.workerBvh ? worker.build : undefined;
+function bvhBuilder() { return graphics.workerBvh ? worker.build : undefined; }
 // Low graphics defers muscle and exterior models until something can show them.
 // Gastrocnemius ships in the exterior model, so muscles need both files.
 const muscleShown = () => state.layers.has("muscle") || state.attachmentFade || state.highlightConnections ||
@@ -1391,7 +1449,7 @@ function refreshAfterAssets(beforeAppearance?: () => void) {
   footprintSelection = undefined;
   cutAwayIds.clear();
   viewport.dataset.softTissues = soft.warnings.length ? "partial" : "ready";
-  viewport.dataset.loadedMuscles = String((muscleReport?.loaded.length ?? 0) + Number(!!exteriorReport?.loaded.includes("gastrocnemius")));
+  viewport.dataset.loadedMuscles = String((muscleReport?.loaded.filter(id=>byId[id].tissue==='muscle').length ?? 0) + (exteriorReport?.loaded.filter(id => byId[id].tissue === "muscle").length ?? 0));
   viewport.dataset.cartilagePatches = String(soft.cartilagePatches);
   for (const warning of soft.warnings) console.warn(warning);
   applySkinMaterial(graphics.simpleSkin);
@@ -1421,9 +1479,9 @@ initialLoad = Promise.all(initialLoads).then(([report]) => {
   if (disposed) return;
   refreshAfterAssets(() => {
     viewport.dataset.boneAssets = report.fallback.length ? "fallback" : "ready";
-    viewport.dataset.loadedBones = String(report.loaded.length);
+    viewport.dataset.loadedBones = String(report.loaded.filter(id=>byId[id].tissue==='bone').length);
     // Fit the overview after soft tissues are rebuilt, since they extend the bounds.
-    if (report.loaded.length && state.view === pack.defaultView && !state.selected && !cameraTouched) setView(pack.defaultView, false);
+    if (report.loaded.length && !cameraTouched && (restored || (state.view === pack.defaultView && !state.selected))) setView(state.view, false);
     for (const warning of report.warnings) console.warn(warning);
   });
   hideLoading(!!(report.fallback.length || muscleReport?.fallback.length || exteriorReport?.fallback.length));
@@ -1436,14 +1494,27 @@ function hideLoading(failed = false) {
     if(!failed){el.classList.add('determinate');el.style.setProperty('--progress','100%');el.querySelector('p')!.textContent='Loading models… 100%';}
     scope.timeout(()=>{el.classList.add('done');scope.timeout(()=>el.remove(),400);},failed?0:150);
   };
-  if(failed){el.querySelector('p')!.textContent="Some models couldn't load — showing simplified shapes.";el.classList.add('load-failed');scope.timeout(finish,2500);}else finish();
+  if(failed){el.querySelector('p')!.textContent=pack.assetFailureMessage ?? "Some models couldn't load — showing simplified shapes.";el.classList.add('load-failed');scope.timeout(finish,2500);}else finish();
 }
 
 viewerDiagnostics.activeViewers++;
-if (initialSelection && Object.hasOwn(byId, initialSelection)) select(initialSelection);
+const openingSelection = resolveStructureId(pack, initialSelection) ?? restored?.selected;
+if (openingSelection) select(openingSelection);
 return {
   ready: initialLoad,
-  select(id: string | null) { if (!disposed) select(id && Object.hasOwn(byId, id) ? id : null); },
+  select(id: string | null) { if (!disposed) select(id); },
+  captureSession(): ViewerSession {
+    return {
+      regionIds: pack.regionIds ?? [pack.id], selectedAliases: selectionAliases(pack, state.selected),
+      layers: [...state.layers], atlasTypes: [...state.atlasTypes],
+      atlasRegion: !pack.regionIds && state.atlasRegion !== 'all' ? pack.id + ':' + state.atlasRegion : state.atlasRegion,
+      search: $<HTMLInputElement>('#search').value, onlyVisible: state.onlyVisible,
+      opacity: state.opacity, skinOpacity: state.skinOpacity, neurovascularOpacity: state.neurovascularOpacity,
+      labels: state.labels, highlightConnections: state.highlightConnections,
+      view: state.view, viewDirection: pack.viewPresets.find(view => view.id === state.view)?.direction,
+      overview: state.view === pack.defaultView,
+    };
+  },
   dispose() {
     if (disposed) return;
     disposed = true;

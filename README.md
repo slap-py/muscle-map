@@ -2,7 +2,13 @@
 
 Version 1.0.0 · Updated October 2026
 
-An interactive, static study of the right foot and ankle. The atlas contains 156 selectable structures: 30 bones, 13 muscles, 12 tendon groups, 15 ligament groups, 6 fascia/retinacular groups, 30 cartilage groups, 19 arterial objects, 14 venous objects, 16 nerve objects, and skin. Named neurovascular branch groups remain one selectable source object each.
+An interactive, static atlas with four independently loaded regions: right foot/ankle, left lower leg/foot, and left and right upper legs. Each region has its own card, models, atlas, views and inspector state. Select multiple cards and choose **Open selected regions** to explore them in one aligned scene. Use the region picker beside the viewer title to add or remove regions, and the Area filter to browse each region.
+
+Shared vessels and nerves on the same side appear once in a combined view. Selecting either section selects the full structure; Focus and Isolate cover all its loaded sections. The shared entry appears under both regions in the Area filter. Adding or removing a region preserves tissue layers, opacity, labels, search, filters and anatomical view, and carries a shared selection into the remaining region.
+
+The left lower leg/foot is a reflected derivative of the original right-side study. Both upper legs use original side-specific source anatomy, with hip and knee context. Each upper leg includes 120 structures (27 muscles); each lower-leg pack includes 156.
+
+The original right foot/ankle study remains available at `#/lower-leg`. The atlas contains 156 selectable structures: 30 bones, 13 muscles, 12 tendon groups, 15 ligament groups, 6 fascia/retinacular groups, 30 cartilage groups, 19 arterial objects, 14 venous objects, 16 nerve objects, and skin. Named neurovascular branch groups remain one selectable source object each.
 
 ## Run and validate
 
@@ -119,3 +125,59 @@ and reading links live on the shared `#/credits` page linked from the home foote
 Viewer About keeps Overview and Controls. The same loading screen stays visible
 from lazy route startup through model downloads; Back to home can cancel opening.
 The graphics gauge reflects the effective High / Low tier, including Auto.
+
+
+## Additional leg regions
+
+- `#/left-lower-leg`: left lower leg and foot, 156 structures, mirrored from the
+  registered right-side study. Reflects anatomical Z, triangle winding, normals,
+  camera directions, connection seeds and resolved footprints. It is not an
+  independently measured left specimen.
+- `#/right-upper-leg` and `#/left-upper-leg`: 120 source structures each:
+  6 bones, 27 muscles, 21 tendon-material groups, 18 ligaments, 4 fascia groups,
+  8 cartilage groups, 12 arteries, 9 veins, 14 nerves, and one exterior group.
+  Hip bone and sacrum plus proximal tibia/fibula provide attachment context.
+  The source crop runs from 0.32 to 1.025 meters in source superior coordinates.
+  Full psoas origins and proximal nerve paths extend beyond this crop.
+
+The upper-leg Exterior uses the source's open body-region surface patches with
+both sides rendered. Anatomy leaves the full fascia lata shell hidden initially;
+its layer switch exposes it. Tendons are separated using source material faces.
+The source includes portions of the extensor mechanism in those tendon meshes;
+there is no separately named patellar-ligament source object in this pack.
+Muscle attachment cards use available source origin/insertion patches. Named
+hip/knee ligament focus cards fit sampled source contact points to the bones.
+All footprint extents remain illustrative. Source-specific origin, insertion,
+action, innervation, blood-supply facts and references appear for all 27 muscles.
+
+New region assets and manifests live in `public/models/<region-id>/`. The shared
+asset loader resolves each pack's own IDs and tissue metadata. It keeps missing
+source meshes unavailable instead of inventing anatomy. Supplemental vessels and
+nerves remain lazy; disposal releases their geometry and workers.
+
+To regenerate using the running Blender **MCP** extension on port 9876:
+
+```sh
+python scripts/blender-command.py scripts/prepare-left-lower-leg.py
+python scripts/blender-command.py scripts/prepare-upper-legs.py
+python scripts/blender-command.py scripts/export-upper-legs.py
+npm run build
+npm run preview -- --port 5181 --strictPort
+node scripts/generate-leg-thumbnails.mjs
+```
+
+The two upper-leg calls intentionally separate preparation from export because
+opening the source replaces Blender's operator context. Run them consecutively
+in the same Blender session. They replace the open scene without saving a blend
+file; the pinned source remains unchanged. Asset counts regenerate with exports.
+Thumbnail generation accepts `VIEWER_URL`, defaulting to port 5181.
+
+`VIEWER_URL=http://127.0.0.1:5181/ node scripts/leg-regions-browser-check.mjs`
+checks each region, isolated model URLs, attachments, cameras and disposal.
+The updated hub check covers all four cards at mobile, tablet and desktop widths.
+
+### Combined regions
+
+Combined views use shareable routes such as `#/regions?region=left-lower-leg&region=left-upper-leg`. Model loaders remain independent and neurovascular assets remain lazy. Original export datums restore a shared coordinate frame; complete lower-leg tibia/fibula meshes replace upper-leg shaft context, and paired upper legs share one sacrum. Structure IDs are namespaced by region to keep opposite sides selectable. The existing mirrored-left lower-leg provenance still applies.
+
+Run `node scripts/combined-regions-browser-check.mjs` against the preview to verify multi-selection, attachments, layers, region changes, deep links and disposal.

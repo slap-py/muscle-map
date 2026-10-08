@@ -1,0 +1,3364 @@
+{
+  "side": "left",
+  "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceBlendSha256": "9f08a17ea0115fed80b2a73ecdf0a1bc2ab2f6956f37c593ce23d513ea35afcd",
+  "license": "CC-BY-SA-4.0",
+  "attribution": [
+    "Z-Anatomy \u2014 The libre 3D atlas of anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
+    "BodyParts3D \u2014 The Database Center for Life Science \u2014 Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
+  ],
+  "sourceUrl": "https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "registration": {
+    "datumSourceMeters": [
+      0.09023460745811462,
+      0.020297355949878693,
+      0.657085657119751
+    ],
+    "sourceWorldToBlenderRowMajor": [
+      [
+        0.0,
+        -1.0,
+        0.0,
+        0.020297355949878693
+      ],
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.09023460745811462
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.657085657119751
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "sourceCropMeters": [
+    0.32,
+    1.025
+  ],
+  "axes": {
+    "x": "anterior",
+    "y": "superior",
+    "z": "subject-right"
+  },
+  "units": "mm at runtime; meters in GLB",
+  "processing": [
+    "Original side-specific source objects, no reflection",
+    "Muscle tendon and bone cartilage material separation",
+    "Regional crop and boundary caps; source surface subdivision and triangle budgets",
+    "Source curves preserve tube radii; GLB Y-up export"
+  ],
+  "limitations": [
+    "Surface subdivision adds no measured detail",
+    "Regional exterior comprises source body-region surface patches; not histologic skin",
+    "Psoas and proximal nerves are cropped at the superior boundary; their full origins are outside this region",
+    "Some source connective-tissue sheets have open borders; no clinical measurements or biomechanical simulation",
+    "Open exterior surface patches are displayed double-sided to preserve their source coverage."
+  ],
+  "exports": [
+    {
+      "group": "bones",
+      "bytes": 2109116,
+      "sha256": "cdfaca1bae7a47eedef63eda4900cbcd6bce78f8ec3c0aba9aa08ee2302e3cf6"
+    },
+    {
+      "group": "muscles",
+      "bytes": 6913876,
+      "sha256": "fd8764d7ce2a25d18fad764eec185c5095d0f1a77854d35893088e93262ac797"
+    },
+    {
+      "group": "neurovascular",
+      "bytes": 777980,
+      "sha256": "ee3623835462e67f519cf787405359f423ccf85dcdfdd6efda0e4adfb57c9554"
+    },
+    {
+      "group": "exterior",
+      "bytes": 79288,
+      "sha256": "4944a869f28c71fd411525bd724717903e92eebb148831e19ae61a20bfb20405"
+    }
+  ],
+  "structures": [
+    {
+      "id": "hip-bone",
+      "name": "Hip bone",
+      "tissue": "bone",
+      "assetGroup": "bones",
+      "sourceObject": "Hip bone.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -66.03733825683594,
+          140.72525024414062,
+          -44.34865188598633
+        ],
+        [
+          76.173095703125,
+          354.7196960449219,
+          87.03168487548828
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "bone",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "hip-bone-cartilage",
+      "name": "Hip bone",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Hip bone.l",
+      "triangles": 214,
+      "boundsMm": [
+        [
+          -39.356788635253906,
+          180.3706817626953,
+          -9.508349418640137
+        ],
+        [
+          75.55410766601562,
+          301.749755859375,
+          86.81185913085938
+        ]
+      ],
+      "boundaryEdges": 76,
+      "materialSeparation": "cartilage",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "femur",
+      "name": "Femur",
+      "tissue": "bone",
+      "assetGroup": "bones",
+      "sourceObject": "Femur.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -33.911190032958984,
+          -223.27442932128906,
+          -58.0146369934082
+        ],
+        [
+          35.74439239501953,
+          214.06480407714844,
+          57.93756866455078
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "bone",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "femur-cartilage",
+      "name": "Femur",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Femur.l",
+      "triangles": 821,
+      "boundsMm": [
+        [
+          -39.05546188354492,
+          -227.21958923339844,
+          -21.38385772705078
+        ],
+        [
+          39.05546188354492,
+          227.2196044921875,
+          53.725730895996094
+        ]
+      ],
+      "boundaryEdges": 121,
+      "materialSeparation": "cartilage",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "patella",
+      "name": "Patella",
+      "tissue": "bone",
+      "assetGroup": "bones",
+      "sourceObject": "Patella.l",
+      "triangles": 1068,
+      "boundsMm": [
+        [
+          23.177387237548828,
+          -233.1979217529297,
+          -15.35644817352295
+        ],
+        [
+          38.79314422607422,
+          -192.8523406982422,
+          27.190656661987305
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "bone",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "patella-cartilage",
+      "name": "Patella",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Patella.l",
+      "triangles": 105,
+      "boundsMm": [
+        [
+          16.209436416625977,
+          -232.04034423828125,
+          -15.802852630615234
+        ],
+        [
+          31.417261123657227,
+          -192.357666015625,
+          27.382801055908203
+        ]
+      ],
+      "boundaryEdges": 25,
+      "materialSeparation": "cartilage",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "tibia",
+      "name": "Tibia",
+      "tissue": "bone",
+      "assetGroup": "bones",
+      "sourceObject": "Tibia.l",
+      "triangles": 5636,
+      "boundsMm": [
+        [
+          -42.550804138183594,
+          -336.89764404296875,
+          -25.26552391052246
+        ],
+        [
+          24.778043746948242,
+          -224.1837158203125,
+          52.533233642578125
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "bone",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "tibia-cartilage",
+      "name": "Tibia",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Tibia.l",
+      "triangles": 141,
+      "boundsMm": [
+        [
+          -41.524566650390625,
+          -259.9384765625,
+          -25.4404354095459
+        ],
+        [
+          11.642176628112793,
+          -223.9042205810547,
+          51.20924758911133
+        ]
+      ],
+      "boundaryEdges": 61,
+      "materialSeparation": "cartilage",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "fibula",
+      "name": "Fibula",
+      "tissue": "bone",
+      "assetGroup": "bones",
+      "sourceObject": "Fibula.l",
+      "triangles": 3620,
+      "boundsMm": [
+        [
+          -33.09832763671875,
+          -336.8905029296875,
+          -34.42955017089844
+        ],
+        [
+          -6.565971374511719,
+          -239.40501403808594,
+          -7.958746433258057
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "bone",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "fibula-cartilage",
+      "name": "Fibula",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Fibula.l",
+      "triangles": 33,
+      "boundsMm": [
+        [
+          -26.2670841217041,
+          -260.57635498046875,
+          -20.66142463684082
+        ],
+        [
+          -7.73072624206543,
+          -240.41769409179688,
+          -7.839927673339844
+        ]
+      ],
+      "boundaryEdges": 17,
+      "materialSeparation": "cartilage",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "sacrum",
+      "name": "Sacrum",
+      "tissue": "bone",
+      "assetGroup": "bones",
+      "sourceObject": "Sacrum",
+      "triangles": 11676,
+      "boundsMm": [
+        [
+          -74.70520782470703,
+          208.6681365966797,
+          28.808500289916992
+        ],
+        [
+          16.696870803833008,
+          323.7489013671875,
+          151.73890686035156
+        ]
+      ],
+      "boundaryEdges": 13,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "rectus-femoris",
+      "name": "Rectus femoris muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Rectus femoris muscle.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          27.005142211914062,
+          -160.95306396484375,
+          -57.89131164550781
+        ],
+        [
+          80.36701965332031,
+          207.49826049804688,
+          8.926749229431152
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            28.99511717259884,
+            243.78634989261627,
+            -12.0993098244071
+          ],
+          "sourceObject": "Rectus femoris muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "rectus-femoris-tendon",
+      "name": "Rectus femoris muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Rectus femoris muscle.l",
+      "triangles": 3444,
+      "boundsMm": [
+        [
+          11.226724624633789,
+          -286.60675048828125,
+          -37.388553619384766
+        ],
+        [
+          48.16337203979492,
+          258.72125244140625,
+          23.527864456176758
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "vastus-lateralis",
+      "name": "Vastus lateralis muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Vastus lateralis muscle.l",
+      "triangles": 8356,
+      "boundsMm": [
+        [
+          -15.438111305236816,
+          -203.37608337402344,
+          -68.756591796875
+        ],
+        [
+          63.7755241394043,
+          161.13796997070312,
+          -4.926562309265137
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            8.18142294883728,
+            73.19039106369019,
+            -29.018517583608627
+          ],
+          "sourceObject": "Vastus lateralis muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "vastus-lateralis-tendon",
+      "name": "Vastus lateralis muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Vastus lateralis muscle.l",
+      "triangles": 1103,
+      "boundsMm": [
+        [
+          -10.99593734741211,
+          -273.4693908691406,
+          -52.958641052246094
+        ],
+        [
+          30.58454704284668,
+          183.92190551757812,
+          5.298472881317139
+        ]
+      ],
+      "boundaryEdges": 107,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "vastus-medialis",
+      "name": "Vastus medialis muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Vastus medialis muscle.l",
+      "triangles": 17999,
+      "boundsMm": [
+        [
+          2.098782777786255,
+          -271.83013916015625,
+          -12.20431900024414
+        ],
+        [
+          68.902587890625,
+          131.26878356933594,
+          56.52094650268555
+        ]
+      ],
+      "boundaryEdges": 355,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            17.469337210059166,
+            -36.415763199329376,
+            12.10098247975111
+          ],
+          "sourceObject": "Vastus medialis muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "vastus-medialis-tendon",
+      "name": "Vastus medialis muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Vastus medialis muscle.l",
+      "triangles": 658,
+      "boundsMm": [
+        [
+          0.8022487163543701,
+          -264.5350036621094,
+          -14.979496955871582
+        ],
+        [
+          37.545921325683594,
+          135.7239532470703,
+          46.26797866821289
+        ]
+      ],
+      "boundaryEdges": 186,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "vastus-intermedius",
+      "name": "Vastus intermedius muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Vastus intermedius muscle.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          10.956618309020996,
+          -160.5261993408203,
+          -42.664207458496094
+        ],
+        [
+          58.27146530151367,
+          112.35909271240234,
+          11.144254684448242
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            22.54931628704071,
+            13.852115720510483,
+            -16.933785751461983
+          ],
+          "sourceObject": "Vastus intermedius muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "vastus-intermedius-tendon",
+      "name": "Vastus intermedius muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Vastus intermedius muscle.l",
+      "triangles": 1896,
+      "boundsMm": [
+        [
+          11.215168952941895,
+          -258.534423828125,
+          -41.251800537109375
+        ],
+        [
+          39.77603530883789,
+          149.86257934570312,
+          13.770334243774414
+        ]
+      ],
+      "boundaryEdges": 60,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "sartorius",
+      "name": "Sartorius muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Sartorius muscle.l",
+      "triangles": 17999,
+      "boundsMm": [
+        [
+          -12.17374324798584,
+          -197.05459594726562,
+          -20.043598175048828
+        ],
+        [
+          66.31759643554688,
+          178.8623504638672,
+          68.67093658447266
+        ]
+      ],
+      "boundaryEdges": 56,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            69.65526938438416,
+            278.57691049575806,
+            -28.34649756550789
+          ],
+          "sourceObject": "Sartorius muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            9.698103182017803,
+            -279.73467111587524,
+            23.827048018574715
+          ],
+          "sourceObject": "Sartorius muscle.el"
+        }
+      }
+    },
+    {
+      "id": "sartorius-tendon",
+      "name": "Sartorius muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Sartorius muscle.l",
+      "triangles": 1919,
+      "boundsMm": [
+        [
+          -12.306146621704102,
+          -308.327392578125,
+          -34.257606506347656
+        ],
+        [
+          77.84275817871094,
+          290.9093017578125,
+          63.7606086730957
+        ]
+      ],
+      "boundaryEdges": 27,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "tensor-fasciae-latae",
+      "name": "Tensor fasciae latae",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Tensor fasciae latae.l",
+      "triangles": 9620,
+      "boundsMm": [
+        [
+          33.16571044921875,
+          146.24310302734375,
+          -61.70901870727539
+        ],
+        [
+          68.224853515625,
+          292.1041259765625,
+          -22.83675765991211
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            57.627007365226746,
+            288.7112498283386,
+            -32.25768357515335
+          ],
+          "sourceObject": "Tensor fasciae latae.ol"
+        }
+      }
+    },
+    {
+      "id": "tensor-fasciae-latae-tendon",
+      "name": "Tensor fasciae latae",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Tensor fasciae latae.l",
+      "triangles": 322,
+      "boundsMm": [
+        [
+          42.57107925415039,
+          272.8416442871094,
+          -42.73311996459961
+        ],
+        [
+          64.66205596923828,
+          307.5088806152344,
+          -27.980348587036133
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "gluteus-maximus",
+      "name": "Gluteus maximus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Gluteus maximus muscle.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -91.37735748291016,
+          52.77916717529297,
+          -56.00764083862305
+        ],
+        [
+          5.105197906494141,
+          321.7362060546875,
+          88.3637466430664
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -51.83470994234085,
+            291.47323966026306,
+            39.044089615345
+          ],
+          "sourceObject": "Gluteus maximus muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -2.0954813808202744,
+            101.13630443811417,
+            -25.007937103509903
+          ],
+          "sourceObject": "Gluteus maximus muscle.el"
+        }
+      }
+    },
+    {
+      "id": "gluteus-medius",
+      "name": "Gluteus medius muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Gluteus medius muscle.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -49.36957550048828,
+          198.4785614013672,
+          -59.49856948852539
+        ],
+        [
+          42.07345962524414,
+          339.5587158203125,
+          29.247774124145508
+        ]
+      ],
+      "boundaryEdges": 204,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            2.7203236240893602,
+            313.6032819747925,
+            -11.577757075428963
+          ],
+          "sourceObject": "Gluteus medius muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -9.053990244865417,
+            186.4549070596695,
+            -46.03424295783043
+          ],
+          "sourceObject": "Gluteus medius muscle.el"
+        }
+      }
+    },
+    {
+      "id": "gluteus-medius-tendon",
+      "name": "Gluteus medius muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Gluteus medius muscle.l",
+      "triangles": 802,
+      "boundsMm": [
+        [
+          -30.94163703918457,
+          172.0510711669922,
+          -57.96632766723633
+        ],
+        [
+          2.392669200897217,
+          220.0732879638672,
+          -23.475326538085938
+        ]
+      ],
+      "boundaryEdges": 102,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "gluteus-minimus",
+      "name": "Gluteus minimus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Gluteus minimus muscle.l",
+      "triangles": 6250,
+      "boundsMm": [
+        [
+          -19.232444763183594,
+          176.66432189941406,
+          -60.109188079833984
+        ],
+        [
+          41.54107666015625,
+          311.16680908203125,
+          22.716835021972656
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            6.913912016898394,
+            266.1389708518982,
+            -3.921816125512123
+          ],
+          "sourceObject": "Gluteus minimus muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "iliacus",
+      "name": "Iliacus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Iliacus muscle.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -16.803647994995117,
+          148.29664611816406,
+          -28.33099937438965
+        ],
+        [
+          68.7104263305664,
+          346.54705810546875,
+          27.514301300048828
+        ]
+      ],
+      "boundaryEdges": 82,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            34.83857586979866,
+            296.64167761802673,
+            -11.453191749751568
+          ],
+          "sourceObject": "Iliacus muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "iliacus-tendon",
+      "name": "Iliacus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Iliacus muscle.l",
+      "triangles": 505,
+      "boundsMm": [
+        [
+          -0.30536577105522156,
+          115.09123229980469,
+          -8.704246520996094
+        ],
+        [
+          43.5306510925293,
+          178.1250762939453,
+          15.573948860168457
+        ]
+      ],
+      "boundaryEdges": 41,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "psoas-major",
+      "name": "Psoas major",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Psoas major.l",
+      "triangles": 14432,
+      "boundsMm": [
+        [
+          -10.622773170471191,
+          217.57298278808594,
+          13.667835235595703
+        ],
+        [
+          55.6215705871582,
+          367.9071960449219,
+          71.4733657836914
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "psoas-major-tendon",
+      "name": "Psoas major",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Psoas major.l",
+      "triangles": 916,
+      "boundsMm": [
+        [
+          -12.991667747497559,
+          118.45616912841797,
+          -17.765634536743164
+        ],
+        [
+          57.3302116394043,
+          242.70443725585938,
+          40.277042388916016
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "pectineus",
+      "name": "Pectineus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Pectineus muscle.l",
+      "triangles": 6714,
+      "boundsMm": [
+        [
+          16.02461051940918,
+          89.84828186035156,
+          -7.828132152557373
+        ],
+        [
+          75.8094711303711,
+          201.24148559570312,
+          71.86050415039062
+        ]
+      ],
+      "boundaryEdges": 86,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            62.28290498256683,
+            195.39858400821686,
+            56.99847266077995
+          ],
+          "sourceObject": "Pectineus muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            18.553664907813072,
+            103.01125049591064,
+            186.3480657339096
+          ],
+          "sourceObject": "Pectineus muscle.el"
+        }
+      }
+    },
+    {
+      "id": "pectineus-tendon",
+      "name": "Pectineus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Pectineus muscle.l",
+      "triangles": 996,
+      "boundsMm": [
+        [
+          16.131601333618164,
+          76.21896362304688,
+          -8.332111358642578
+        ],
+        [
+          76.26509857177734,
+          207.46185302734375,
+          74.44770050048828
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "adductor-longus",
+      "name": "Adductor longus",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Adductor longus.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          13.57278823852539,
+          -80.09378814697266,
+          -4.549516677856445
+        ],
+        [
+          64.73057556152344,
+          137.25697326660156,
+          65.0794906616211
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            66.4520263671875,
+            180.73497712612152,
+            72.70237058401108
+          ],
+          "sourceObject": "Adductor longus.ol"
+        },
+        "to": {
+          "seedMm": [
+            15.384807251393795,
+            53.61151322722435,
+            -1.0196417570114136
+          ],
+          "sourceObject": "Adductor longus.el"
+        }
+      }
+    },
+    {
+      "id": "adductor-longus-tendon",
+      "name": "Adductor longus",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Adductor longus.l",
+      "triangles": 689,
+      "boundsMm": [
+        [
+          46.215702056884766,
+          109.93084716796875,
+          37.584049224853516
+        ],
+        [
+          73.2392349243164,
+          184.5264129638672,
+          78.43824768066406
+        ]
+      ],
+      "boundaryEdges": 53,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "adductor-brevis",
+      "name": "Adductor brevis",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Adductor brevis.l",
+      "triangles": 12792,
+      "boundsMm": [
+        [
+          11.67343807220459,
+          8.913835525512695,
+          -8.143168449401855
+        ],
+        [
+          58.766868591308594,
+          184.2655792236328,
+          69.98198699951172
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "adductor-magnus",
+      "name": "Adductor magnus",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Adductor magnus.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -14.617432594299316,
+          -122.97542572021484,
+          -6.679504871368408
+        ],
+        [
+          32.889217376708984,
+          144.95396423339844,
+          77.31651306152344
+        ]
+      ],
+      "boundaryEdges": 6,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            14.949087053537369,
+            151.0402113199234,
+            60.88266894221306
+          ],
+          "sourceObject": "Adductor magnus.ol"
+        },
+        "to": {
+          "seedMm": [
+            -0.8851083694025874,
+            -42.993899434804916,
+            13.335932977497578
+          ],
+          "sourceObject": "Adductor magnus.el"
+        }
+      }
+    },
+    {
+      "id": "adductor-magnus-tendon",
+      "name": "Adductor magnus",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Adductor magnus.l",
+      "triangles": 4504,
+      "boundsMm": [
+        [
+          -15.355135917663574,
+          -194.45594787597656,
+          -20.10580062866211
+        ],
+        [
+          37.07377624511719,
+          163.29522705078125,
+          72.39884185791016
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "gracilis",
+      "name": "Gracilis muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Gracilis muscle.l",
+      "triangles": 17762,
+      "boundsMm": [
+        [
+          -27.66177749633789,
+          -229.98268127441406,
+          52.816219329833984
+        ],
+        [
+          47.728843688964844,
+          101.2974853515625,
+          79.5535659790039
+        ]
+      ],
+      "boundaryEdges": 106,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            38.98152709007263,
+            161.45148873329163,
+            73.61618429422379
+          ],
+          "sourceObject": "Gracilis muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            0.06320815009530634,
+            -289.40728306770325,
+            28.809960931539536
+          ],
+          "sourceObject": "Gracilis muscle.el"
+        }
+      }
+    },
+    {
+      "id": "gracilis-tendon",
+      "name": "Gracilis muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Gracilis muscle.l",
+      "triangles": 1923,
+      "boundsMm": [
+        [
+          -15.64246940612793,
+          -313.6095275878906,
+          27.55724334716797
+        ],
+        [
+          62.883243560791016,
+          179.96969604492188,
+          80.61302947998047
+        ]
+      ],
+      "boundaryEdges": 3,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "biceps-femoris-long-head",
+      "name": "Long head of biceps femoris",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Long head of biceps femoris.l",
+      "triangles": 18000,
+      "boundsMm": [
+        [
+          -56.059165954589844,
+          -165.6138153076172,
+          -30.55826187133789
+        ],
+        [
+          -0.6749771237373352,
+          113.54557800292969,
+          28.321056365966797
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -31.346969306468964,
+            156.42936527729034,
+            29.346488416194916
+          ],
+          "sourceObject": "Long head of biceps femoris.ol"
+        },
+        "to": {
+          "seedMm": [
+            -25.65344236791134,
+            -247.22985923290253,
+            -28.127457946538925
+          ],
+          "sourceObject": "Biceps femoris muscle.el"
+        }
+      }
+    },
+    {
+      "id": "biceps-femoris-long-head-tendon",
+      "name": "Long head of biceps femoris",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Long head of biceps femoris.l",
+      "triangles": 1976,
+      "boundsMm": [
+        [
+          -41.58750534057617,
+          -262.3146057128906,
+          -38.06268310546875
+        ],
+        [
+          -11.369921684265137,
+          163.09152221679688,
+          40.18239974975586
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "biceps-femoris-short-head",
+      "name": "Short head of biceps femoris",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Short head of biceps femoris.l",
+      "triangles": 12388,
+      "boundsMm": [
+        [
+          -33.719852447509766,
+          -199.63755798339844,
+          -31.30498504638672
+        ],
+        [
+          5.767904758453369,
+          46.27910232543945,
+          3.484930992126465
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "to": {
+          "seedMm": [
+            -1.6832391265779734,
+            -81.72595500946045,
+            186.65823340415955
+          ],
+          "sourceObject": "Short head of biceps femoris.el"
+        }
+      }
+    },
+    {
+      "id": "biceps-femoris-short-head-tendon",
+      "name": "Short head of biceps femoris",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Short head of biceps femoris.l",
+      "triangles": 452,
+      "boundsMm": [
+        [
+          -35.79698181152344,
+          -253.88204956054688,
+          -33.287017822265625
+        ],
+        [
+          -13.562561988830566,
+          -187.84307861328125,
+          -21.288759231567383
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "semitendinosus",
+      "name": "Semitendinosus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Semitendinosus muscle.l",
+      "triangles": 13000,
+      "boundsMm": [
+        [
+          -55.0858268737793,
+          -178.61537170410156,
+          21.59544563293457
+        ],
+        [
+          -21.68167495727539,
+          103.52075958251953,
+          57.39796829223633
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -27.06577628850937,
+            148.57442677021027,
+            38.728855550289154
+          ],
+          "sourceObject": "Semitendinosus muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -12.459682300686836,
+            -277.16755867004395,
+            35.01492738723755
+          ],
+          "sourceObject": "Semitendinosus muscle.el"
+        }
+      }
+    },
+    {
+      "id": "semitendinosus-tendon",
+      "name": "Semitendinosus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Semitendinosus muscle.l",
+      "triangles": 2208,
+      "boundsMm": [
+        [
+          -49.605506896972656,
+          -305.62188720703125,
+          23.5388240814209
+        ],
+        [
+          3.002077341079712,
+          154.3169403076172,
+          55.99221420288086
+        ]
+      ],
+      "boundaryEdges": 30,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "semimembranosus",
+      "name": "Semimembranosus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Semimembranosus muscle.l",
+      "triangles": 17999,
+      "boundsMm": [
+        [
+          -48.7689323425293,
+          -189.0747833251953,
+          11.802403450012207
+        ],
+        [
+          2.042898654937744,
+          100.74217987060547,
+          75.1114730834961
+        ]
+      ],
+      "boundaryEdges": 257,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -15.092555433511734,
+            142.50658452510834,
+            45.185450464487076
+          ],
+          "sourceObject": "Semimembranosus muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -28.512584045529366,
+            -247.64779210090637,
+            43.11046749353409
+          ],
+          "sourceObject": "Semimembranosus muscle.el"
+        }
+      }
+    },
+    {
+      "id": "semimembranosus-tendon",
+      "name": "Semimembranosus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Semimembranosus muscle.l",
+      "triangles": 2047,
+      "boundsMm": [
+        [
+          -47.30802917480469,
+          -271.72589111328125,
+          29.881195068359375
+        ],
+        [
+          6.226403713226318,
+          145.9857635498047,
+          66.8699951171875
+        ]
+      ],
+      "boundaryEdges": 129,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "obturator-externus",
+      "name": "Obturator externus",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Obturator externus.l",
+      "triangles": 6936,
+      "boundsMm": [
+        [
+          -11.288774490356445,
+          158.5876922607422,
+          -33.12969970703125
+        ],
+        [
+          46.33230209350586,
+          188.86093139648438,
+          65.78752899169922
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            19.960111007094383,
+            173.91866445541382,
+            52.96507477760315
+          ],
+          "sourceObject": "Obturator externus.ol"
+        }
+      }
+    },
+    {
+      "id": "obturator-internus",
+      "name": "Obturator internus",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Obturator internus.l",
+      "triangles": 16484,
+      "boundsMm": [
+        [
+          -32.7166748046875,
+          161.41415405273438,
+          36.3862190246582
+        ],
+        [
+          43.710758209228516,
+          221.06451416015625,
+          69.0553970336914
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            18.552249297499657,
+            184.6681833267212,
+            52.311014384031296
+          ],
+          "sourceObject": "Obturator internus.ol"
+        }
+      }
+    },
+    {
+      "id": "obturator-internus-tendon",
+      "name": "Obturator internus",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Obturator internus.l",
+      "triangles": 1064,
+      "boundsMm": [
+        [
+          -37.58671569824219,
+          180.27464294433594,
+          -28.41035270690918
+        ],
+        [
+          5.634581089019775,
+          203.78997802734375,
+          44.61201095581055
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "superior-gemellus",
+      "name": "Superior gemellus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Superior gemellus muscle.l",
+      "triangles": 1624,
+      "boundsMm": [
+        [
+          -33.569091796875,
+          191.62791442871094,
+          -25.855928421020508
+        ],
+        [
+          5.807792663574219,
+          217.16151428222656,
+          40.50026321411133
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -29.100606217980385,
+            211.87755465507507,
+            42.443230748176575
+          ],
+          "sourceObject": "Superior gemellus muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "superior-gemellus-tendon",
+      "name": "Superior gemellus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Superior gemellus muscle.l",
+      "triangles": 164,
+      "boundsMm": [
+        [
+          -33.52391052246094,
+          191.17015075683594,
+          -36.16463088989258
+        ],
+        [
+          11.984469413757324,
+          218.34463500976562,
+          47.347164154052734
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "inferior-gemellus",
+      "name": "Inferior gemellus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Inferior gemellus muscle.l",
+      "triangles": 3336,
+      "boundsMm": [
+        [
+          -42.277584075927734,
+          173.99005126953125,
+          -24.234163284301758
+        ],
+        [
+          1.374614953994751,
+          195.7564697265625,
+          30.24142074584961
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -34.654151648283005,
+            179.52792346477509,
+            29.59536574780941
+          ],
+          "sourceObject": "Inferior gemellus muscle.ol"
+        }
+      }
+    },
+    {
+      "id": "inferior-gemellus-tendon",
+      "name": "Inferior gemellus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Inferior gemellus muscle.l",
+      "triangles": 462,
+      "boundsMm": [
+        [
+          -43.12419128417969,
+          172.75479125976562,
+          -36.636474609375
+        ],
+        [
+          11.178091049194336,
+          194.9163055419922,
+          36.17900085449219
+        ]
+      ],
+      "boundaryEdges": 16,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "quadratus-femoris",
+      "name": "Quadratus femoris muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Quadratus femoris muscle.l",
+      "triangles": 9876,
+      "boundsMm": [
+        [
+          -19.432695388793945,
+          136.0067901611328,
+          -31.761520385742188
+        ],
+        [
+          -3.5430006980895996,
+          181.48916625976562,
+          35.4809455871582
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -13.186800293624401,
+            160.20287573337555,
+            26.00627765059471
+          ],
+          "sourceObject": "Quadratus femoris muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -13.98568693548441,
+            158.8825136423111,
+            -22.35628105700016
+          ],
+          "sourceObject": "Quadratus femoris muscle.el"
+        }
+      }
+    },
+    {
+      "id": "piriformis",
+      "name": "Piriformis muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Piriformis muscle.l",
+      "triangles": 9000,
+      "boundsMm": [
+        [
+          -53.537376403808594,
+          199.3490447998047,
+          -42.92247009277344
+        ],
+        [
+          5.184062957763672,
+          261.69976806640625,
+          66.35337829589844
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -39.364635944366455,
+            250.65401196479797,
+            124.24331158399582
+          ],
+          "sourceObject": "Piriformis muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -1.4512315392494202,
+            200.70409774780273,
+            215.3179496526718
+          ],
+          "sourceObject": "Piriformis muscle.el"
+        }
+      }
+    },
+    {
+      "id": "popliteus",
+      "name": "Popliteus muscle",
+      "tissue": "muscle",
+      "assetGroup": "muscles",
+      "sourceObject": "Popliteus muscle.l",
+      "triangles": 4902,
+      "boundsMm": [
+        [
+          -42.07498550415039,
+          -306.1804504394531,
+          -25.308740615844727
+        ],
+        [
+          -15.009526252746582,
+          -212.4750213623047,
+          30.220232009887695
+        ]
+      ],
+      "boundaryEdges": 38,
+      "materialSeparation": "belly",
+      "sourceAttachments": {
+        "from": {
+          "seedMm": [
+            -26.53239481151104,
+            -199.17458295822144,
+            -20.639128983020782
+          ],
+          "sourceObject": "Popliteus muscle.ol"
+        },
+        "to": {
+          "seedMm": [
+            -21.985439583659172,
+            -273.3531892299652,
+            18.024921417236328
+          ],
+          "sourceObject": "Popliteus muscle.el"
+        }
+      }
+    },
+    {
+      "id": "popliteus-tendon",
+      "name": "Popliteus muscle",
+      "tissue": "tendon",
+      "assetGroup": "muscles",
+      "sourceObject": "Popliteus muscle.l",
+      "triangles": 342,
+      "boundsMm": [
+        [
+          -39.9725456237793,
+          -317.14007568359375,
+          -26.820884704589844
+        ],
+        [
+          -5.855607032775879,
+          -191.9959716796875,
+          32.35661315917969
+        ]
+      ],
+      "boundaryEdges": 30,
+      "materialSeparation": "tendon",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "anterior-cruciate-ligament",
+      "name": "Anterior cruciate ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Anterior cruciate ligament.l",
+      "triangles": 1616,
+      "boundsMm": [
+        [
+          -25.98745346069336,
+          -230.2373504638672,
+          2.1315207481384277
+        ],
+        [
+          -1.3842722177505493,
+          -200.52792358398438,
+          23.310556411743164
+        ]
+      ],
+      "boundaryEdges": 48,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "posterior-cruciate-ligament",
+      "name": "Posterior cruciate ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Posterior cruciate ligament.l",
+      "triangles": 788,
+      "boundsMm": [
+        [
+          -34.60725784301758,
+          -242.77684020996094,
+          5.692163467407227
+        ],
+        [
+          -15.982391357421875,
+          -204.83729553222656,
+          29.019311904907227
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "fibular-collateral-ligament",
+      "name": "Fibular collateral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Fibular collateral ligament.l",
+      "triangles": 6,
+      "boundsMm": [
+        [
+          -23.561744689941406,
+          -249.7933349609375,
+          -30.406150817871094
+        ],
+        [
+          -15.358638763427734,
+          -197.31155395507812,
+          -21.583391189575195
+        ]
+      ],
+      "boundaryEdges": 8,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "superficial-part-of-tibial-collateral-ligament",
+      "name": "Superficial part of tibial collateral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Superficial part of tibial collateral ligament.l",
+      "triangles": 12,
+      "boundsMm": [
+        [
+          -15.162126541137695,
+          -264.30902099609375,
+          25.08921241760254
+        ],
+        [
+          7.365818977355957,
+          -202.74700927734375,
+          57.67414093017578
+        ]
+      ],
+      "boundaryEdges": 14,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "deep-part-of-tibial-collateral-ligament",
+      "name": "Deep part of tibial collateral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Deep part of tibial collateral ligament.l",
+      "triangles": 20,
+      "boundsMm": [
+        [
+          -18.54048728942871,
+          -265.410400390625,
+          23.511993408203125
+        ],
+        [
+          7.365818023681641,
+          -202.77867126464844,
+          57.425575256347656
+        ]
+      ],
+      "boundaryEdges": 24,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "oblique-popliteal-ligament",
+      "name": "Oblique popliteal ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Oblique popliteal ligament.l",
+      "triangles": 54,
+      "boundsMm": [
+        [
+          -48.16267013549805,
+          -246.10939025878906,
+          -7.7187418937683105
+        ],
+        [
+          -13.965418815612793,
+          -174.57504272460938,
+          37.89715576171875
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "arcuate-popliteal-ligament",
+      "name": "Arcuate popliteal ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Arcuate popliteal ligament.l",
+      "triangles": 31,
+      "boundsMm": [
+        [
+          -41.25083923339844,
+          -250.90432739257812,
+          -27.304622650146484
+        ],
+        [
+          -17.444047927856445,
+          -177.11224365234375,
+          22.129993438720703
+        ]
+      ],
+      "boundaryEdges": 31,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "popliteofibular-ligament",
+      "name": "Popliteofibular ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Popliteofibular ligament.l",
+      "triangles": 22,
+      "boundsMm": [
+        [
+          -42.9109992980957,
+          -250.0474395751953,
+          -27.88850975036621
+        ],
+        [
+          -28.131488800048828,
+          -219.3714141845703,
+          0.37315768003463745
+        ]
+      ],
+      "boundaryEdges": 24,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "transverse-ligament-of-knee",
+      "name": "Transverse ligament of knee",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Transverse ligament of knee.l",
+      "triangles": 56,
+      "boundsMm": [
+        [
+          -2.4168310165405273,
+          -228.71575927734375,
+          5.417209148406982
+        ],
+        [
+          9.621759414672852,
+          -222.51409912109375,
+          33.86566162109375
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "meniscopatellar-ligament",
+      "name": "Meniscopatellar ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Meniscopatellar ligament.l",
+      "triangles": 18,
+      "boundsMm": [
+        [
+          1.6907379627227783,
+          -225.89231872558594,
+          -16.90231704711914
+        ],
+        [
+          30.539955139160156,
+          -213.28732299804688,
+          31.562551498413086
+        ]
+      ],
+      "boundaryEdges": 6,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "articular-capsule-of-knee-joint",
+      "name": "Articular capsule of knee joint",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Articular capsule of knee joint.l",
+      "triangles": 918,
+      "boundsMm": [
+        [
+          -45.27287292480469,
+          -244.72512817382812,
+          -25.41259765625
+        ],
+        [
+          32.716068267822266,
+          -157.0486602783203,
+          54.89665222167969
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "articular-capsule-of-hip-joint",
+      "name": "Articular capsule of hip joint",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Articular capsule of hip joint.l",
+      "triangles": 346,
+      "boundsMm": [
+        [
+          -14.910919189453125,
+          146.47781372070312,
+          -30.459522247314453
+        ],
+        [
+          43.240882873535156,
+          232.24984741210938,
+          23.810985565185547
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "descending-part-of-iliofemoral-ligament",
+      "name": "Descending part of iliofemoral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Descending part of iliofemoral ligament.l",
+      "triangles": 86,
+      "boundsMm": [
+        [
+          13.215750694274902,
+          153.5477294921875,
+          -10.471681594848633
+        ],
+        [
+          37.90623474121094,
+          228.715087890625,
+          -1.7484463453292847
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "transverse-part-of-iliofemoral-ligament",
+      "name": "Transverse part of iliofemoral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Transverse part of iliofemoral ligament.l",
+      "triangles": 66,
+      "boundsMm": [
+        [
+          24.193161010742188,
+          178.71800231933594,
+          -28.84955406188965
+        ],
+        [
+          37.317108154296875,
+          230.3967742919922,
+          -3.2083559036254883
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "ischiofemoral-ligament",
+      "name": "Ischiofemoral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Ischiofemoral ligament.l",
+      "triangles": 94,
+      "boundsMm": [
+        [
+          -14.667115211486816,
+          188.60443115234375,
+          -30.06411361694336
+        ],
+        [
+          16.00397491455078,
+          204.9470672607422,
+          14.50086784362793
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "pubofemoral-ligament",
+      "name": "Pubofemoral ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Pubofemoral ligament.l",
+      "triangles": 56,
+      "boundsMm": [
+        [
+          2.319058418273926,
+          149.2257080078125,
+          -3.245018482208252
+        ],
+        [
+          36.685585021972656,
+          194.2599639892578,
+          31.646404266357422
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "ligament-of-head-of-femur",
+      "name": "Ligament of head of femur",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Ligament of head of femur.l",
+      "triangles": 226,
+      "boundsMm": [
+        [
+          3.465282678604126,
+          185.59129333496094,
+          21.655763626098633
+        ],
+        [
+          36.018802642822266,
+          210.84542846679688,
+          36.13491439819336
+        ]
+      ],
+      "boundaryEdges": 9,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "transverse-acetabular-ligament",
+      "name": "Transverse acetabular ligament",
+      "tissue": "ligament",
+      "assetGroup": "bones",
+      "sourceObject": "Transverse acetabular ligament.l",
+      "triangles": 80,
+      "boundsMm": [
+        [
+          -2.778424024581909,
+          185.5912628173828,
+          17.9315128326416
+        ],
+        [
+          39.158470153808594,
+          198.8623046875,
+          35.72220230102539
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "fascia-lata",
+      "name": "Fascia lata",
+      "tissue": "fascia",
+      "assetGroup": "bones",
+      "sourceObject": "Fascia lata.l",
+      "triangles": 12907,
+      "boundsMm": [
+        [
+          -94.04118347167969,
+          -226.38858032226562,
+          -69.12893676757812
+        ],
+        [
+          81.09752655029297,
+          343.52557373046875,
+          90.23466491699219
+        ]
+      ],
+      "boundaryEdges": 457,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "iliotibial-tract",
+      "name": "Iliotibial tract",
+      "tissue": "fascia",
+      "assetGroup": "bones",
+      "sourceObject": "Iliotibial tract.l",
+      "triangles": 22000,
+      "boundsMm": [
+        [
+          -33.18138885498047,
+          -264.6428527832031,
+          -70.93960571289062
+        ],
+        [
+          48.43840408325195,
+          340.59490966796875,
+          0.48092469573020935
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "lateral-femoral-intermuscular-septum",
+      "name": "Lateral femoral intermuscular septum",
+      "tissue": "fascia",
+      "assetGroup": "bones",
+      "sourceObject": "Lateral femoral intermuscular septum.l",
+      "triangles": 588,
+      "boundsMm": [
+        [
+          -23.40869140625,
+          -173.70803833007812,
+          -39.588958740234375
+        ],
+        [
+          3.159583568572998,
+          93.6434555053711,
+          -3.6928579807281494
+        ]
+      ],
+      "boundaryEdges": 110,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "medial-femoral-intermuscular-septum",
+      "name": "Medial femoral intermuscular septum",
+      "tissue": "fascia",
+      "assetGroup": "bones",
+      "sourceObject": "Medial femoral intermuscular septum.l",
+      "triangles": 7714,
+      "boundsMm": [
+        [
+          -9.294412612915039,
+          -166.01622009277344,
+          -16.124460220336914
+        ],
+        [
+          74.55986022949219,
+          239.89927673339844,
+          69.9246826171875
+        ]
+      ],
+      "boundaryEdges": 362,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "medial-meniscus",
+      "name": "Medial meniscus",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Medial meniscus.l",
+      "triangles": 68,
+      "boundsMm": [
+        [
+          -41.52444839477539,
+          -238.0755615234375,
+          22.182703018188477
+        ],
+        [
+          4.243710994720459,
+          -222.3848419189453,
+          48.79164505004883
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "lateral-meniscus",
+      "name": "Lateral meniscus",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Lateral meniscus.l",
+      "triangles": 116,
+      "boundsMm": [
+        [
+          -28.951534271240234,
+          -233.1864471435547,
+          -20.111953735351562
+        ],
+        [
+          10.825688362121582,
+          -217.15338134765625,
+          14.662284851074219
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "acetabular-labrum",
+      "name": "Acetabular labrum",
+      "tissue": "cartilage",
+      "assetGroup": "bones",
+      "sourceObject": "Acetabular labrum.l",
+      "triangles": 352,
+      "boundsMm": [
+        [
+          -14.910918235778809,
+          183.88075256347656,
+          -12.272250175476074
+        ],
+        [
+          43.240882873535156,
+          232.24984741210938,
+          23.749080657958984
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "femoral-artery",
+      "name": "Femoral artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Femoral artery.l",
+      "triangles": 1088,
+      "boundsMm": [
+        [
+          2.0704827308654785,
+          -97.40099334716797,
+          12.883234977722168
+        ],
+        [
+          70.85140228271484,
+          240.56251525878906,
+          44.860443115234375
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "deep-femoral-artery",
+      "name": "Deep femoral artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Deep femoral artery.l",
+      "triangles": 584,
+      "boundsMm": [
+        [
+          -9.689221382141113,
+          -66.08586120605469,
+          -4.367466926574707
+        ],
+        [
+          68.36976623535156,
+          193.35476684570312,
+          37.815147399902344
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "lateral-circumflex-femoral-artery",
+      "name": "Lateral circumflex femoral artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Lateral circumflex femoral artery.l",
+      "triangles": 736,
+      "boundsMm": [
+        [
+          -16.001150131225586,
+          157.32093811035156,
+          -52.57986831665039
+        ],
+        [
+          48.8433952331543,
+          204.8914031982422,
+          18.6173095703125
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "medial-circumflex-femoral-artery",
+      "name": "Medial circumflex femoral artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Medial circumflex femoral artery.l",
+      "triangles": 800,
+      "boundsMm": [
+        [
+          -5.382283687591553,
+          161.60153198242188,
+          -16.86615562438965
+        ],
+        [
+          46.995277404785156,
+          206.61492919921875,
+          18.08578872680664
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "perforating-femoral-arteries",
+      "name": "Perforating femoral arteries",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Perforating femoral arteries.l",
+      "triangles": 608,
+      "boundsMm": [
+        [
+          13.614785194396973,
+          -44.53571701049805,
+          -36.843074798583984
+        ],
+        [
+          35.16554260253906,
+          137.3159942626953,
+          14.69576358795166
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "popliteal-artery",
+      "name": "Popliteal artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Popliteal artery.l",
+      "triangles": 512,
+      "boundsMm": [
+        [
+          -48.28228759765625,
+          -283.43365478515625,
+          -5.0420098304748535
+        ],
+        [
+          9.398214340209961,
+          -91.84451293945312,
+          29.446521759033203
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "superior-lateral-genicular-artery",
+      "name": "Superior lateral genicular artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Superior lateral genicular artery.l",
+      "triangles": 440,
+      "boundsMm": [
+        [
+          -15.304553985595703,
+          -178.2723388671875,
+          -29.32203483581543
+        ],
+        [
+          24.725467681884766,
+          -128.9077606201172,
+          18.197620391845703
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "superior-medial-genicular-artery",
+      "name": "Superior medial genicular artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Superior medial genicular artery.l",
+      "triangles": 1248,
+      "boundsMm": [
+        [
+          -17.6394100189209,
+          -231.64886474609375,
+          12.523077011108398
+        ],
+        [
+          34.563751220703125,
+          -87.60237884521484,
+          48.74679946899414
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "inferior-lateral-genicular-artery",
+      "name": "Inferior lateral genicular artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Inferior lateral genicular artery.l",
+      "triangles": 584,
+      "boundsMm": [
+        [
+          -46.41790771484375,
+          -228.1219940185547,
+          -27.930078506469727
+        ],
+        [
+          24.216604232788086,
+          -201.48971557617188,
+          15.814058303833008
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "inferior-medial-genicular-artery",
+      "name": "Inferior medial genicular artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Inferior medial genicular artery.l",
+      "triangles": 512,
+      "boundsMm": [
+        [
+          -45.743839263916016,
+          -243.5361785888672,
+          15.734817504882812
+        ],
+        [
+          29.213335037231445,
+          -216.56005859375,
+          54.03469467163086
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "middle-genicular-artery",
+      "name": "Middle genicular artery",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Middle genicular artery.l",
+      "triangles": 1264,
+      "boundsMm": [
+        [
+          -41.208621978759766,
+          -193.8000946044922,
+          -12.623956680297852
+        ],
+        [
+          -23.68400001525879,
+          -168.3908233642578,
+          40.53696060180664
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "patellar-anastomosis",
+      "name": "Patellar anastomosis",
+      "tissue": "artery",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Patellar anastomosis.l",
+      "triangles": 2416,
+      "boundsMm": [
+        [
+          -17.60460090637207,
+          -283.3955993652344,
+          -26.598325729370117
+        ],
+        [
+          46.04769515991211,
+          -155.53155517578125,
+          34.71506881713867
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "femoral-vein",
+      "name": "Femoral vein",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Femoral vein.l",
+      "triangles": 1016,
+      "boundsMm": [
+        [
+          0.8275881409645081,
+          -91.52847290039062,
+          15.434991836547852
+        ],
+        [
+          72.004150390625,
+          228.2305908203125,
+          54.077030181884766
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "deep-femoral-vein",
+      "name": "Deep femoral vein",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Deep femoral vein.l",
+      "triangles": 800,
+      "boundsMm": [
+        [
+          27.344493865966797,
+          -62.274112701416016,
+          -2.6138834953308105
+        ],
+        [
+          68.85256958007812,
+          187.3843536376953,
+          43.53430938720703
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "lateral-circumflex-femoral-veins",
+      "name": "Lateral circumflex femoral veins",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Lateral circumflex femoral veins.l",
+      "triangles": 808,
+      "boundsMm": [
+        [
+          -17.476707458496094,
+          162.4331817626953,
+          -55.57732009887695
+        ],
+        [
+          69.34849548339844,
+          206.90859985351562,
+          50.15128707885742
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "medial-circumflex-femoral-veins",
+      "name": "Medial circumflex femoral veins",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Medial circumflex femoral veins.l",
+      "triangles": 872,
+      "boundsMm": [
+        [
+          -6.8911638259887695,
+          176.67108154296875,
+          -16.66527557373047
+        ],
+        [
+          67.1976318359375,
+          208.33995056152344,
+          42.54945373535156
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "perforating-veins",
+      "name": "Perforating veins",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Perforating veins.l",
+      "triangles": 608,
+      "boundsMm": [
+        [
+          15.683235168457031,
+          -39.887672424316406,
+          -35.31273651123047
+        ],
+        [
+          54.12614059448242,
+          128.5191192626953,
+          13.726806640625
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "popliteal-vein",
+      "name": "Popliteal vein",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Popliteal vein.l",
+      "triangles": 512,
+      "boundsMm": [
+        [
+          -49.76485061645508,
+          -249.28355407714844,
+          -3.5607571601867676
+        ],
+        [
+          8.510129928588867,
+          -85.33741760253906,
+          24.328914642333984
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "great-saphenous-vein",
+      "name": "Great saphenous vein",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Great saphenous vein.l",
+      "triangles": 1336,
+      "boundsMm": [
+        [
+          -36.44826126098633,
+          -337.0856628417969,
+          30.211244583129883
+        ],
+        [
+          77.58464813232422,
+          198.07884216308594,
+          70.97232055664062
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "small-saphenous-vein",
+      "name": "Small saphenous vein",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Small saphenous vein.l",
+      "triangles": 488,
+      "boundsMm": [
+        [
+          -83.68657684326172,
+          -337.0856628417969,
+          8.776296615600586
+        ],
+        [
+          -23.326114654541016,
+          -166.59768676757812,
+          17.085155487060547
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "genicular-veins",
+      "name": "Genicular veins",
+      "tissue": "vein",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Genicular veins.l",
+      "triangles": 2552,
+      "boundsMm": [
+        [
+          -49.72066116333008,
+          -289.128173828125,
+          -30.866321563720703
+        ],
+        [
+          36.840335845947266,
+          -124.59304809570312,
+          53.769447326660156
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "femoral-nerve",
+      "name": "Femoral nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Femoral nerve.l",
+      "triangles": 684,
+      "boundsMm": [
+        [
+          -0.5481206178665161,
+          -28.698026657104492,
+          1.7269383668899536
+        ],
+        [
+          63.94118118286133,
+          367.9143371582031,
+          51.57864761352539
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "sciatic-nerve",
+      "name": "Sciatic nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Sciatic nerve.l",
+      "triangles": 1248,
+      "boundsMm": [
+        [
+          -51.514991760253906,
+          -117.33417510986328,
+          10.539511680603027
+        ],
+        [
+          4.039976596832275,
+          321.03240966796875,
+          73.98591613769531
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "obturator-nerve",
+      "name": "Obturator nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Obturator nerve.l",
+      "triangles": 744,
+      "boundsMm": [
+        [
+          -3.283639430999756,
+          204.10897827148438,
+          30.27522850036621
+        ],
+        [
+          35.46824264526367,
+          367.9143371582031,
+          55.960453033447266
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "anterior-branch-of-obturator-nerve",
+      "name": "Anterior branch of obturator nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Anterior branch of obturator nerve.l",
+      "triangles": 440,
+      "boundsMm": [
+        [
+          6.477834701538086,
+          -99.69281005859375,
+          43.836360931396484
+        ],
+        [
+          59.350887298583984,
+          204.7734832763672,
+          71.17237091064453
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "posterior-branch-of-obturator-nerve",
+      "name": "Posterior branch of obturator nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Posterior branch of obturator nerve.l",
+      "triangles": 296,
+      "boundsMm": [
+        [
+          31.047183990478516,
+          45.742637634277344,
+          33.897499084472656
+        ],
+        [
+          43.18069076538086,
+          204.67184448242188,
+          50.53322219848633
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "lateral-femoral-cutaneous-nerve",
+      "name": "Lateral femoral cutaneous nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Lateral femoral cutaneous nerve.l",
+      "triangles": 1080,
+      "boundsMm": [
+        [
+          -36.52223587036133,
+          -102.56779479980469,
+          -68.48149871826172
+        ],
+        [
+          79.03715515136719,
+          367.9143371582031,
+          -12.399931907653809
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "posterior-femoral-cutaneous-nerve",
+      "name": "Posterior femoral cutaneous nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Posterior femoral cutaneous nerve.l",
+      "triangles": 672,
+      "boundsMm": [
+        [
+          -75.32833862304688,
+          -6.111443042755127,
+          17.642864227294922
+        ],
+        [
+          2.4064462184906006,
+          290.8401794433594,
+          59.446983337402344
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "anterior-cutaneous-branches-of-femoral-nerve",
+      "name": "Anterior cutaneous branches of femoral nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Anterior cutaneous branches of femoral nerve.l",
+      "triangles": 368,
+      "boundsMm": [
+        [
+          43.99727249145508,
+          -156.35557556152344,
+          26.868650436401367
+        ],
+        [
+          62.06953048706055,
+          204.64169311523438,
+          40.855628967285156
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "saphenous-nerve",
+      "name": "Saphenous nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Saphenous nerve.l",
+      "triangles": 924,
+      "boundsMm": [
+        [
+          -78.11656951904297,
+          -337.0856628417969,
+          24.366474151611328
+        ],
+        [
+          67.8756332397461,
+          204.71710205078125,
+          59.23501205444336
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "tibial-nerve",
+      "name": "Tibial nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Tibial nerve.l",
+      "triangles": 308,
+      "boundsMm": [
+        [
+          -45.48146438598633,
+          -337.0856628417969,
+          -5.8322062492370605
+        ],
+        [
+          -17.78097915649414,
+          -116.63760375976562,
+          15.685575485229492
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "common-fibular-nerve",
+      "name": "Common fibular nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Common fibular nerve.l",
+      "triangles": 512,
+      "boundsMm": [
+        [
+          -41.30653381347656,
+          -272.0753173828125,
+          -32.940773010253906
+        ],
+        [
+          -19.065019607543945,
+          -116.88215637207031,
+          14.185667037963867
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "superior-gluteal-nerve",
+      "name": "Superior gluteal nerve",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Superior gluteal nerve.l",
+      "triangles": 888,
+      "boundsMm": [
+        [
+          -21.07593536376953,
+          247.4897003173828,
+          -27.445573806762695
+        ],
+        [
+          -1.9798017740249634,
+          308.11297607421875,
+          60.87263488769531
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "nerve-to-quadratus-femoris-muscle",
+      "name": "Nerve to quadratus femoris muscle",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Nerve to quadratus femoris muscle.l",
+      "triangles": 1112,
+      "boundsMm": [
+        [
+          -22.650123596191406,
+          155.24142456054688,
+          0.6723925471305847
+        ],
+        [
+          15.157357215881348,
+          351.6919250488281,
+          70.8819351196289
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "nerve-to-piriformis-muscle",
+      "name": "Nerve to piriformis muscle",
+      "tissue": "nerve",
+      "assetGroup": "neurovascular",
+      "sourceObject": "Nerve to piriformis muscle.l",
+      "triangles": 376,
+      "boundsMm": [
+        [
+          -40.85525894165039,
+          231.95497131347656,
+          21.393247604370117
+        ],
+        [
+          -17.51081657409668,
+          275.7027893066406,
+          73.98591613769531
+        ]
+      ],
+      "boundaryEdges": 0,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Anterior region of thigh",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Anterior region of thigh.l",
+      "triangles": 844,
+      "boundsMm": [
+        [
+          -25.807790756225586,
+          -157.3504180908203,
+          -91.61236572265625
+        ],
+        [
+          99.95223236083984,
+          358.03118896484375,
+          86.66675567626953
+        ]
+      ],
+      "boundaryEdges": 100,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Posterior region of thigh",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Posterior region of thigh.l",
+      "triangles": 442,
+      "boundsMm": [
+        [
+          -95.41056060791016,
+          -154.7307891845703,
+          -91.0670166015625
+        ],
+        [
+          14.81590747833252,
+          150.26930236816406,
+          88.73289489746094
+        ]
+      ],
+      "boundaryEdges": 58,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Gluteal region",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Gluteal region.l",
+      "triangles": 356,
+      "boundsMm": [
+        [
+          -128.04669189453125,
+          112.68465423583984,
+          -80.33783721923828
+        ],
+        [
+          1.7361938953399658,
+          358.0312194824219,
+          90.23460388183594
+        ]
+      ],
+      "boundaryEdges": 60,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Hip region",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Hip region.l",
+      "triangles": 60,
+      "boundsMm": [
+        [
+          -47.88710403442383,
+          138.10658264160156,
+          -90.07334899902344
+        ],
+        [
+          58.29615783691406,
+          246.06378173828125,
+          -63.04849624633789
+        ]
+      ],
+      "boundaryEdges": 22,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Anterior region of knee",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Anterior region of knee.l",
+      "triangles": 322,
+      "boundsMm": [
+        [
+          -20.588315963745117,
+          -277.2475891113281,
+          -53.096473693847656
+        ],
+        [
+          74.21297454833984,
+          -151.08139038085938,
+          70.54547119140625
+        ]
+      ],
+      "boundaryEdges": 52,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Posterior region of knee",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Posterior region of knee.l",
+      "triangles": 261,
+      "boundsMm": [
+        [
+          -83.02593231201172,
+          -268.8650207519531,
+          -51.935909271240234
+        ],
+        [
+          6.696600437164307,
+          -149.37791442871094,
+          71.2650146484375
+        ]
+      ],
+      "boundaryEdges": 61,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Popliteal fossa",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Popliteal fossa.l",
+      "triangles": 41,
+      "boundsMm": [
+        [
+          -58.25843811035156,
+          -192.74343872070312,
+          -31.267683029174805
+        ],
+        [
+          -40.06158447265625,
+          -151.70574951171875,
+          49.65385818481445
+        ]
+      ],
+      "boundaryEdges": 19,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Femoral triangle",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Femoral triangle.l",
+      "triangles": 78,
+      "boundsMm": [
+        [
+          71.82503509521484,
+          91.9114761352539,
+          -11.405405044555664
+        ],
+        [
+          101.07635498046875,
+          273.5267639160156,
+          61.80219650268555
+        ]
+      ],
+      "boundaryEdges": 28,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    },
+    {
+      "id": "skin",
+      "name": "Gluteal fold",
+      "tissue": "skin",
+      "assetGroup": "exterior",
+      "sourceObject": "Gluteal fold.l",
+      "triangles": 12,
+      "boundsMm": [
+        [
+          -100.76160430908203,
+          103.38700866699219,
+          -11.788919448852539
+        ],
+        [
+          -49.09302520751953,
+          120.58724212646484,
+          78.47917175292969
+        ]
+      ],
+      "boundaryEdges": 14,
+      "materialSeparation": "all",
+      "sourceAttachments": {}
+    }
+  ]
+}

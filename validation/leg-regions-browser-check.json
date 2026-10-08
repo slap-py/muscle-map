@@ -1,0 +1,69 @@
+{
+  "checks": [
+    "lower-leg opens its own catalog, loads isolated assets, supports facts, focus, attachments and medial/lateral cameras",
+    "left-lower-leg title and topbar controls remain separated at 390px and 820px",
+    "left-lower-leg opens its own catalog, loads isolated assets, supports facts, focus, attachments and medial/lateral cameras",
+    "left-upper-leg title and topbar controls remain separated at 390px and 820px",
+    "left-upper-leg opens its own catalog, loads isolated assets, supports facts, focus, attachments and medial/lateral cameras",
+    "right-upper-leg title and topbar controls remain separated at 390px and 820px",
+    "right-upper-leg opens its own catalog, loads isolated assets, supports facts, focus, attachments and medial/lateral cameras",
+    "regional bone failures show the regional retry message and hide unavailable structures",
+    "Low graphics defers layers, loads exterior on demand, and disposes workers for all new regions",
+    "switching through all four regions returns viewer disposal counters to zero"
+  ],
+  "routeResults": [
+    {
+      "id": "lower-leg",
+      "title": "Right Foot & Ankle",
+      "initialRows": 126,
+      "modelRequests": [
+        "http://127.0.0.1:5181/models/bones.glb",
+        "http://127.0.0.1:5181/models/muscles.glb",
+        "http://127.0.0.1:5181/models/exterior.glb",
+        "http://127.0.0.1:5181/models/neurovascular.glb"
+      ]
+    },
+    {
+      "id": "left-lower-leg",
+      "title": "Left Lower Leg & Foot",
+      "initialRows": 126,
+      "modelRequests": [
+        "http://127.0.0.1:5181/models/left-lower-leg/bones.glb",
+        "http://127.0.0.1:5181/models/left-lower-leg/muscles.glb",
+        "http://127.0.0.1:5181/models/left-lower-leg/exterior.glb",
+        "http://127.0.0.1:5181/models/left-lower-leg/neurovascular.glb"
+      ]
+    },
+    {
+      "id": "left-upper-leg",
+      "title": "Left Upper Leg",
+      "initialRows": 112,
+      "modelRequests": [
+        "http://127.0.0.1:5181/models/left-upper-leg/bones.glb",
+        "http://127.0.0.1:5181/models/left-upper-leg/muscles.glb",
+        "http://127.0.0.1:5181/models/left-upper-leg/exterior.glb",
+        "http://127.0.0.1:5181/models/left-upper-leg/neurovascular.glb"
+      ]
+    },
+    {
+      "id": "right-upper-leg",
+      "title": "Right Upper Leg",
+      "initialRows": 112,
+      "modelRequests": [
+        "http://127.0.0.1:5181/models/right-upper-leg/bones.glb",
+        "http://127.0.0.1:5181/models/right-upper-leg/muscles.glb",
+        "http://127.0.0.1:5181/models/right-upper-leg/exterior.glb",
+        "http://127.0.0.1:5181/models/right-upper-leg/neurovascular.glb"
+      ]
+    }
+  ],
+  "diagnostics": {
+    "activeViewers": 0,
+    "activeListeners": 0,
+    "activeWorkers": 0,
+    "pendingLoads": 0,
+    "geometries": 0,
+    "lastDisposedGeometries": 0
+  },
+  "errors": []
+}

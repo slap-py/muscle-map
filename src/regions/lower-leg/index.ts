@@ -1,3 +1,4 @@
+import neurovascularCatalog from "../../neurovascularCatalog.json";
 import { structures, byId, tissueNames, colors, type Tissue } from "../../data";
 import { atlasTabs as sourceAtlasTabs, atlasIds } from "../../atlas";
 import { directions, createCompass } from "../../compass";
@@ -27,6 +28,9 @@ export const viewPresets = ["foot", "dorsal", "plantar", "medial", "lateral"].ma
 const base = import.meta.env.BASE_URL;
 export const assetUrls = { bones: `${base}models/bones.glb`, muscles: `${base}models/muscles.glb`, exterior: `${base}models/exterior.glb`, neurovascular: `${base}models/neurovascular.glb` } as const;
 export const assets = assetUrls;
+const neurovascularSources = Object.fromEntries(neurovascularCatalog.map(record => [record.id, record.sourceObject]));
+// Frozen superior crop from public/models/neurovascular.manifest.json, in this pack's local frame.
+const neurovascularCropYMaxMm = 365.34449458122253;
 export const tissueKeys: readonly Tissue[] = ["skin", "bone", "muscle", "tendon", "ligament", "fascia", "cartilage", "artery", "vein", "nerve"];
 export const atlasOrder: readonly Tissue[] = ["bone", "muscle", "tendon", "ligament", "fascia", "artery", "vein", "nerve", "cartilage", "skin"];
 export const atlasNames: Readonly<Record<Tissue, string>> = { ...tissueNames, skin: "Skin", fascia: "Fascia" };
@@ -54,5 +58,5 @@ export const scene = {
   fillPosition: legacyPointToMm(5, 6, -4), fillTarget: legacyPointToMm(0, 0, 0),
   floorPosition: legacyPointToMm(0, 0.06, 0),
 };
-export const lowerLegPack: RegionPack = validateRegionPack({ id: "lower-leg", title: "Right Foot & Ankle", description: "An interactive study model of the right foot and ankle.", thumbnail: `${base}regions/lower-leg.png`, structures, byId, tissueNames, colors, atlasTabs: atlasAreas, atlasAreas, atlasIds, directions, cameraViews, cameraPreset, viewPresets, labelTier, tierForZoom, presets, assets: assetUrls, assetUrls, about, structureCounts, scene, createCompass, createAnkle, rebuildSoftTissues, attachmentSources, connectionsFor, directlyAttachedIds, connectionHighlightIds, footprintDecal, connectionCameraPose, connectionOccluders, connectionClinicalPoints, relatedIds, legacyPointToMm, neurovascularTissues, isNeurovascular, defaultView, defaultMode, tissueKeys, atlasOrder, atlasNames, loaders });
+export const lowerLegPack: RegionPack = validateRegionPack({ id: "lower-leg", title: "Right Foot & Ankle", description: "An interactive study model of the right foot and ankle.", thumbnail: `${base}regions/lower-leg.png`, structures, byId, neurovascularSources, neurovascularCropYMaxMm, tissueNames, colors, atlasTabs: atlasAreas, atlasAreas, atlasIds, directions, cameraViews, cameraPreset, viewPresets, labelTier, tierForZoom, presets, assets: assetUrls, assetUrls, about, structureCounts, scene, createCompass, createAnkle, rebuildSoftTissues, attachmentSources, connectionsFor, directlyAttachedIds, connectionHighlightIds, footprintDecal, connectionCameraPose, connectionOccluders, connectionClinicalPoints, relatedIds, legacyPointToMm, neurovascularTissues, isNeurovascular, defaultView, defaultMode, tissueKeys, atlasOrder, atlasNames, loaders });
 export default lowerLegPack;

@@ -1,0 +1,43 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import { viewerUrl } from './browser-url.mjs';
+const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
+const errors = [], warnings = [];
+page.on('pageerror', e => errors.push(e.message));
+page.on('console', message => { if (message.type() === 'error' && !message.location().url.endsWith('/favicon.ico')) errors.push(message.text()); if (message.type() === 'warning') warnings.push(message.text()); });
+await page.addInitScript(() => localStorage.setItem('muscle-map-graphics', 'high'));
+try {
+  await page.goto(viewerUrl(undefined, '/regions?region=lower-leg&region=left-lower-leg&region=right-upper-leg&region=left-upper-leg'));
+  await page.waitForFunction(() => document.querySelector('#viewport')?.dataset.boneAssets === 'ready' && document.querySelector('#viewport')?.dataset.loadedMuscles === '80' && window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
+  await page.locator('#loading').waitFor({ state: 'detached', timeout: 60000 });
+  assert.equal(await page.locator('.title').innerText(), '4 Body Regions');
+  assert.equal(await page.locator('#viewport').getAttribute('data-loaded-bones'), '67');
+  assert.equal(await page.locator('#viewport').getAttribute('data-soft-tissues'), 'ready');
+  await page.screenshot({ path: 'validation/combined-all-regions.png' });
+  await page.locator('.region-menu > summary').click();
+  assert.equal(await page.locator('.region-menu input:checked').count(), 4);
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+  const bounds = await page.locator('.region-menu-items').boundingBox();
+  assert(bounds.x >= 0 && bounds.x + bounds.width <= 390);
+  await page.screenshot({ path: 'validation/combined-picker-390.png' });
+  for (const input of await page.locator('.region-menu input').all()) await input.uncheck();
+  assert(await page.locator('.region-menu button[type="submit"]').isDisabled());
+  await page.locator('.region-menu > summary').click();
+  await page.locator('.viewer-home').click();
+  await page.locator('#hub').waitFor();
+  await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
+  const diagnostics = await page.evaluate(() => window.__viewerDiagnostics);
+  assert.equal(diagnostics.activeViewers, 0);
+  assert.equal(diagnostics.activeListeners, 0);
+  assert.deepEqual(errors, []);
+  assert.deepEqual(warnings, []);
+  await fs.writeFile('validation/combined-all-regions-check.json', JSON.stringify({ graphics: 'high', regions: 4, loadedBones: 67, loadedMuscles: 80, errors, warnings, diagnostics }, null, 2));
+  console.log('All four regions pass in High graphics, including the mobile region picker and disposal.');
+} catch (error) {
+  console.log(JSON.stringify({ errors, warnings, dataset: await page.locator('#viewport').evaluate(element => ({...element.dataset})).catch(() => null) }, null, 2));
+  await page.screenshot({ path: 'validation/combined-all-failure.png' }).catch(() => {});
+  throw error;
+} finally { await browser.close(); }

@@ -4,10 +4,12 @@ import "@fontsource/inter/latin-600.css";
 import "./style.css";
 import { regionCatalog } from "./regions/catalog";
 import { validateRegionPack } from "./regions";
-import { parseRoute, regionHref, LAST_REGION_KEY } from "./router";
+import { parseRoute, LAST_REGION_KEY } from "./router";
 import { readThemeChoice, setThemeChoice, type ThemeChoice } from "./theme";
 import "./viewerDiagnostics";
 import { loadingScreen } from "./loading";
+import { combinedTitleForIds } from "./regions/combinedTitle";
+import { renderBodyMap, bindBodyMap } from "./bodyMap";
 
 const app = document.querySelector<HTMLElement>("#app")!;
 const regionIds = regionCatalog.map(region => region.id);
@@ -20,28 +22,25 @@ function renderHub(error?: string) {
   document.body.dataset.page = "hub";
   let lastRegion: string | null = null;
   try { lastRegion = localStorage.getItem(LAST_REGION_KEY); } catch {}
-  const tissueLabels: Record<string, string> = {
-    skin: "Skin", bone: "Bones", muscle: "Muscles", tendon: "Tendons",
-    ligament: "Ligaments", fascia: "Fascia", cartilage: "Cartilage",
-    artery: "Arteries", vein: "Veins", nerve: "Nerves",
-  };
+  let lastRegions = lastRegion ? [lastRegion] : [];
+  try {
+    if (lastRegion?.startsWith('[')) {
+      const saved = JSON.parse(lastRegion);
+      if (Array.isArray(saved)) lastRegions = saved.filter(id => typeof id === 'string');
+    }
+  } catch {}
   app.innerHTML = `<div id="hub">
     <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Muscle Map home">Muscle Map</a>
       <div class="segmented theme-control" aria-label="Color theme">${(["system","light","dark"] as const).map(choice => `<button data-theme-choice="${choice}" aria-pressed="${readThemeChoice() === choice}" class="${readThemeChoice() === choice ? "active" : ""}">${choice === "system" ? "System" : choice === "light" ? "Light" : "Dim"}</button>`).join("")}</div>
     </header>
-    <main class="hub-main"><div class="hub-intro"><p class="hub-eyebrow">Interactive anatomy</p><h1>Explore by region</h1><p>Choose a region to explore its structures, layers and connections in 3D.</p></div>
+    <main class="hub-main hub-body-main"><div class="hub-intro"><p class="hub-eyebrow">Interactive anatomy</p><h1>Explore by region</h1><p>Click a region of the body to select it, add touching sections on the same side, then press Go to explore them together in 3D.</p></div>
     ${error ? '<p class="hub-error" role="alert">The viewer could not start. Please try opening the region again.</p>' : ""}
-    <div class="region-grid">${regionCatalog.map(region => `<article class="region-card" data-region-id="${region.id}">
-      <a class="region-thumbnail" href="${regionHref(region.id)}" tabindex="-1" aria-hidden="true"><img class="thumbnail-light" src="${region.thumbnail}" alt="" width="720" height="560"/><img class="thumbnail-dim" src="${region.dimThumbnail}" alt="" width="720" height="560"/></a>
-      <div class="region-card-content"><div class="region-card-heading"><h2>${region.title}</h2>${lastRegion === region.id ? '<span class="last-region">Last opened</span>' : ""}</div>
-      <p class="region-description">${region.description}</p>
-      <details class="region-counts"><summary><strong>${region.structureCounts.total}</strong> structures</summary><dl>${Object.entries(region.structureCounts.byTissue).filter(([tissue]) => tissue !== "skin").map(([tissue,count]) => `<div><dt>${tissueLabels[tissue] ?? tissue}</dt><dd>${count}</dd></div>`).join("")}</dl></details>
-      <a class="button primary open-region" href="${regionHref(region.id)}">Open <span aria-hidden="true">→</span></a>
-      </div></article>`).join("")}</div>
+    ${renderBodyMap(lastRegions)}
     </main>
     <footer class="hub-footer"><p>Study models from Z-Anatomy and BodyParts3D.</p><p><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">Adapted assets · CC BY-SA 4.0</a> · <a href="#/credits">Sources &amp; credits</a></p></footer>
   </div>`;
   bindThemeControl();
+  bindBodyMap(app.querySelector<HTMLElement>(".body-map")!, lastRegions);
 }
 
 function bindThemeControl() {
@@ -74,24 +73,32 @@ function renderCredits() {
 async function route() {
   const revision = ++routeRevision;
   const next = parseRoute(location.hash, regionIds);
-  if (next.kind === "region" && mounted && mountedRegion === next.regionId) {
+  const selectedRegionIds = next.kind === 'region' ? [next.regionId] : next.kind === 'regions' ? next.regionIds : [];
+  const regionKey = selectedRegionIds.join('+');
+  if ((next.kind === "region" || next.kind === "regions") && mounted && mountedRegion === regionKey) {
     mounted.select(next.select);
     return;
   }
+  const session = selectedRegionIds.length ? mounted?.captureSession() : undefined;
   mounted?.dispose(); mounted = undefined; mountedRegion = undefined;
   if (next.kind === "hub") { renderHub(); return; }
   if (next.kind === "credits") { renderCredits(); return; }
-  const entry = regionCatalog.find(region => region.id === next.regionId)!;
+  const entries = selectedRegionIds.map(id => regionCatalog.find(region => region.id === id)!);
+  const title = entries.length > 1 ? combinedTitleForIds(selectedRegionIds) : entries[0].title;
   document.body.dataset.page = "viewer";
-  app.innerHTML = loadingScreen(entry.title);
+  app.innerHTML = loadingScreen(title);
   try {
-    const [pack, viewer] = await Promise.all([entry.load(), import("./main")]);
+    const [packs, viewer, combine] = await Promise.all([
+      Promise.all(entries.map(entry => entry.load())), import("./main"),
+      entries.length > 1 ? import("./regions/combine") : Promise.resolve(null),
+    ]);
+    const pack = combine ? combine.combineRegionPacks(packs) : packs[0];
     if (revision !== routeRevision) return;
     validateRegionPack(pack);
     document.title = pack.title;
-    mounted = viewer.mountViewer(pack, app, next.select);
-    mountedRegion = next.regionId;
-    try { localStorage.setItem(LAST_REGION_KEY, next.regionId); } catch {}
+    mounted = viewer.mountViewer(pack, app, next.select, session);
+    mountedRegion = regionKey;
+    try { localStorage.setItem(LAST_REGION_KEY, selectedRegionIds.length === 1 ? selectedRegionIds[0] : JSON.stringify(selectedRegionIds)); } catch {}
   } catch (error) {
     if (revision !== routeRevision) return;
     console.error(error);

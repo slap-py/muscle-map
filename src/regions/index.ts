@@ -17,7 +17,13 @@ export interface RegionAboutCopy { title: string; overview: string; overviewHtml
 export interface RegionArea { id: string; label: string; group: string; }
 export interface RegionStructureCounts { total: number; byTissue: Readonly<Partial<Record<Tissue, number>>>; }
 export interface RegionPack {
-  id: string; title: string; description: string; thumbnail: string;
+  id: string; title: string; description: string; thumbnail: string; assetFailureMessage?: string;
+  regionIds?: readonly string[];
+  /** Source identity joins cropped neurovascular sections on the same side. */
+  neurovascularSources?: Readonly<Record<string, string>>;
+  neurovascularCropYMaxMm?: number;
+  structureRegions?: Readonly<Record<string, readonly string[]>>;
+  structureAliases?: Readonly<Record<string, string>>;
   structures: readonly Structure[]; byId: Readonly<Record<string, Structure>>;
   tissueNames: Readonly<Record<Tissue, string>>; colors: Readonly<Record<Tissue, string>>;
   atlasTabs: readonly RegionArea[]; atlasAreas: readonly RegionArea[]; atlasIds: (area: string) => Set<string>;

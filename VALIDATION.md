@@ -3,6 +3,47 @@
 Latest checks: October 6, 2026 (America/Los_Angeles). Version remains 1.0.0.
 
 
+
+## Independent left/right leg regions — October 7, 2026
+
+- Production build passes. Full unit suite: **101 tests across 22 files**.
+- Added `#/left-lower-leg` (156 structures), `#/right-upper-leg` and
+  `#/left-upper-leg` (120 each). Four independent hub cards include generated
+  Light/Dim previews, matching structure counts and source credits.
+- Blender work used the running **MCP** extension via the project's NUL-delimited
+  bridge. The source blend was opened without executing embedded scripts;
+  no blend file was saved or overwritten.
+- Both upper legs use original side-specific source anatomy. The left lower leg
+  reflects the registered right assets. Numerical audit checks reflected bounds,
+  triangle counts and signed volume/winding for every imported structure.
+  SHA-256 checks confirm all four original right-side GLBs are unchanged.
+- Native upper-leg checks validate all atlas IDs, finite geometry, anatomical
+  meter-scale bounds, export hashes and original `.l`/`.r` source names.
+- Browser checks verify each region's isolated model URLs, lazy vessels/nerves,
+  atlas, source facts, selection, isolation, focus, attachment close-ups and
+  medial/lateral views. Switching regions returns geometry, listener, worker
+  and pending-load counters to zero. Responsive hub coverage includes 390, 820
+  and 1440 pixels in Light and Dim modes.
+- The strengthened browser pass requires attachment controls and nonempty focused
+  connections, exact muscle counts, successful exterior loading, and nonoverlapping
+  viewer titles at 390/820 pixels. Low graphics creates and disposes workers for
+  all three new regions. A forced upper-leg bone 404 reports zero loaded bones and
+  clearly marks unavailable structures. All eight hub thumbnail images load.
+- Visual QA covered all three new Anatomy views and the upper-leg Exterior and
+  Neurovascular views. Open source exterior sheets require double-sided display;
+  their coverage and provenance remain source-based. The upper Anatomy preset
+  leaves the full fascia shell off initially so muscle surfaces are visible.
+
+Evidence: `validation/leg-asset-audit.json`,
+`validation/leg-regions-browser-check.json`, `validation/hub-browser-check.json`,
+and the region overview/exterior/neurovascular screenshots. New reproducible
+checks are `scripts/check-leg-assets.mjs` and
+`scripts/leg-regions-browser-check.mjs`; the existing combined browser runner
+includes the latter automatically. Checked using the preview on port 5181.
+The earlier full 12-script regression report below is historical; this extension
+reran the unit suite and the focused four-region/hub browser checks.
+
+
 ## Region packs, hub and viewer lifecycle
 
 **Final production build: passed. `npm test`: 92 tests passed across 19 files. All 12 browser scripts passed against the production preview on port 5177.**
@@ -218,3 +259,25 @@ updating two stale title assertions to Right Foot & Ankle; its passing rerun
 is recorded in `validation/region-regression-check.json`. Visual review confirms
 centered theme previews, readable narrow credits, a consistent opening screen,
 and the expand control at the right edge of the details panel.
+
+## Multi-region viewer · October 7, 2026
+
+The production build passes and the full unit suite passes (23 files, 106 tests). Five new composition tests cover canonical combined URLs, frozen source registration, shared shafts and sacrum, independent regional asset loading, namespaced picking and attachments, and opposite-side separation.
+
+`node scripts/combined-regions-browser-check.mjs` passes without browser errors or warnings. It verifies home multi-selection at 390/820/1440px, the combined left leg in Low graphics, both muscle sets, attachment focus, lazy neurovascular and exterior layers, adding/removing regions, reloads, opposite-side deep links, and disposal. The existing home/navigation browser checks also pass.
+
+Reports and screenshots: `validation/combined-regions-browser-check.json`, `combined-hub-*.png`, `combined-left-overview.png`, `combined-left-attachment.png`, and `combined-left-exterior.png`.
+All four regions also pass together in High graphics (67 bones, 80 muscles), with an accessible mobile picker, disabled empty-selection submission, and zero retained viewer/listener resources after returning home. Reproduce with `node scripts/combined-all-regions-browser-check.mjs`; the report is `validation/combined-all-regions-check.json`.
+
+
+## Shared neurovascular anatomy · October 8, 2026
+
+The production build passes. The full unit suite passes (26 files, 126 tests); the 16 focused shared-anatomy and viewer-session tests also pass after the final inspector-copy refinement.
+
+Combined views join exact source-matched vessels and nerves on the same side, even when regional IDs differ. The shipped upper/lower packs share the great and small saphenous veins, saphenous nerve and tibial nerve: one joined leg has 80 unique neurovascular structures; four regions have 160. Arterial continuations with different source identities remain separate anatomy.
+
+Real left and right GLBs are checked at the registered superior lower-leg crop. Shared upper sections are clipped at that plane to avoid double overlap; both sections use one picking ID, union bounds and a single atlas entry. A failed section leaves successful geometry usable without clipping away its fallback coverage. No connector geometry is invented.
+
+Reproduce browser checks with `node scripts/combined-neurovascular-browser-check.mjs` against the preview. Low/right and High/left checks cover both Area memberships, Focus/Isolate, adding and removing regions, retained layers/opacity/search/filters/labels/anatomical view, shared-selection transfer, legacy upper-region deep links, four-region side separation, mobile layout and disposal. There are no browser errors or warnings. The existing combined-region browser check also passes, including bone deduplication and attachment focus.
+
+Evidence is saved in `validation/combined-neurovascular-browser-check.json`, `combined-neurovascular-low*.png`, `combined-neurovascular-high*.png`, `combined-neurovascular-four-regions.png`, and `combined-neurovascular-final*.png`.

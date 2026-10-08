@@ -8,7 +8,7 @@ import { loft, ribbon, type Section } from "./geometry";
 
 import { legacyToAnatomicalMatrix } from "./coordinates";
 import { enableMeshPicking } from "./picking";
-export function createAnkle() {
+export function createAnkle(withSoftTissues = true) {
   const root = new THREE.Group();
   const parts = new Map<
     string,
@@ -283,7 +283,7 @@ export function createAnkle() {
     const c=box.getCenter(new THREE.Vector3()),r=box.getSize(new THREE.Vector3()).multiplyScalar(.5).addScalar(5);
     const g=new THREE.SphereGeometry(1,24,16);g.scale(r.x,r.y,r.z);g.translate(c.x,c.y,c.z);enableMeshPicking(add('skin',g));
   }
-  rebuildSoftTissues(parts);
+  if (withSoftTissues) rebuildSoftTissues(parts);
   for (const part of parts.values())
     new THREE.Box3().setFromObject(part.group).getCenter(part.anchor);
   return { root, parts };

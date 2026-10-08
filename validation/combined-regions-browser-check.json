@@ -1,0 +1,39 @@
+{
+  "checks": [
+    "Home multi-selection, responsive layouts, aligned combined skeleton and lazy neurovascular loading",
+    "Both muscle sets, source-linked attachment focus, vessels and exterior layers",
+    "Add/remove regions in the viewer and reload a shareable combined URL",
+    "Opposite-side combined deep links keep structure selection separate",
+    "Combined viewer disposes models, workers and listeners on return home"
+  ],
+  "errors": [],
+  "warnings": [],
+  "requests": [
+    "http://127.0.0.1:5176/models/left-lower-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/muscles.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/muscles.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/neurovascular.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/neurovascular.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/muscles.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/muscles.glb",
+    "http://127.0.0.1:5176/models/left-lower-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/bones.glb",
+    "http://127.0.0.1:5176/models/right-upper-leg/bones.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/muscles.glb",
+    "http://127.0.0.1:5176/models/right-upper-leg/muscles.glb",
+    "http://127.0.0.1:5176/models/left-upper-leg/exterior.glb",
+    "http://127.0.0.1:5176/models/right-upper-leg/exterior.glb"
+  ]
+}

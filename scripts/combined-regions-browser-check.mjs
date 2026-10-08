@@ -1,0 +1,103 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import { chromium } from '@playwright/test';
+import { appUrl, viewerUrl } from './browser-url.mjs';
+const browser = await chromium.launch({ channel: 'msedge', headless: true });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'reduce' });
+const errors = [], warnings = [], checks = [], requests = [];
+page.on('pageerror', error => errors.push(error.message));
+page.on('console', message => { if (message.type() === 'error' && !message.location().url.endsWith('/favicon.ico')) errors.push(message.text()); if (message.type() === 'warning') warnings.push(message.text()); });
+page.on('request', request => { if (request.url().includes('.glb')) requests.push(request.url()); });
+await page.addInitScript(() => localStorage.setItem('muscle-map-graphics', 'low'));
+const clickAttachment = async () => {
+  const details = page.locator('.attachment-details');
+  if (!(await details.evaluate(element => element.open))) await details.locator('summary').first().click();
+  await details.locator('.connection-focus').first().click();
+};
+const waitViewer = async () => {
+  await page.locator('#viewport').waitFor({ timeout: 60000 });
+  await page.waitForFunction(() => document.querySelector('#viewport')?.dataset.boneAssets === 'ready', undefined, { timeout: 60000 });
+  await page.locator('#loading').waitFor({ state: 'detached', timeout: 60000 });
+  await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
+};
+try {
+  await page.goto(appUrl());
+  const submit = page.locator('[data-body-go]');
+  assert(await submit.isDisabled());
+  for (const id of ['left-foot-ankle', 'left-hip-leg']) {
+    await page.locator(`[data-section="${id}"]`).focus();
+    await page.keyboard.press('Space');
+  }
+  await page.locator('[data-section="left-hip-leg"]').blur();
+  assert.equal(await page.locator('[data-body-selection]').innerText(), 'Left Hip & Upper Leg + Left Foot & Ankle');
+  assert.equal(await page.locator('.body-section[aria-checked="true"]').count(), 2);
+  assert.equal(await page.locator('.body-section[data-section^="right-"][data-state="blocked"]').count(), 2, 'the other side should be blocked');
+  for (const width of [390, 820, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await page.screenshot({ path: `validation/combined-hub-${width}.png`, fullPage: true });
+  }
+  await submit.click();
+  await waitViewer();
+  assert.equal(await page.locator('.title').innerText(), 'Left Leg');
+  assert(Number(await page.locator('#viewport').getAttribute('data-loaded-bones')) > 30);
+  assert.equal(await page.locator('#viewport').getAttribute('data-soft-tissues'), 'ready');
+  assert(!requests.some(url => url.includes('neurovascular.glb')));
+  checks.push('Home multi-selection, responsive layouts, aligned combined skeleton and lazy neurovascular loading');
+  await page.locator('[data-mode="anatomy"]').click();
+  await page.waitForFunction(() => document.querySelector('#viewport')?.dataset.layerAssets === 'ready', undefined, { timeout: 60000 });
+  await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
+  assert.equal(await page.locator('#viewport').getAttribute('data-loaded-muscles'), '40');
+  await page.locator('#atlas-area').selectOption('left-upper-leg');
+  await page.locator('#search').fill('gracilis');
+  await page.locator('.structure-row[data-id="left-upper-leg:gracilis"]').click();
+  assert.match(await page.locator('#details h2').innerText(), /Gracilis/);
+  await clickAttachment();
+  assert.equal(await page.locator('.connection-focus').first().getAttribute('aria-pressed'), 'true');
+  await page.screenshot({ path: 'validation/combined-left-attachment.png' });
+  await clickAttachment();
+  await page.locator('#clear').click();
+  await page.locator('#clear-filters').click();
+  await page.locator('[data-view="overview"]').click();
+  await page.screenshot({ path: 'validation/combined-left-overview.png' });
+  await page.locator('[data-mode="neurovascular"]').click();
+  await page.waitForFunction(() => document.querySelector('#viewport')?.dataset.neurovascularAssets === 'ready', undefined, { timeout: 60000 });
+  await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
+  await page.locator('[data-mode="exterior"]').click();
+  await page.screenshot({ path: 'validation/combined-left-exterior.png' });
+  checks.push('Both muscle sets, source-linked attachment focus, vessels and exterior layers');
+  await page.locator('.region-menu > summary').click();
+  assert.equal(await page.locator('.region-menu input:checked').count(), 2);
+  await page.locator('.region-menu input[value="left-upper-leg"]').uncheck();
+  await page.locator('.region-menu button[type="submit"]').click();
+  await waitViewer();
+  assert.equal(await page.locator('.title').innerText(), 'Left Lower Leg & Foot');
+  assert.equal(new URL(page.url()).hash, '#/left-lower-leg');
+  await page.locator('.region-menu > summary').click();
+  await page.locator('.region-menu input[value="left-upper-leg"]').check();
+  await page.locator('.region-menu button[type="submit"]').click();
+  await waitViewer();
+  await page.reload();
+  await waitViewer();
+  assert.equal(await page.locator('.title').innerText(), 'Left Leg');
+  checks.push('Add/remove regions in the viewer and reload a shareable combined URL');
+  await page.goto(viewerUrl(undefined, '/regions?region=left-upper-leg&region=right-upper-leg&select=right-upper-leg%3Agracilis'));
+  await waitViewer();
+  assert.match(await page.locator('#details h2').innerText(), /Gracilis.*Right/);
+  checks.push('Opposite-side combined deep links keep structure selection separate');
+  await page.locator('.viewer-home').click();
+  await page.locator('#hub').waitFor();
+  await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
+  const disposed = await page.evaluate(() => window.__viewerDiagnostics);
+  assert.equal(disposed.activeViewers, 0);
+  assert.equal(disposed.activeWorkers, 0);
+  assert.equal(disposed.activeListeners, 0);
+  checks.push('Combined viewer disposes models, workers and listeners on return home');
+  assert.deepEqual(errors, []);
+  await fs.writeFile('validation/combined-regions-browser-check.json', JSON.stringify({ checks, errors, warnings, requests }, null, 2));
+  console.log(JSON.stringify({ checks, errors, warnings }, null, 2));
+} catch (error) {
+  console.log(JSON.stringify({ checks, errors, warnings, url: page.url(), dataset: await page.locator('#viewport').evaluate(element => ({...element.dataset})).catch(() => null) }, null, 2));
+  await page.screenshot({ path: 'validation/combined-failure.png' }).catch(() => {});
+  throw error;
+} finally { await browser.close(); }

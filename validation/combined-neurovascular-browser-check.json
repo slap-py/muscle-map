@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "low: joined selection, both Area filters, Focus/Isolate and retained view settings",
+    "low: shared selection follows the remaining region and rejoins on add",
+    "high: joined selection, both Area filters, Focus/Isolate and retained view settings",
+    "high: shared selection follows the remaining region and rejoins on add",
+    "Four regions retain two sided veins, 160 unique neurovascular structures and legacy upper-region deep links",
+    "Final inspector copy uses whole-course anatomy and Across regions at desktop/mobile widths"
+  ],
+  "errors": [],
+  "warnings": []
+}

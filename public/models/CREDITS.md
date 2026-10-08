@@ -202,3 +202,24 @@ Nerves:
 - `Superficial fibular nerve.r`
 - `Sural nerve.r`
 - `Tibial nerve.r`
+
+
+## Left lower leg and bilateral upper legs — October 7, 2026
+
+The assets in `left-lower-leg/`, `left-upper-leg/`, and `right-upper-leg/`
+are adaptations of the same pinned Z-Anatomy / BodyParts3D source credited above,
+distributed under CC BY-SA 4.0 with underlying BodyParts3D attribution retained.
+Each folder's manifest records hashes, provenance and processing.
+
+The left lower-leg pack reflects the previously registered right-side assets
+through anatomical Z and corrects winding and normals. It is a study mirror,
+not independent left-side source anatomy. Its skin remains an illustrative
+exterior derived from the existing right-side envelope.
+
+The two upper-leg packs extract original `.l` and `.r` source objects. Changes:
+hip-to-proximal-lower-leg crop; separated tendon and cartilage materials; cap
+crop/seam boundaries; subdivide and reduce source surfaces; convert source curves
+with their original radii; register around each femur; export static Y-up GLBs.
+Exterior consists of original body-region patches displayed double-sided.
+No excluded third-party exception objects are used. Per-object names and triangle
+counts are recorded in each manifest. Footprint focus extents are illustrative.

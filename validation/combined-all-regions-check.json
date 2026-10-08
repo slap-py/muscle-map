@@ -1,0 +1,16 @@
+{
+  "graphics": "high",
+  "regions": 4,
+  "loadedBones": 67,
+  "loadedMuscles": 80,
+  "errors": [],
+  "warnings": [],
+  "diagnostics": {
+    "activeViewers": 0,
+    "activeListeners": 0,
+    "activeWorkers": 0,
+    "pendingLoads": 0,
+    "geometries": 0,
+    "lastDisposedGeometries": 0
+  }
+}

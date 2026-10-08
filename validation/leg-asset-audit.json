@@ -1,0 +1,44 @@
+{
+  "mirrored": [
+    {
+      "asset": "bones",
+      "structures": 30,
+      "originalHashUnchanged": true,
+      "reflectionAndWinding": true
+    },
+    {
+      "asset": "muscles",
+      "structures": 12,
+      "originalHashUnchanged": true,
+      "reflectionAndWinding": true
+    },
+    {
+      "asset": "exterior",
+      "structures": 2,
+      "originalHashUnchanged": true,
+      "reflectionAndWinding": true
+    },
+    {
+      "asset": "neurovascular",
+      "structures": 49,
+      "originalHashUnchanged": true,
+      "reflectionAndWinding": true
+    }
+  ],
+  "upper": [
+    {
+      "side": "left",
+      "structures": 120,
+      "sourceSideVerified": true,
+      "finiteGeometry": true,
+      "hashesVerified": true
+    },
+    {
+      "side": "right",
+      "structures": 120,
+      "sourceSideVerified": true,
+      "finiteGeometry": true,
+      "hashesVerified": true
+    }
+  ]
+}

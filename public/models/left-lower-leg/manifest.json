@@ -1,0 +1,46 @@
+{
+  "side": "left",
+  "license": "CC-BY-SA-4.0",
+  "adaptation": "Anatomical-Z reflection of the registered right lower-leg assets with reversed triangle winding and recalculated normals. Not an independent left specimen.",
+  "assets": [
+    {
+      "asset": "bones",
+      "objects": 30,
+      "sourceAsset": "../bones.glb",
+      "sourceSha256": "93c5e1bcb3a7262efebb6d4f02ffb5599fa39b1d2b3149024b1ea0a5991f5e04",
+      "glbSha256": "e43a0473cb9922de069aee06fe1a6dcc230e3a46e10797bfb52ef3e8194ac3eb",
+      "bytes": 5655048
+    },
+    {
+      "asset": "muscles",
+      "objects": 12,
+      "sourceAsset": "../muscles.glb",
+      "sourceSha256": "53544fca088a482d9a7bae23030b6c3dd9f459711f2744214640cb881cd18e5b",
+      "glbSha256": "9ec6adf19bad9218bc3e784a62ff48949398cbb3a5d9306cec7e703a82c28847",
+      "bytes": 2372592
+    },
+    {
+      "asset": "exterior",
+      "objects": 3,
+      "sourceAsset": "../exterior.glb",
+      "sourceSha256": "468571581213eb8718fc141cc5ad229c1915cf2233a1c0ee499ce03a2a5b85bf",
+      "glbSha256": "238a1fd8b1bc66025a770f03589a72a813b747d162e13647e6837a20828caf2e",
+      "bytes": 2613528
+    },
+    {
+      "asset": "neurovascular",
+      "objects": 49,
+      "sourceAsset": "../neurovascular.glb",
+      "sourceSha256": "99a2df0a57206e02c879e06f99b811899fd868d5b92c85b6823e6b6fe414f5db",
+      "glbSha256": "51010a9ad491d9917af6171618c24ce7da44a79e079648f2d97354652670b9c2",
+      "bytes": 1522056
+    }
+  ],
+  "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceUrl": "https://github.com/Z-Anatomy/Models-of-human-anatomy/tree/b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "sourceBlendSha256": "9f08a17ea0115fed80b2a73ecdf0a1bc2ab2f6956f37c593ce23d513ea35afcd",
+  "attribution": [
+    "Z-Anatomy \u2014 The libre 3D atlas of anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
+    "BodyParts3D \u2014 The Database Center for Life Science \u2014 Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
+  ]
+}

@@ -1,11 +1,18 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { structures, colors, byId, type Tissue } from "./data";
+import { structures, colors, byId, type Structure, type Tissue } from "./data";
 import { enableMeshPicking, type BvhBuilder } from "./picking";
 import type { createAnkle } from "./ankle";
 import { disposeObject } from "./viewerResources";
 
 type Parts = ReturnType<typeof createAnkle>["parts"];
+type StructureLookup = Readonly<Record<string, Structure>>;
+export interface RegionAssetGroups {
+  bones: string[];
+  muscles: string[];
+  exterior: string[];
+  neurovascular: string[];
+}
 export const boneIds = structures.filter(s => s.tissue === "bone").map(s => s.id);
 export const muscleIds = structures.filter(s => s.tissue === "muscle").map(s => s.id);
 export interface AssetReport {
@@ -33,13 +40,13 @@ interface StagedAssets {
 }
 
 /** Consume a meter-scale GLTF scene. Keep each existing part/group/anchor identity. */
-function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue): AssetReport {
-  return commitAssets(stageAssets(scene, parts, ids, tissue, true), parts, ids);
+function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, lookup: StructureLookup = byId, skinSource = "illustrative-envelope"): AssetReport {
+  return commitAssets(stageAssets(scene, parts, ids, tissue, true, lookup, skinSource), parts, ids);
 }
 
 /** As installAssets, but picking BVHs are built by `bvh` before any mesh joins the scene. */
-async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh: BvhBuilder): Promise<AssetReport> {
-  const assets = stageAssets(scene, parts, ids, tissue, false);
+async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh: BvhBuilder, lookup: StructureLookup = byId, skinSource = "illustrative-envelope"): Promise<AssetReport> {
+  const assets = stageAssets(scene, parts, ids, tissue, false, lookup, skinSource);
   try {
     await bvh([...assets.staged.values()].flat());
     return commitAssets(assets, parts, ids);
@@ -50,7 +57,7 @@ async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: stri
   }
 }
 
-function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, pick: boolean): StagedAssets {
+function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, pick: boolean, lookup: StructureLookup = byId, skinSource = "illustrative-envelope"): StagedAssets {
   const report: AssetReport = { loaded: [], fallback: [], warnings: [] };
   const staged = new Map<string, THREE.Mesh[]>();
   const invalid = new Set<string>();
@@ -63,7 +70,8 @@ function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue:
     for (let parent = object.parent; !id && parent; parent = parent.parent)
       id = parent.userData.atlasId;
     id ??= object.name;
-    if (typeof id !== "string" || !ids.includes(id) || !parts.has(id)) {
+    const structure = typeof id === "string" ? lookup[id] : undefined;
+    if (typeof id !== "string" || !structure || !ids.includes(id) || !parts.has(id)) {
       report.warnings.push(`Ignored unmatched mesh: ${object.name}`);
       return;
     }
@@ -95,12 +103,14 @@ function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue:
       geometry.computeBoundingSphere();
       if (!geometry.boundingSphere || geometry.boundingSphere.radius <= 0)
         throw new Error("Empty anatomical surface");
-      mesh = new THREE.Mesh(geometry, byId[id].tissue === "skin" ? new THREE.MeshPhysicalMaterial({color: "#d8a68a", roughness: .55, sheen: .3, sheenColor: "#ffd9c4", clearcoat: .05}) : new THREE.MeshStandardMaterial({
-        color: colors[byId[id].tissue], roughness: tissue === "bone" ? 0.76 : 0.68, side: THREE.FrontSide,
+      const actualTissue = structure.tissue;
+      mesh = new THREE.Mesh(geometry, actualTissue === "skin" ? new THREE.MeshPhysicalMaterial({color: "#d8a68a", roughness: .55, sheen: .3, sheenColor: "#ffd9c4", clearcoat: .05, side: skinSource === "z-anatomy-regional-surface" ? THREE.DoubleSide : THREE.FrontSide}) : new THREE.MeshStandardMaterial({
+        color: colors[actualTissue], roughness: actualTissue === "cartilage" ? 0.36 : actualTissue === "bone" ? 0.76 : 0.68,
+        side: actualTissue === "fascia" ? THREE.DoubleSide : THREE.FrontSide,
       }));
       mesh.name = id;
-      mesh.userData = { id, atlasId: id, fiber: false, source: byId[id].tissue === "skin" ? "illustrative-envelope" : "z-anatomy" };
-      mesh.castShadow = byId[id].tissue !== "skin";
+      mesh.userData = { id, atlasId: id, fiber: false, source: actualTissue === "skin" ? skinSource : "z-anatomy" };
+      mesh.castShadow = actualTissue !== "skin";
       mesh.receiveShadow = true;
       if (pick) enableMeshPicking(mesh);
       const list = staged.get(id) ?? [];
@@ -147,8 +157,8 @@ function commitAssets({ report, staged, invalid, sourceMeshes }: StagedAssets, p
 }
 
 /** Install synchronously, or with worker-built BVHs when a builder is given. */
-const install = (scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh?: BvhBuilder) =>
-  bvh ? installAssetsAsync(scene, parts, ids, tissue, bvh) : installAssets(scene, parts, ids, tissue);
+const install = (scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh?: BvhBuilder, lookup: StructureLookup = byId, skinSource = "illustrative-envelope") =>
+  bvh ? installAssetsAsync(scene, parts, ids, tissue, bvh, lookup, skinSource) : installAssets(scene, parts, ids, tissue, lookup, skinSource);
 const exteriorIds = ['skin', 'gastrocnemius'];
 const importedMuscleIds = muscleIds.filter(id => id !== "gastrocnemius");
 
@@ -185,8 +195,8 @@ export const installExteriorAssets = (scene: THREE.Object3D, parts: Parts) => in
 export const neurovascularTissues: Tissue[] = ['artery', 'vein', 'nerve'];
 export const isNeurovascular = (tissue: Tissue) => neurovascularTissues.includes(tissue);
 export const neurovascularIds = structures.filter(s => isNeurovascular(s.tissue)).map(s => s.id);
-function markNeurovascular(report: AssetReport, parts: Parts): AssetReport {
-  for (const id of neurovascularIds) {
+function markNeurovascular(report: AssetReport, parts: Parts, ids: readonly string[] = neurovascularIds): AssetReport {
+  for (const id of ids) {
     const part = parts.get(id);
     if (!part) continue;
     part.group.userData.unavailable = !report.loaded.includes(id);
@@ -211,6 +221,80 @@ export async function loadNeurovascularAssets(
     }
     return { loaded: [], fallback: [...neurovascularIds], warnings: [`Neurovascular assets unavailable: ${String(error)}`] };
   }
+}
+
+
+function emptyPartAssets(parts: Parts, ids: readonly string[], hide = true) {
+  for (const id of new Set(ids)) {
+    const part = parts.get(id);
+    if (!part) continue;
+    const previous = part.meshes.splice(0);
+    for (const mesh of previous) part.group.remove(mesh);
+    disposeMeshes(previous);
+    part.group.userData.unavailable = true;
+    if (hide) part.group.visible = false;
+  }
+}
+
+function preparePartAssets(parts: Parts, ids: readonly string[]) {
+  const visibility = new Map<string, boolean>();
+  for (const id of new Set(ids)) {
+    const part = parts.get(id);
+    if (!part) continue;
+    visibility.set(id, part.group.visible);
+    const previous = part.meshes.splice(0);
+    for (const mesh of previous) part.group.remove(mesh);
+    disposeMeshes(previous);
+    delete part.group.userData.unavailable;
+  }
+  return visibility;
+}
+
+async function loadRegionalGroup(
+  parts: Parts, ids: readonly string[], tissue: Tissue, url: string,
+  loadScene: (url: string) => Promise<THREE.Object3D>, onProgress: ((loaded: number, total: number) => void) | undefined,
+  bvh: BvhBuilder | undefined, lookup: StructureLookup, label: string,
+): Promise<AssetReport> {
+  const groupIds = [...ids];
+  const visibility = preparePartAssets(parts, groupIds);
+  try {
+    const report = await install(await loadScene(url), parts, groupIds, tissue, bvh, lookup, "z-anatomy-regional-surface");
+    for (const id of new Set(groupIds)) {
+      const part = parts.get(id);
+      if (!part) continue;
+      const loaded = report.loaded.includes(id);
+      part.group.userData.unavailable = !loaded;
+      part.group.visible = loaded ? (visibility.get(id) ?? true) : false;
+    }
+    return report;
+  } catch (error) {
+    emptyPartAssets(parts, groupIds);
+    return { loaded: [], fallback: groupIds, warnings: [`${label} asset unavailable: ${String(error)}`] };
+  }
+}
+
+export interface RegionAssetLoaders {
+  loadBoneAssets: typeof loadBoneAssets;
+  loadMuscleAssets: typeof loadMuscleAssets;
+  loadExteriorAssets: typeof loadExteriorAssets;
+  loadNeurovascularAssets: typeof loadNeurovascularAssets;
+  createAssetSceneLoader: typeof createAssetSceneLoader;
+}
+
+/** Create asset loaders isolated to one region's structures and asset groups. */
+export function createRegionAssetLoaders(regionStructures: readonly Structure[], assetGroups: RegionAssetGroups): RegionAssetLoaders {
+  const lookup = Object.fromEntries(regionStructures.map(structure => [structure.id, structure])) as StructureLookup;
+  const loadBone = async (parts: Parts, url = `${import.meta.env.BASE_URL}models/bones.glb`, loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded, e.total))).scene, onProgress?: (loaded: number, total: number) => void, bvh?: BvhBuilder) =>
+    loadRegionalGroup(parts, assetGroups.bones, "bone", url, loadScene, onProgress, bvh, lookup, "Bone");
+  const loadMuscle = async (parts: Parts, url = `${import.meta.env.BASE_URL}models/muscles.glb`, loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded, e.total))).scene, onProgress?: (loaded: number, total: number) => void, bvh?: BvhBuilder) =>
+    loadRegionalGroup(parts, assetGroups.muscles, "muscle", url, loadScene, onProgress, bvh, lookup, "Muscle");
+  const loadExterior = async (parts: Parts, onProgress?: (loaded: number, total: number) => void, bvh?: BvhBuilder, url = `${import.meta.env.BASE_URL}models/exterior.glb`, loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path, e => onProgress?.(e.loaded, e.total))).scene) =>
+    loadRegionalGroup(parts, assetGroups.exterior, "skin", url, loadScene, onProgress, bvh, lookup, "Exterior");
+  const loadNeurovascular = async (parts: Parts, url = `${import.meta.env.BASE_URL}models/neurovascular.glb`, loadScene: (url: string) => Promise<THREE.Object3D> = async path => (await new GLTFLoader().loadAsync(path)).scene, bvh?: BvhBuilder) => {
+    const report = await loadRegionalGroup(parts, assetGroups.neurovascular, "artery", url, loadScene, undefined, bvh, lookup, "Neurovascular");
+    return markNeurovascular(report, parts, assetGroups.neurovascular);
+  };
+  return { loadBoneAssets: loadBone, loadMuscleAssets: loadMuscle, loadExteriorAssets: loadExterior, loadNeurovascularAssets: loadNeurovascular, createAssetSceneLoader };
 }
 
 
