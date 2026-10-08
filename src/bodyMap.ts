@@ -62,19 +62,25 @@ export function blockedReason(selected: readonly string[], id: string): string |
   return 'Only sections that touch your selection can be added';
 }
 
-// Front view, so the subject's right side is drawn on the viewer's left.
+// Front view in anatomical position (palms forward, thumbs out), so the subject's right side is drawn on the viewer's left.
 // Left-side shapes mirror these across the midline (x = 120).
 const shapes: Record<Segment, string> = {
-  'arm-back': 'M119 84 L104 84 C92 86 80 88 72 96 C62 104 58 116 57 130 L50 200 L42 262 C40 274 38 286 42 296 C46 302 54 300 55 290 L58 262 L68 204 L76 150 C78 146 80 146 81 150 L84 200 C84 220 82 236 80 250 L119 250 Z',
-  'hip-leg': 'M119 252 L80 252 C76 270 72 290 72 310 L76 380 C84 386 100 386 108 380 L114 300 C115 290 117 286 119 284 Z',
-  'foot-ankle': 'M76 384 C84 390 100 390 108 384 L106 440 L103 480 C104 490 104 498 100 504 L70 504 C64 504 64 496 70 492 L80 482 L78 440 C72 420 72 400 76 384 Z',
+  'arm-back': 'M120 82 L111 80 C102 86 92 88 82 92 C70 95 62 104 60 118 C58 136 57 150 55 168 C53 180 52 184 51 192 C48 214 46 238 44 258 L43 263 C38 267 33 272 31 279 C30 284 33 287 36 284 C38 281 40 279 42 279 C40 287 40 295 42 301 C44 307 53 308 56 302 C58 296 59 284 58 268 L59 258 C61 238 63 216 65 196 C66 188 67 184 68 180 C70 166 74 150 79 138 C81 134 82 134 83 138 C85 156 86 176 89 196 C90 214 86 234 81 250 L120 250 Z',
+  'hip-leg': 'M120 252 L81 252 C77 268 74 288 74 310 C74 336 78 360 82 382 C90 388 102 388 110 383 C111 360 113 330 115 306 C116 296 118 290 120 288 Z',
+  'foot-ankle': 'M82 387 C90 393 102 393 110 388 C112 404 111 420 108 440 C106 454 106 462 107 468 C109 471 109 475 108 478 C111 484 115 491 116 499 C117 506 114 510 109 510 C106 510 104 508 103 506 Q100 508 97 506 Q94 508 91 505 Q88 506 85 503 Q81 503 80 500 C79 496 82 490 85 484 C83 481 83 476 85 473 C85 462 84 452 82 440 C78 424 78 404 82 387 Z',
 };
+
+// Non-interactive landmarks for one side (collarbone, chest, fingers, kneecap, toes); mirrored like the shapes.
+const sideDetails = 'M111 90 C102 94 94 93 86 95 M88 122 C96 133 108 136 117 132 M46.5 295 L46.5 302 M50 296 L50 304 M53.5 295 L53.5 302 M91 366 C92 376 104 376 105 366 M103 506 L103.5 499 M97 506 L97 502.5 M91 505 L91 502 M85.5 503 L85.5 500.5';
+const faceMarkup = `<path class="body-head" d="M110 62 L130 62 L131 80 C127 82 113 82 109 80 Z"/>
+        <ellipse class="body-head" cx="97.5" cy="47" rx="3.5" ry="6"/><ellipse class="body-head" cx="142.5" cy="47" rx="3.5" ry="6"/>
+        <ellipse class="body-head" cx="120" cy="45" rx="22" ry="26"/>
+        <path class="body-hair" d="M97 47 C95 28 105 16 120 16 C135 16 145 28 143 47 C141 38 137 32 131 29 C124 33 112 33 107 29 C101 33 98 40 97 47 Z"/>
+        <g class="body-face"><circle cx="112" cy="46" r="1.8"/><circle cx="128" cy="46" r="1.8"/><path d="M107 40 Q112 38 116 40 M124 40 Q128 38 133 40 M119.5 48 C118.5 52 117.5 54 118 55.5 L121.5 55.5 M114.5 61 Q120 64 125.5 61"/></g>`;
 
 const tissueLabels: Record<string, string> = { bone: 'bones', muscle: 'muscles', ligament: 'ligaments', nerve: 'nerves', artery: 'arteries' };
 
-export function renderBodyMap(lastRegions: readonly string[]) {
-  const lastSections = lastRegions.map(sectionForRegion).filter(Boolean).map(section => section!.id);
-  const lastValid = lastSections.length > 0 && lastSections.length === lastRegions.length && isValidSelection(lastSections);
+export function renderBodyMap() {
   const sectionMarkup = bodySections.map(section => {
     const mirror = section.side === 'left' ? ' transform="matrix(-1 0 0 1 240 0)"' : '';
     return `<path class="body-section" d="${shapes[section.segment]}"${mirror} data-section="${section.id}" data-state="${section.regionId ? 'available' : 'soon'}" role="checkbox" aria-checked="false" aria-label="${section.title}${section.regionId ? '' : ' (coming soon)'}" aria-describedby="body-map-tip" tabindex="0"/>`;
@@ -83,8 +89,9 @@ export function renderBodyMap(lastRegions: readonly string[]) {
     <div class="body-map-stage">
       <svg class="body-figure" viewBox="0 0 240 516" role="group" aria-label="Body regions, front view">
         <defs><pattern id="soon-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="hatch-bg"/><line x1="3" y1="0" x2="3" y2="6" class="hatch-line"/></pattern></defs>
-        <circle class="body-head" cx="120" cy="46" r="26"/><rect class="body-head" x="110" y="66" width="20" height="20" rx="4"/>
+        ${faceMarkup}
         ${sectionMarkup}
+        <g class="body-details" aria-hidden="true"><path d="${sideDetails}"/><path d="${sideDetails}" transform="matrix(-1 0 0 1 240 0)"/><ellipse cx="120" cy="200" rx="1.6" ry="2.6"/></g>
       </svg>
       <div class="body-side-labels" aria-hidden="true"><span>Right</span><span>Left</span></div>
       <div class="body-map-tip" id="body-map-tip" role="tooltip" hidden></div>
@@ -95,16 +102,14 @@ export function renderBodyMap(lastRegions: readonly string[]) {
       <p class="body-map-hint" data-body-hint></p>
       <p class="body-map-warning" data-body-warning role="status" hidden>Performance may be impacted when multiple regions are loaded.</p>
       <div class="body-map-actions"><button type="button" class="button" data-body-clear>Clear</button><button type="button" class="button primary" data-body-go disabled>Go <span aria-hidden="true">→</span></button></div>
-      ${lastValid ? `<a class="last-region" href="${regionsHref(lastRegions)}">Resume ${lastSections.map(id => sectionById.get(id)!.title).join(' + ')} <span aria-hidden="true">→</span></a>` : ''}
     </div>
   </section>`;
 }
 
-function tipHtml(section: BodySection, reason: string | null, selected: boolean, last: boolean) {
+function tipHtml(section: BodySection, reason: string | null, selected: boolean) {
   const region = catalogFor(section);
   const status = !region ? '<span class="tip-badge soon">Coming soon</span>'
-    : selected ? '<span class="tip-badge on">Selected</span>'
-    : last ? '<span class="tip-badge">Last opened</span>' : '';
+    : selected ? '<span class="tip-badge on">Selected</span>' : '';
   const counts = region ? `<p class="tip-counts"><strong>${region.structureCounts.total}</strong> structures · ${Object.entries(tissueLabels)
     .filter(([tissue]) => region.structureCounts.byTissue[tissue as keyof typeof region.structureCounts.byTissue])
     .map(([tissue, label]) => `${region.structureCounts.byTissue[tissue as keyof typeof region.structureCounts.byTissue]} ${label}`).join(', ')}</p>` : '';
@@ -113,7 +118,7 @@ function tipHtml(section: BodySection, reason: string | null, selected: boolean,
 }
 
 /** Wires a rendered body map. Replacing the page removes these element-bound handlers. */
-export function bindBodyMap(root: HTMLElement, lastRegions: readonly string[]) {
+export function bindBodyMap(root: HTMLElement) {
   const stage = root.querySelector<HTMLElement>('.body-map-stage')!;
   const tip = root.querySelector<HTMLElement>('.body-map-tip')!;
   const paths = [...root.querySelectorAll<SVGPathElement>('.body-section')];
@@ -130,7 +135,7 @@ export function bindBodyMap(root: HTMLElement, lastRegions: readonly string[]) {
     const section = sectionById.get(id)!;
     const path = paths.find(item => item.dataset.section === id)!;
     tipFor = id;
-    tip.innerHTML = tipHtml(section, blockedReason(selected, id), selected.includes(id), !!section.regionId && lastRegions.includes(section.regionId));
+    tip.innerHTML = tipHtml(section, blockedReason(selected, id), selected.includes(id));
     tip.hidden = false;
     const box = path.getBoundingClientRect(), area = stage.getBoundingClientRect();
     const gap = 14, width = tip.offsetWidth, height = tip.offsetHeight;

@@ -1127,6 +1127,11 @@ body[data-page="hub"] { overflow: auto; }
 .body-map-stage { grid-area: map; position: relative; display: flex; flex-direction: column; align-items: center; padding: 8px 0; }
 .body-figure { stroke: none; width: 100%; max-width: 280px; height: auto; overflow: visible; touch-action: manipulation; }
 .body-head { fill: color-mix(in srgb, var(--text) 12%, var(--bg)); stroke: none; }
+.body-hair { fill: color-mix(in srgb, var(--text) 32%, var(--bg)); }
+.body-face { fill: none; stroke: color-mix(in srgb, var(--text) 50%, var(--bg)); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.body-face circle { fill: color-mix(in srgb, var(--text) 60%, var(--bg)); stroke: none; }
+.body-details { fill: none; stroke: color-mix(in srgb, var(--text) 24%, transparent); stroke-width: 1.2; stroke-linecap: round; pointer-events: none; }
+.body-details ellipse { fill: color-mix(in srgb, var(--text) 30%, transparent); stroke: none; }
 .body-section { --fill: color-mix(in srgb, var(--accent) 16%, var(--surface)); fill: var(--fill); stroke: var(--bg); stroke-width: 3; stroke-linejoin: round; paint-order: stroke; cursor: pointer; outline: none; transition: fill .15s, opacity .15s, filter .15s; }
 .body-section[data-state="available"]:hover, .body-section[data-state="addable"]:hover { --fill: color-mix(in srgb, var(--accent) 45%, var(--surface)); }
 .body-section[data-state="addable"] { --fill: color-mix(in srgb, var(--accent) 28%, var(--surface)); stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3; paint-order: normal; }
@@ -1134,9 +1139,9 @@ body[data-page="hub"] { overflow: auto; }
 .body-section[data-state="blocked"] { opacity: .5; cursor: not-allowed; }
 .body-section[data-state="soon"] { fill: url(#soon-hatch); cursor: help; }
 .body-section:focus-visible { stroke: var(--text); stroke-width: 2; paint-order: normal; }
-.hatch-bg { fill: color-mix(in srgb, var(--text) 5%, var(--surface)); }
-.hatch-line { stroke: color-mix(in srgb, var(--text) 11%, var(--surface)); stroke-width: 1.5; }
-.body-side-labels { display: flex; justify-content: space-between; width: 100%; max-width: 280px; margin-top: 6px; color: var(--faint); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
+.hatch-bg { fill: color-mix(in srgb, var(--text) 14%, var(--surface)); }
+.hatch-line { stroke: color-mix(in srgb, var(--text) 30%, var(--surface)); stroke-width: 1.5; }
+.body-side-labels { display: flex; justify-content: space-between; width: 100%; max-width: 280px; margin-top: 6px; color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .body-map-tip { position: absolute; z-index: 6; width: 240px; max-width: calc(100vw - 16px); padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 6px 22px var(--soft-shadow); pointer-events: none; font-size: 12px; }
 .body-map-tip[hidden] { display: none; }
 .body-map-tip p { margin-top: 6px; color: var(--muted); line-height: 1.45; }
@@ -1153,7 +1158,6 @@ body[data-page="hub"] { overflow: auto; }
 .body-map-hint { margin-top: 6px; color: var(--muted); font-size: 12px; }
 .body-map-actions { display: flex; gap: 8px; margin-top: 16px; }
 .body-map-actions .button { flex: 1; height: 36px; justify-content: center; }
-.body-map-panel .last-region { display: block; margin-top: 14px; font-size: 12px; text-decoration: none; }
 .region-picker-row:has(input:disabled) label { color: var(--faint); cursor: not-allowed; }
 @media (max-width: 900px) {
   .hub-body-main { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "error" "map" "panel"; grid-template-rows: none; }

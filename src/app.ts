@@ -20,27 +20,18 @@ let mountedRegion: string | undefined;
 function renderHub(error?: string) {
   document.title = "Muscle Map";
   document.body.dataset.page = "hub";
-  let lastRegion: string | null = null;
-  try { lastRegion = localStorage.getItem(LAST_REGION_KEY); } catch {}
-  let lastRegions = lastRegion ? [lastRegion] : [];
-  try {
-    if (lastRegion?.startsWith('[')) {
-      const saved = JSON.parse(lastRegion);
-      if (Array.isArray(saved)) lastRegions = saved.filter(id => typeof id === 'string');
-    }
-  } catch {}
   app.innerHTML = `<div id="hub">
     <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Muscle Map home">Muscle Map</a>
       <div class="segmented theme-control" aria-label="Color theme">${(["system","light","dark"] as const).map(choice => `<button data-theme-choice="${choice}" aria-pressed="${readThemeChoice() === choice}" class="${readThemeChoice() === choice ? "active" : ""}">${choice === "system" ? "System" : choice === "light" ? "Light" : "Dim"}</button>`).join("")}</div>
     </header>
     <main class="hub-main hub-body-main"><div class="hub-intro"><p class="hub-eyebrow">Interactive anatomy</p><h1>Explore by region</h1><p>Click a region of the body to select it, add touching sections on the same side, then press Go to explore them together in 3D.</p></div>
     ${error ? '<p class="hub-error" role="alert">The viewer could not start. Please try opening the region again.</p>' : ""}
-    ${renderBodyMap(lastRegions)}
+    ${renderBodyMap()}
     </main>
     <footer class="hub-footer"><p>Study models from Z-Anatomy and BodyParts3D.</p><p><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">Adapted assets · CC BY-SA 4.0</a> · <a href="#/credits">Sources &amp; credits</a></p></footer>
   </div>`;
   bindThemeControl();
-  bindBodyMap(app.querySelector<HTMLElement>(".body-map")!, lastRegions);
+  bindBodyMap(app.querySelector<HTMLElement>(".body-map")!);
 }
 
 function bindThemeControl() {
