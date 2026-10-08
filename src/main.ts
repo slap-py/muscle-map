@@ -81,7 +81,7 @@ app.innerHTML = `
   <div class="compass-wrap"><div id="compass" role="group" aria-label="Anatomical view compass"></div><span id="view-name">ANTERIOR VIEW</span></div>
   <div class="view-controls segmented" aria-label="Camera views">${pack.viewPresets.map(view => `<button data-view="${view.id}" class="${view.id === pack.defaultView ? 'active' : ''}">${view.label}</button>`).join('')}</div>
   <div class="canvas-tools"><button id="pan" aria-pressed="false" aria-label="Pan mode" title="Pan mode (P). Right-drag or Shift-drag also pans.">${icon.pan}</button><button id="zoom-in" aria-label="Zoom in" title="Zoom in">${icon.plus}</button><button id="zoom-out" aria-label="Zoom out" title="Zoom out">${icon.minus}</button><button id="home" aria-label="Reset camera" title="Reset camera">${icon.home}</button></div>
-  <div id="fps-meter" class="fps-meter" role="status" aria-label="Frames per second" hidden><span id="fps-value">-- FPS</span><br><span class="fps-version">v1.0</span></div>
+  <div id="fps-meter" class="fps-meter" role="status" aria-label="Frames per second" hidden>-- FPS</div>
   <div id="render-error" hidden></div>
   <div id="graphics-prompt" class="graphics-prompt" role="status" hidden><p>The 3D view is running slowly on this device.</p><button data-graphics-prompt="low" class="tool-button active">Use Low graphics</button><button data-graphics-prompt="keep" class="tool-button">Keep High</button></div>
 </section>
@@ -112,7 +112,7 @@ app.innerHTML = `
   <div class="setting-block"><p class="setting-title" id="theme-heading">Theme</p><div class="segmented theme-control" role="group" aria-labelledby="theme-heading"><button data-theme-choice="system">System</button><button data-theme-choice="light">Light</button><button data-theme-choice="dark">Dim</button></div></div>
   <div class="setting-block"><button id="setting-labels-default" class="toggle-row" aria-pressed="false"><span>Labels on by default</span><span class="switch" aria-hidden="true"></span></button><p class="setting-note">Applies when a region opens or is reset. The Labels button still toggles them while you explore.</p></div>
   <div class="setting-block"><div class="slider-row"><label for="setting-max-labels">Max labels</label><input id="setting-max-labels" type="range" min="${MIN_LABELS}" max="${MAX_LABELS}" step="1"/><output id="setting-max-labels-value"></output></div><p class="setting-note">Most passive labels shown at once when zoomed in. Fewer appear when zoomed out. Selected and hovered structures are always labeled.</p></div>
-  <div class="setting-block"><button id="setting-fps" class="toggle-row" aria-pressed="false"><span>Show FPS meter</span><span class="switch" aria-hidden="true"></span></button></div>
+  <div class="setting-block"><button id="setting-fps" class="toggle-row" aria-pressed="false"><span>Show FPS meter</span><span class="switch" aria-hidden="true"></span></button><p class="setting-version">v1.0</p></div>
 </section>
 </dialog>${loadingScreen(pack.title)}`;
 // Keep the same loading element (and bar animation) through the lazy import.
@@ -972,7 +972,6 @@ $("#labels").onclick = () => {
   updateAppearance();
 };
 const fpsMeter = $("#fps-meter");
-const fpsValue = $("#fps-value");
 let fpsFrames = 0, fpsSince = 0;
 function syncSettings() {
   $("#setting-labels-default").setAttribute("aria-pressed", String(viewerSettings.labelsDefault));
@@ -1302,7 +1301,7 @@ function frame(time: number) {
   if (viewerSettings.showFps) {
     fpsFrames++;
     if (!fpsSince) { fpsSince = time; fpsFrames = 0; }
-    else if (time - fpsSince >= 500) { fpsValue.textContent = `${Math.round(fpsFrames * 1000 / (time - fpsSince))} FPS`; fpsFrames = 0; fpsSince = time; }
+    else if (time - fpsSince >= 500) { fpsMeter.textContent = `${Math.round(fpsFrames * 1000 / (time - fpsSince))} FPS`; fpsFrames = 0; fpsSince = time; }
   }
   const cameraChanged = updateCamera(controls, camera, dt);
   // Back-to-back moving frames measure real render cost for Auto's slow-device prompt.

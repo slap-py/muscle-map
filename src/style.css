@@ -1184,4 +1184,4 @@ body[data-page="hub"] { overflow: auto; }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .body-map-warning{border-color:#8a6d1a;background:#3a3015;color:#f1d98a}}
 .settings-panel .slider-row{grid-template-columns:auto 1fr 36px}
 .settings-panel .slider-row label{white-space:nowrap;flex-shrink:0}
-.fps-version{color:#aaa;font-weight:400}
+.setting-version{margin:10px 0 0;font-size:11.5px;color:#aaa}
