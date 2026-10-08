@@ -57,10 +57,9 @@ export interface SceneTheme {
 }
 
 export const sceneThemes: Record<EffectiveTheme, SceneTheme> = {
-  // Keep these values equal to the original renderer values so the default
-  // overview remains visually stable.
+  // Scene backgrounds match the CSS canvas tokens; anatomy lighting is retained.
   light: {
-    background: "#efede8",
+    background: "#f7f5f0",
     hemisphereSky: "#fff7e8",
     hemisphereGround: "#9d8d7b",
     hemisphereIntensity: 2.3,
@@ -72,7 +71,7 @@ export const sceneThemes: Record<EffectiveTheme, SceneTheme> = {
     shadowOpacity: 0.12,
   },
   dark: {
-    background: "#2a2f36",
+    background: "#2e2b27",
     hemisphereSky: "#e7f1fa",
     hemisphereGround: "#58636f",
     hemisphereIntensity: 2.75,

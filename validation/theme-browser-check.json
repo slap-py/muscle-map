@@ -1,6 +1,6 @@
 {
   "checks": [
-    "System follows dark OS preference and uses slate background",
+    "System follows dark OS preference and uses warm charcoal background",
     "Light override applies immediately and persists across reload",
     "Dim override applies immediately and persists across reload",
     "System override removes the attribute and responds to OS media changes",
@@ -8,12 +8,12 @@
     "blocked storage retains manual scene choice across OS changes; System restores OS following"
   ],
   "contrast": [
-    5.636283597746079,
-    6.7133140078680125,
-    8.06143880071179,
-    4.990142666955008,
-    5.943702811676392,
-    7.137279205142441
+    5.907177163992715,
+    7.035972288166774,
+    5.875282632745028,
+    5.196390300338925,
+    6.1893620483478,
+    5.168333509725028
   ],
   "errors": []
 }

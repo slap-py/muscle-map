@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#F7F5F0" />
     <script>(function(){try{var c=localStorage.getItem("muscle-map-theme");if(c==="light"||c==="dark")document.documentElement.dataset.theme=c;}catch(_){}})();</script>
-    <title>Muscle Map</title>
+    <title>Fabrica</title>
       <style>
- :root{--bg:#efede8;--border:#e2dfd8;--muted:#6d6a63;--text:#1f1e1b;--accent:#2b62a0} @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#2a2f36;--border:#4a525c;--muted:#a9b0b8;--text:#e6e8eb;--accent:#86b8ff}} :root[data-theme="dark"]{--bg:#2a2f36;--border:#4a525c;--muted:#a9b0b8;--text:#e6e8eb;--accent:#86b8ff}
-body{margin:0;font:13px/1.5 system-ui,sans-serif;color:var(--text);background:var(--bg)}
+ :root{--bg:#f7f5f0;--border:#d8d1c6;--muted:#756c62;--text:#393631;--accent:#2b62a0} @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#2e2b27;--border:#5e554b;--muted:#c5b9a7;--text:#f7f5f0;--accent:#86b8ff}} :root[data-theme="dark"]{--bg:#2e2b27;--border:#5e554b;--muted:#c5b9a7;--text:#f7f5f0;--accent:#86b8ff}
+body{margin:0;font:16px/1.5 Inter,system-ui,sans-serif;color:var(--text);background:var(--bg)}
 /* Loading screen */
 #loading {
   position: fixed;
@@ -17,7 +17,7 @@ body{margin:0;font:13px/1.5 system-ui,sans-serif;color:var(--text);background:va
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 14px;
+  gap: 16px;
   background: var(--bg);
   transition: opacity 0.35s;
 }
@@ -26,12 +26,13 @@ body{margin:0;font:13px/1.5 system-ui,sans-serif;color:var(--text);background:va
   pointer-events: none;
 }
 #loading h1 {
-  font-size: 22px;
-  font-weight: 600;
+  font-family: "Manrope Variable", Manrope, sans-serif;
+  font-size: 24px;
+  font-weight: 650;
   letter-spacing: -0.01em;
 }
 #loading p {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .loading-bar {
@@ -46,7 +47,7 @@ body{margin:0;font:13px/1.5 system-ui,sans-serif;color:var(--text);background:va
   display: block;
   width: 40%;
   height: 100%;
-  background: var(--accent);
+  background: #B84E48;
   animation: loading-slide 1.1s ease-in-out infinite;
 }
 @keyframes loading-slide {
@@ -56,7 +57,6 @@ body{margin:0;font:13px/1.5 system-ui,sans-serif;color:var(--text);background:va
 @media (prefers-reduced-motion: reduce) {
   .loading-bar::after { animation: none; width: 100%; }
 }
-#loading .brand-mark{width:40px;height:40px;fill:none;stroke:var(--accent);stroke-width:1.5}
 #loading.determinate .loading-bar::after{animation:none;transform:none;width:var(--progress,0%);transition:width .15s}
 #loading.load-failed .loading-bar{display:none}
 @media(prefers-reduced-motion:reduce){#loading,#loading.determinate .loading-bar::after{transition:none}}

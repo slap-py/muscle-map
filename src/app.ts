@@ -1,6 +1,7 @@
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
+import "@fontsource-variable/manrope";
 import "./style.css";
 import { regionCatalog } from "./regions/catalog";
 import { validateRegionPack } from "./regions";
@@ -10,6 +11,7 @@ import "./viewerDiagnostics";
 import { loadingScreen } from "./loading";
 import { combinedTitleForIds } from "./regions/combinedTitle";
 import { renderBodyMap, bindBodyMap } from "./bodyMap";
+import { brandLockup } from "./branding";
 
 const app = document.querySelector<HTMLElement>("#app")!;
 const regionIds = regionCatalog.map(region => region.id);
@@ -18,10 +20,10 @@ let mounted: ReturnType<typeof import("./main").mountViewer> | undefined;
 let mountedRegion: string | undefined;
 
 function renderHub(error?: string) {
-  document.title = "Muscle Map";
+  document.title = "Fabrica";
   document.body.dataset.page = "hub";
   app.innerHTML = `<div id="hub">
-    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Muscle Map home">Muscle Map</a>
+    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>
       <div class="segmented theme-control" aria-label="Color theme">${(["system","light","dark"] as const).map(choice => `<button data-theme-choice="${choice}" aria-pressed="${readThemeChoice() === choice}" class="${readThemeChoice() === choice ? "active" : ""}">${choice === "system" ? "System" : choice === "light" ? "Light" : "Dim"}</button>`).join("")}</div>
     </header>
     <main class="hub-main hub-body-main"><div class="hub-intro"><p class="hub-eyebrow">Interactive anatomy</p><h1>Explore by region</h1><p>Click a region of the body to select it, add touching sections on the same side, then press Go to explore them together in 3D.</p></div>
@@ -48,10 +50,10 @@ function bindThemeControl() {
 }
 
 function renderCredits() {
-  document.title = "Sources & credits · Muscle Map";
+  document.title = "Sources & credits · Fabrica";
   document.body.dataset.page = "hub";
   app.innerHTML = `<div id="hub">
-    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Muscle Map home">Muscle Map</a>
+    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>
       <div class="segmented theme-control" aria-label="Color theme">${(["system", "light", "dark"] as const).map(choice => `<button data-theme-choice="${choice}" aria-pressed="${readThemeChoice() === choice}" class="${readThemeChoice() === choice ? "active" : ""}">${choice === "system" ? "System" : choice === "light" ? "Light" : "Dim"}</button>`).join("")}</div>
     </header>
     <main class="hub-main credits-main"><a class="credits-back" href="#/">← Back to home</a><h1>Sources &amp; credits</h1>

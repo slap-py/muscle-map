@@ -1,4 +1,5 @@
 import { loadingScreen } from "./loading";
+import { brandLockup } from "./branding";
 import type { RegionPack } from "./regions";
 import type { Tissue } from "./data";
 import type { Connection } from "./connections";
@@ -61,7 +62,7 @@ const presets = pack.presets.filter(preset => SKIN_UI_ENABLED || !preset.tissues
 const openingLoader = app.querySelector("#loading");
 app.innerHTML = `
 <header class="topbar">
-  <div class="brand"><a class="viewer-home" href="#/" aria-label="Back to home" title="Back to home">${icon.home}</a><span class="title">${pack.title}</span><span class="brand-subtitle">Interactive anatomy</span></div>
+  <div class="brand"><a class="viewer-home" href="#/" aria-label="Back to home" title="Back to home">${brandLockup}</a><span class="title">${pack.title}</span><span class="brand-subtitle">Interactive anatomy</span></div>
   <div class="segmented modes" aria-label="Tissue presets">${presets.map(preset => `<button data-mode="${preset.id}" class="${preset.id === pack.defaultMode ? 'active' : ''}">${preset.icon ?? ''}${preset.label}</button>`).join('')}</div>
   <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset (R)" aria-label="Reset"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
 </header>
@@ -518,7 +519,7 @@ function updateFootprints() {
     const mesh = child as THREE.Mesh<THREE.BufferGeometry, THREE.MeshBasicMaterial>;
     mesh.visible = !!leg.parts.get(mesh.userData.boneId)?.group.visible;
     const active = mesh.userData.connectionKey === state.focusedConnection;
-    mesh.material.color.set(active ? '#ffac39' : '#21bda8');
+    mesh.material.color.set(active ? '#2b62a0' : '#1d8a7a');
     // Shared origins can overlap (e.g. plantar slips); draw the focused patch last.
     mesh.renderOrder = active ? 6 : 5;
   }
@@ -875,7 +876,7 @@ function updateAppearance() {
       const mat = mesh.material as THREE.MeshStandardMaterial;
       mat.userData.connectionBaseColor ??= mat.color.clone();
       mat.color.copy(mat.userData.connectionBaseColor);
-      if (highlighted.has(id) && !selected) mat.color.set("#64c6b2");
+      if (highlighted.has(id) && !selected) mat.color.set("#1d8a7a");
       const tissueOpacity = d.tissue === "muscle" ? state.opacity : d.tissue === "skin" ? state.skinOpacity : isNeurovascular(d.tissue) ? state.neurovascularOpacity : 1;
       let alpha = tissueOpacity;
       if (state.attachmentFade) alpha = attached.has(id) ? 1 : Math.min(alpha, 0.07);
@@ -892,7 +893,7 @@ function updateAppearance() {
       if (mesh.userData.fiber) alpha *= 0.22;
       applyCoverage(mesh, alpha);
       mesh.visible = alpha > 0;
-      mat.emissive.set(selected ? "#623d17" : highlighted.has(id) ? "#218d7c" : "#000000");
+      mat.emissive.set(selected ? "#2b62a0" : highlighted.has(id) ? "#1d8a7a" : "#000000");
       mat.emissiveIntensity = selected ? 0.13 : highlighted.has(id) ? 0.25 : 0;
 
     }

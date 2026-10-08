@@ -7,6 +7,18 @@ const browser = await chromium.launch({ channel: "msedge", headless: true });
 const url = viewerUrl('http://127.0.0.1:5174/');
 const errors = [];
 const checks = [];
+async function chooseTheme(page, choice) {
+  // Theme choices live in About > Settings in the current viewer layout.
+  const button = page.locator(`[data-theme-choice="${choice}"]`);
+  if (!await button.isVisible()) {
+    const menu = page.locator('.actions-menu');
+    if (!await page.locator('#about').isVisible()) await menu.locator('summary').click();
+    await page.locator('#about').click();
+    await page.locator('[data-about-tab="settings"]').click();
+  }
+  await button.click();
+  await page.locator('.dialog-close').click();
+}
 try {
   await fs.mkdir("validation", { recursive: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce" });
@@ -23,20 +35,20 @@ try {
   await page.locator("#loading").waitFor({state:"detached"});
   assert.equal(await page.locator("#viewport > canvas").getAttribute("data-scene-theme"), "dark");
   assert.equal(await page.locator("html").getAttribute("data-theme"), null);
-  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(42, 47, 54)");
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(46, 43, 39)");
   await page.screenshot({ path: "validation/theme-dim-system.png" });
-  checks.push("System follows dark OS preference and uses slate background");
+  checks.push("System follows dark OS preference and uses warm charcoal background");
 
-  await page.locator('[data-theme-choice="light"]').click();
+  await chooseTheme(page, "light");
   assert.equal(await page.locator("html").getAttribute("data-theme"), "light");
-  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(239, 237, 232)");
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(247, 245, 240)");
   await page.reload({ waitUntil: "networkidle" });
   assert.equal(await page.locator("html").getAttribute("data-theme"), "light");
   checks.push("Light override applies immediately and persists across reload");
 
-  await page.locator('[data-theme-choice="dark"]').click();
+  await chooseTheme(page, "dark");
   assert.equal(await page.locator("html").getAttribute("data-theme"), "dark");
-  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(42, 47, 54)");
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(46, 43, 39)");
   const contrast = await page.evaluate(() => {
     const parse = (value) => { const m = value.trim().match(/^#([0-9a-f]{6})/i); if (!m) return [0, 0, 0]; return [0, 1, 2].map(i => parseInt(m[1].slice(i * 2, i * 2 + 2), 16) / 255); };
     const lum = (rgb) => rgb.reduce((sum, channel, i) => sum + (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4) * [0.2126, 0.7152, 0.0722][i], 0);
@@ -49,14 +61,14 @@ try {
   assert.equal(await page.locator("html").getAttribute("data-theme"), "dark");
   checks.push("Dim override applies immediately and persists across reload");
 
-  await page.locator('[data-theme-choice="system"]').click();
+  await chooseTheme(page, "system");
   assert.equal(await page.locator("html").getAttribute("data-theme"), null);
   await page.emulateMedia({ colorScheme: "light" });
   await page.waitForTimeout(100);
-  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(239, 237, 232)");
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), "rgb(247, 245, 240)");
   checks.push("System override removes the attribute and responds to OS media changes");
 
-  await page.locator('[data-theme-choice="dark"]').click();
+  await chooseTheme(page, "dark");
   for (const width of [1100,1280,1440,820,390]) {
     await page.setViewportSize({width,height:1000});
     const boxes=await page.locator('.topbar > .brand,.topbar > .modes,.topbar > .theme-control,.topbar > .topbar-actions').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};}));
@@ -70,10 +82,10 @@ try {
   blocked.on('pageerror',e=>errors.push(e.message));
   await blocked.addInitScript(()=>{Storage.prototype.getItem=()=>{throw new Error('blocked')};Storage.prototype.setItem=()=>{throw new Error('blocked')};});
   await blocked.goto(url,{waitUntil:'networkidle'});await blocked.locator('#loading').waitFor({state:'detached'});
-  await blocked.locator('[data-theme-choice="dark"]').click();
+  await chooseTheme(blocked, "dark");
   await blocked.emulateMedia({colorScheme:'dark'});await blocked.emulateMedia({colorScheme:'light'});
   assert.equal(await blocked.locator('#viewport > canvas').getAttribute('data-scene-theme'),'dark');
-  await blocked.locator('[data-theme-choice="system"]').click();
+  await chooseTheme(blocked, "system");
   assert.equal(await blocked.locator('#viewport > canvas').getAttribute('data-scene-theme'),'light');
   checks.push('blocked storage retains manual scene choice across OS changes; System restores OS following');
   await blocked.close();
