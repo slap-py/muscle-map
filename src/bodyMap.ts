@@ -205,7 +205,10 @@ export function renderRegionsPreview() {
     const soon = !section.regionId;
     shapesMarkup.push(`<path class="body-section" d="${shapes[section.segment]}"${mirror ? ' transform="matrix(-1 0 0 1 240 0)"' : ''} data-state="${soon ? 'soon' : 'available'}"${soon ? ' style="fill:url(#intro-soon-hatch)"' : ''}/>`);
     lines.push(`<path d="M${edge} ${y} H${ax}"/><circle cx="${ax}" cy="${y}" r="3.5"/>`);
-    labels[section.side].push(`<li style="top:${(y / 516 * 100).toFixed(2)}%"><strong>${segmentTitles[section.segment]}</strong><span class="${soon ? 'soon' : 'ready'}">${soon ? 'Coming soon' : 'Available'}</span></li>`);
+    const region = catalogFor(section);
+    const counts = region ? browsableCounts(region.structureCounts) : undefined;
+    const summary = counts ? `<span class="counts"><strong>${counts.total}</strong> structures · ${counts.byTissue.bone ?? 0} bones · ${counts.byTissue.muscle ?? 0} muscles</span>` : '';
+    labels[section.side].push(`<li style="top:${(y / 516 * 100).toFixed(2)}%"><strong>${segmentTitles[section.segment]}</strong>${summary}<span class="${soon ? 'soon' : 'ready'}">${soon ? 'Coming soon' : 'Available now'}</span></li>`);
   }
   const summary = bodySections.map(section => `${section.title}${section.regionId ? '' : ' (coming soon)'}`).join('; ');
   return `<div class="intro-regions" role="img" aria-label="Body map showing every region. ${summary}.">
