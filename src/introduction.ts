@@ -35,7 +35,7 @@ function featureIcon(id: keyof typeof icons) {
 function regionsBox() {
   const cards = features.map(feature => `<article><div class="intro-feature-icon">${featureIcon(feature.id)}</div><h3>${feature.title}</h3><p>${feature.summary}</p></article>`).join('');
   return `<div class="intro-regions-box">
-    <div class="intro-regions-copy"><h3>Pick a region, then explore it.</h3><p>Every section of the body map opens its own 3D model. Choose one, or combine touching sections on the same side to explore them together.</p><div class="intro-feature-grid">${cards}</div></div>
+    <div class="intro-regions-copy"><h3>Pick a region, then explore it.</h3><p>Every section of the body map opens its own 3D model. Choose one, or combine touching sections on the same side to explore them together.</p><p class="intro-regions-howto"><strong>How to use it:</strong> click a region on the map, add touching regions on the same side, then press Go.</p><div class="intro-feature-grid">${cards}</div></div>
     <figure class="intro-preview intro-regions-figure-box"><div class="intro-preview-heading"><span>Body regions</span></div><div class="intro-regions-stage">${renderRegionsPreview()}</div></figure>
   </div>`;
 }
@@ -58,7 +58,7 @@ export function introductionPage(guide = false) {
       <p class="intro-scope">Fabrica uses static, simplified study models. Available facts and attachments vary by structure; attachment footprints are illustrative. The <a href="#/credits">sources and credits</a> explain the model origins and adaptations.</p>
     </main>` : `
     <main id="intro-main" class="intro-main">
-      <section class="intro-hero" aria-labelledby="intro-headline"><div class="intro-hero-copy"><p class="intro-eyebrow"><span aria-hidden="true"></span> An interactive anatomy browser</p><h1 id="intro-headline">Anatomy you can<br/>take apart.</h1><p class="intro-lead">Explore structures in 3D, layer by layer. A place to study anatomy, or show a patient how things fit together.</p><div class="intro-cta"><a class="intro-button intro-button-primary" href="#/browser">Start exploring ${arrow}</a><a class="intro-button intro-button-secondary" href="#/how-it-works">How it works</a></div><p class="intro-availability">Available now: upper leg, lower leg, foot &amp; ankle.</p></div>${modelPreview()}</section>
+      <section class="intro-hero" aria-labelledby="intro-headline"><div class="intro-hero-copy"><p class="intro-eyebrow"><span aria-hidden="true"></span> An interactive anatomy browser</p><h1 id="intro-headline">Anatomy you can<br/>take apart.</h1><p class="intro-lead">Explore structures in 3D, layer by layer. A place to study anatomy, or show a patient how things fit together.</p><div class="intro-cta"><a class="intro-button intro-button-primary" href="#/browser">Start exploring ${arrow}</a><a class="intro-button intro-button-secondary" href="#/how-it-works">How it works</a></div></div>${modelPreview()}</section>
       <section class="intro-features" aria-labelledby="intro-features-heading"><div class="intro-section-heading"><p class="intro-eyebrow">What you can do</p><h2 id="intro-features-heading">Do all of this, on every region.</h2></div>${regionsBox()}</section>
       ${renderStudyTools()}
     </main>`}${footer()}</div>`;
