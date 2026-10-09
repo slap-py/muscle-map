@@ -201,7 +201,9 @@ body[data-page="introduction"] { overflow: auto; }
   .intro-cta { flex-direction: column; gap: 16px; margin-top: 0; }
   .intro-cta .intro-button { width: 100%; min-height: 64px; font-size: 19px; }
   .intro-cta .intro-button-primary { display: none; }
-  .intro-desktop-note { display: block; margin: 0; padding: 16px 0; color: var(--muted); font-size: 19px; line-height: 1.6; }
+  .intro-desktop-note { display: block; order: 2; margin: 0; padding: 0; color: var(--muted); font-size: 19px; line-height: 1.6; }
+  .intro-cta .intro-button-secondary { order: 1; }
+  .intro-hero .intro-cta { margin-top: -12px; gap: 12px; }
   .intro-preview { max-width: 800px; width: 100%; }
   .intro-preview-heading, .intro-preview figcaption { font-size: 16px; }
   .intro-preview-controls button { min-height: 52px; font-size: 17px; padding-inline: 18px; }
