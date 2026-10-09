@@ -183,6 +183,8 @@ body[data-page="introduction"] { overflow: auto; }
 .credits-main .link-list a { display: inline-flex; align-items: center; min-height: 44px; }
 .credits-main .about-footer { font-size: 14px; }
 
+.intro-headline-line { white-space: nowrap; }
+.intro-desktop-note { display: none; }
 /* Phone-size layout (1179px and below): larger type and touch targets, figures stacked under their text, one-column cards. */
 @media (max-width: 1179px) {
   .intro-header, .intro-main, .intro-footer { width: calc(100% - 32px); }
@@ -193,11 +195,13 @@ body[data-page="introduction"] { overflow: auto; }
   .intro-hero-copy { display: contents; }
   .intro-hero .intro-preview { order: 1; }
   .intro-hero .intro-cta { order: 2; }
-  .intro-hero h1 { font-size: clamp(54px, 11vw, 84px); margin-bottom: 16px; }
+  .intro-hero h1 { font-size: clamp(40px, 11vw, 84px); margin-bottom: 8px; }
   .intro-eyebrow { font-size: 15px; margin-bottom: 12px; }
   .intro-lead { max-width: none; font-size: 22px; line-height: 1.6; }
   .intro-cta { flex-direction: column; gap: 16px; margin-top: 0; }
   .intro-cta .intro-button { width: 100%; min-height: 64px; font-size: 19px; }
+  .intro-cta .intro-button-primary { display: none; }
+  .intro-desktop-note { display: block; margin: 0; padding: 16px 0; color: var(--muted); font-size: 19px; line-height: 1.6; }
   .intro-preview { max-width: 800px; width: 100%; }
   .intro-preview-heading, .intro-preview figcaption { font-size: 16px; }
   .intro-preview-controls button { min-height: 52px; font-size: 17px; padding-inline: 18px; }
@@ -217,7 +221,7 @@ body[data-page="introduction"] { overflow: auto; }
   .intro-page .site-footer a { order: -1; }
   .intro-regions-side li { width: 168px; }
   .intro-regions-side li.side-name { width: 168px; align-items: center; text-align: center; }
-  .intro-regions-side .side-name { font-size: 14px; top: 0; }
+  .intro-regions-side .side-name { font-size: 14px; top: -14px; }
   .intro-regions-side .counts { display: none; }
   .intro-regions-copy h3 { font-size: 38px; margin-bottom: 18px; }
   .intro-regions-copy p, .intro-regions-howto { font-size: 22px; line-height: 1.6; }
@@ -237,8 +241,8 @@ body[data-page="introduction"] { overflow: auto; }
   .intro-text-link { font-size: 18px; }
 }
 @media (max-width: 480px) {
-  .intro-regions { --regions-h: 400px; --regions-scale: .8; }
-  .intro-regions-side li { font-size: 13px; width: 96px; }
+  .intro-regions { --regions-h: 440px; --regions-scale: .8; }
+  .intro-regions-side li { font-size: 13px; width: 96px; padding: 6px 8px; }
   .intro-regions-side li.side-name { width: 96px; }
   .intro-regions-side .counts { font-size: 12px; }
 }

@@ -196,7 +196,7 @@ const previewAnchors: Record<Segment, { x: number; y: number }> = {
 /** Vertical centre of each preview label, in the same 516-unit space; leader lines angle from here to the anchor. */
 const previewLabelY: Record<Segment, number> = { 'arm-back': 110, 'hip-leg': 300, 'foot-ankle': 450 };
 /** Phone-size label centres: popups are shorter there (no counts), so the lower-leg label sits lower. */
-const previewLabelYPhone: Record<Segment, number> = { 'arm-back': 110, 'hip-leg': 300, 'foot-ankle': 470 };
+const previewLabelYPhone: Record<Segment, number> = { 'arm-back': 125, 'hip-leg': 285, 'foot-ankle': 470 };
 
 /** Static, labelled copy of the body map for the landing page: every section named, availability shown. */
 export function renderRegionsPreview() {
