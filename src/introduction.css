@@ -185,8 +185,8 @@ body[data-page="introduction"] { overflow: auto; }
 
 .intro-headline-line { white-space: nowrap; }
 .intro-desktop-note { display: none; }
-/* Phone-size layout (1179px and below): larger type and touch targets, figures stacked under their text, one-column cards. */
-@media (max-width: 1179px) {
+/* Phone-size layout (the 1179px test size and phones; the half-width view between 741px and 1050px keeps its own rules): larger type and touch targets, figures stacked under their text, one-column cards. */
+@media (min-width: 1051px) and (max-width: 1179px), (max-width: 740px) {
   .intro-header, .intro-main, .intro-footer { width: calc(100% - 32px); }
   .intro-brand .brand-mark { height: 60px; }
   .intro-brand .brand-wordmark { font-size: 40px; }
