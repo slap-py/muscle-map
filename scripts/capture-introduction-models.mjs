@@ -3,6 +3,8 @@ import { chromium } from '@playwright/test';
 
 // Capture the product's own model views; no illustration or invented anatomy.
 const base = process.env.VIEWER_URL ?? 'http://127.0.0.1:5174/';
+// MODES limits the capture, e.g. MODES=neurovascular, so existing stills are left alone.
+const modes = (process.env.MODES ?? 'anatomy,skeleton').split(',');
 const url = new URL(base);
 url.hash = '/regions?region=left-lower-leg&region=left-upper-leg';
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
@@ -20,12 +22,13 @@ try {
   await fs.mkdir('public/introduction', { recursive: true });
   for (const theme of ['light', 'dark']) {
     await page.evaluate(choice => { localStorage.setItem('muscle-map-theme', choice); document.documentElement.dataset.theme = choice; }, theme);
-    for (const mode of ['anatomy', 'skeleton']) {
+    for (const mode of modes) {
       await page.locator(`[data-mode="${mode}"]`).evaluate(el => el.click());
+      if (mode === 'neurovascular') await page.waitForFunction(() => document.querySelector('#viewport')?.dataset.neurovascularAssets === 'ready', undefined, { timeout: 120000 });
       await page.locator('#home').evaluate(el => el.click());
       await page.waitForTimeout(1500);
       await page.locator('#viewport').screenshot({ path: `public/introduction/leg-${mode}${theme === 'dark' ? '-dim' : ''}.png` });
     }
   }
-  console.log('Captured anatomy and skeleton views in Light and Dim.');
+  console.log(`Captured ${modes.join(', ')} views in Light and Dim.`);
 } finally { await browser.close(); }

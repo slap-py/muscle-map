@@ -40,10 +40,16 @@ function regionsBox() {
   </div>`;
 }
 
+const previewViews = [
+  { mode: 'anatomy', alt: 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' },
+  { mode: 'skeleton', alt: 'The same left leg model with the muscles hidden to show the bones.' },
+  { mode: 'neurovascular', alt: 'The same left leg model with bones, arteries, veins and nerves shown and the muscles faded to 20 percent opacity.' },
+];
+
 function modelPreview() {
   return `<figure class="intro-preview">
-    <div class="intro-preview-heading"><span>Inside the model</span><div class="intro-preview-controls" role="group" aria-label="Model preview"><button data-preview="anatomy" aria-pressed="true">Anatomy</button><button data-preview="skeleton" aria-pressed="false">Skeleton</button></div></div>
-    <div class="intro-preview-stage">${(['anatomy', 'skeleton'] as const).map(mode => `<div data-preview-view="${mode}" ${mode === 'skeleton' ? 'hidden' : ''}><img class="intro-model-light" src="${import.meta.env.BASE_URL}introduction/leg-${mode}.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'anatomy' ? 'fetchpriority="high"' : 'loading="lazy"'}/><img class="intro-model-dim" src="${import.meta.env.BASE_URL}introduction/leg-${mode}-dim.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'skeleton' ? 'loading="lazy"' : ''}/></div>`).join('')}</div>
+    <div class="intro-preview-heading"><span>Inside the model</span><div class="intro-preview-controls" role="group" aria-label="Model preview"><button data-preview="anatomy" aria-pressed="true">Anatomy</button><button data-preview="skeleton" aria-pressed="false">Skeleton</button><button data-preview="neurovascular" aria-pressed="false">Neurovascular</button></div></div>
+    <div class="intro-preview-stage">${previewViews.map(({ mode, alt }) => `<div data-preview-view="${mode}" ${mode === 'anatomy' ? '' : 'hidden'}><img class="intro-model-light" src="${import.meta.env.BASE_URL}introduction/leg-${mode}.png" alt="${alt}" width="860" height="1000" ${mode === 'anatomy' ? 'fetchpriority="high"' : 'loading="lazy"'}/><img class="intro-model-dim" src="${import.meta.env.BASE_URL}introduction/leg-${mode}-dim.png" alt="${alt}" width="860" height="1000" loading="lazy"/></div>`).join('')}</div>
     <figcaption><span>Left upper &amp; lower leg</span><span>Still views from Fabrica</span></figcaption>
   </figure>`;
 }
