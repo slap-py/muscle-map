@@ -183,41 +183,44 @@ body[data-page="introduction"] { overflow: auto; }
 /* Phone-size layout (1179px and below): larger type and touch targets, figures stacked under their text, one-column cards. */
 @media (max-width: 1179px) {
   .intro-header, .intro-main, .intro-footer { width: calc(100% - 32px); }
-  .intro-brand .brand-mark { height: 52px; }
-  .intro-brand .brand-wordmark { font-size: 34px; }
-  .intro-nav { gap: 24px; font-size: 16px; }
-  .intro-hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 40px 48px; }
-  .intro-hero h1 { font-size: clamp(46px, 8vw, 64px); margin-bottom: 20px; }
-  .intro-eyebrow { font-size: 14px; }
-  .intro-lead { max-width: none; font-size: 19px; line-height: 1.6; }
-  .intro-cta { flex-direction: column; gap: 12px; }
-  .intro-cta .intro-button { width: 100%; min-height: 56px; font-size: 16px; }
-  .intro-preview { max-width: 620px; width: 100%; }
-  .intro-preview-heading, .intro-preview figcaption { font-size: 14px; }
-  .intro-preview-controls button { min-height: 44px; font-size: 15px; }
+  .intro-brand .brand-mark { height: 60px; }
+  .intro-brand .brand-wordmark { font-size: 40px; }
+  .intro-nav { gap: 28px; font-size: 18px; }
+  .intro-hero { grid-template-columns: minmax(0, 1fr); gap: 56px; padding-block: 56px 64px; }
+  .intro-hero h1 { font-size: clamp(54px, 11vw, 84px); margin-bottom: 28px; }
+  .intro-eyebrow { font-size: 15px; margin-bottom: 24px; }
+  .intro-lead { max-width: none; font-size: 22px; line-height: 1.6; }
+  .intro-cta { flex-direction: column; gap: 16px; margin-top: 40px; }
+  .intro-cta .intro-button { width: 100%; min-height: 64px; font-size: 19px; }
+  .intro-preview { max-width: 800px; width: 100%; }
+  .intro-preview-heading, .intro-preview figcaption { font-size: 16px; }
+  .intro-preview-controls button { min-height: 52px; font-size: 17px; padding-inline: 18px; }
   .intro-preview-stage { height: auto; aspect-ratio: 860 / 1000; }
   .intro-preview-stage img { transform: none; }
-  .intro-features { padding-block: 48px; }
-  .intro-section-heading h2 { font-size: 34px; }
-  .intro-regions-box { grid-template-columns: minmax(0, 1fr); gap: 40px; margin-top: 32px; }
-  .intro-regions-figure-box { max-width: 640px; width: 100%; }
-  .intro-regions { --regions-h: 520px; }
-  .intro-regions-copy h3 { font-size: 30px; }
-  .intro-regions-copy p, .intro-regions-howto { font-size: 18px; }
-  .intro-regions-copy .intro-feature-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .intro-feature-grid h3 { font-size: 19px; }
-  .intro-feature-grid p { font-size: 16px; }
-  .intro-regions-side li { font-size: 15px; }
-  .intro-regions-side .counts { font-size: 13px; }
-  .intro-regions-side .side-name { font-size: 16px; top: 6%; }
-  .intro-tools { padding-block: 48px 64px; }
-  .intro-tools-lead { font-size: 18px; }
-  .intro-tools-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
-  .intro-tools-grid li { padding: 28px; }
-  .intro-tools-grid h3 { font-size: 20px; }
-  .intro-tools-grid p { font-size: 16px; }
-  .intro-scope, .intro-footer { font-size: 15px; }
-  .intro-text-link { font-size: 16px; }
+  .intro-features { padding-block: 64px; }
+  .intro-section-heading .intro-eyebrow { margin-bottom: 14px; }
+  .intro-section-heading h2 { font-size: 42px; line-height: 1.2; }
+  .intro-regions-box { grid-template-columns: minmax(0, 1fr); gap: 56px; margin-top: 40px; }
+  .intro-regions-figure-box { max-width: 800px; width: 100%; }
+  .intro-regions-figure-box .intro-preview-heading { font-size: 16px; }
+  .intro-regions { --regions-h: 720px; }
+  .intro-regions-copy h3 { font-size: 38px; margin-bottom: 18px; }
+  .intro-regions-copy p, .intro-regions-howto { font-size: 22px; line-height: 1.6; }
+  .intro-regions-copy .intro-feature-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; margin-top: 40px; }
+  .intro-feature-grid h3 { font-size: 24px; }
+  .intro-feature-grid p { font-size: 19px; line-height: 1.6; }
+  .intro-feature-icon svg { width: 30px; height: 30px; }
+  .intro-regions-side li { font-size: 18px; padding: 12px 14px; }
+  .intro-regions-side .counts { font-size: 16px; }
+  .intro-regions-side .side-name { font-size: 20px; top: 5%; }
+  .intro-tools { padding-block: 64px 80px; }
+  .intro-tools-lead { font-size: 21px; }
+  .intro-tools-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .intro-tools-grid li { padding: 36px; }
+  .intro-tools-grid h3 { font-size: 26px; }
+  .intro-tools-grid p { font-size: 19px; line-height: 1.6; }
+  .intro-scope, .intro-footer { font-size: 17px; }
+  .intro-text-link { font-size: 18px; }
 }
 @media (max-width: 480px) {
   .intro-regions { --regions-h: 400px; }
