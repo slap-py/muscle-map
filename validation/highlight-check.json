@@ -1,0 +1,27 @@
+{
+  "checks": [
+    "Highlight is available before selection: /lower-leg",
+    "Highlight can be enabled before selection: /lower-leg",
+    "Selecting a muscle keeps highlight enabled and reveals connections: /lower-leg",
+    "Turning highlight off removes highlighted connections: /lower-leg",
+    "Highlight can be toggled back on with a selection: /lower-leg",
+    "Clearing selection turns highlight off and leaves control available: /lower-leg",
+    "Highlight remains available in Skeleton: /lower-leg",
+    "Highlight is available before selection: /right-upper-leg",
+    "Highlight can be enabled before selection: /right-upper-leg",
+    "Selecting a muscle keeps highlight enabled and reveals connections: /right-upper-leg",
+    "Turning highlight off removes highlighted connections: /right-upper-leg",
+    "Highlight can be toggled back on with a selection: /right-upper-leg",
+    "Clearing selection turns highlight off and leaves control available: /right-upper-leg",
+    "Highlight remains available in Skeleton: /right-upper-leg",
+    "Highlight is available before selection: /regions?region=left-lower-leg&region=left-upper-leg",
+    "Highlight can be enabled before selection: /regions?region=left-lower-leg&region=left-upper-leg",
+    "Selecting a muscle keeps highlight enabled and reveals connections: /regions?region=left-lower-leg&region=left-upper-leg",
+    "Turning highlight off removes highlighted connections: /regions?region=left-lower-leg&region=left-upper-leg",
+    "Highlight can be toggled back on with a selection: /regions?region=left-lower-leg&region=left-upper-leg",
+    "Clearing selection turns highlight off and leaves control available: /regions?region=left-lower-leg&region=left-upper-leg",
+    "Highlight remains available in Skeleton: /regions?region=left-lower-leg&region=left-upper-leg",
+    "No browser runtime errors"
+  ],
+  "errors": []
+}

@@ -13,7 +13,7 @@ const packs = [lowerLegPack, leftLowerLegPack, leftUpperLegPack, rightUpperLegPa
 const ids = packs.map(pack => pack.id);
 describe('multiple body regions', () => {
   it('keeps single-region URLs and canonicalizes combined URLs with deep links', () => {
-    expect(regionsHref([])).toBe('#/');
+    expect(regionsHref([])).toBe('#/browser');
     expect(regionsHref(['lower-leg', 'lower-leg'], 'talus')).toBe(regionHref('lower-leg', 'talus'));
     const url = regionsHref(['left-upper-leg', 'left-lower-leg', 'left-upper-leg'], 'left-upper-leg:adductor-longus');
     expect(parseRoute(url, ids)).toEqual({ kind: 'regions', regionIds: ['left-lower-leg', 'left-upper-leg'], select: 'left-upper-leg:adductor-longus' });

@@ -289,7 +289,7 @@ export const ankleStructures: Structure[] = ankleDetails.map((d) => ({
   id: d.id,
   name: d.name,
   tissue: d.tissue,
-  region: "Foot",
+  region: ["soleus-distal", "fibularis-brevis", "ehl", "edl"].includes(d.id) ? "Lower leg" : "Foot",
   group: d.group,
   description: d.description,
   role: d.role,

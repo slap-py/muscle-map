@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { lowerLegPack } from "../src/regions/lower-leg";
 import { validateRegionPack } from "../src/regions";
-import { regionCatalog, validateRegionCatalog } from "../src/regions/catalog";
+import { browsableCounts, regionCatalog, validateRegionCatalog } from "../src/regions/catalog";
 
 describe("region packs", () => {
   it("ships the lower leg pack with unique structure IDs", () => {
@@ -36,4 +36,14 @@ describe("region packs", () => {
     const unknownDirection = { ...lowerLegPack, viewPresets: [{ ...lowerLegPack.viewPresets[0], direction: "unknown" }] };
     expect(() => validateRegionPack(unknownDirection)).toThrow(/unknown direction/);
   });
+});
+
+it('advertises only browsable categories without discarding hidden model data', async()=>{
+ for (const entry of regionCatalog) {
+  const pack=await entry.load(), counts=browsableCounts(entry.structureCounts);
+  expect(entry.title).toBe(pack.title);
+  expect(counts.total).toBe(pack.structures.filter(s=>s.tissue!=='skin').length);
+  expect(Object.values(counts.byTissue).reduce((sum,n)=>sum+n,0)).toBe(counts.total);
+  expect(counts.byTissue.skin).toBeUndefined();
+ }
 });

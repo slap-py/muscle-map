@@ -55,7 +55,8 @@ describe("millimeter anatomy contract", () => {
       for (const mesh of part.meshes) {
         expect(mesh.userData.atlasId).toBe(part.id);
         expect(mesh.userData.id).toBe(part.id);
-        if (!mesh.userData.fiber) expect(mesh.geometry.boundsTree).toBeDefined();
+        if (mesh.userData.skinSurface || mesh.userData.atlasId === "skin" || mesh.userData.skinCap) expect(mesh.geometry.boundsTree).toBeUndefined();
+        else if (!mesh.userData.fiber) expect(mesh.geometry.boundsTree).toBeDefined();
         mesh.geometry.dispose();
         expect(mesh.geometry.boundsTree).toBeUndefined();
       }

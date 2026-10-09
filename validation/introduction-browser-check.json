@@ -1,0 +1,108 @@
+{
+  "checks": [
+    "Introduction, guide, credits, and browser stay lightweight until a region is opened",
+    "Both model stills work with keyboard controls and follow Light, Dim, and System themes",
+    "Introduction and guide fit phone, tablet, and desktop widths without header overlap or horizontal overflow",
+    "Start exploring reaches the unchanged body browser, opens combined regions, returns to the browser, and disposes the viewer",
+    "Existing region and structure deep links keep working"
+  ],
+  "layouts": [
+    {
+      "theme": "light",
+      "width": 320,
+      "scrollWidth": 320,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy.png"
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "scrollWidth": 390,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy.png"
+    },
+    {
+      "theme": "light",
+      "width": 600,
+      "scrollWidth": 600,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy.png"
+    },
+    {
+      "theme": "light",
+      "width": 820,
+      "scrollWidth": 820,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy.png"
+    },
+    {
+      "theme": "light",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy.png"
+    },
+    {
+      "theme": "light",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy.png"
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "scrollWidth": 320,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy-dim.png"
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "scrollWidth": 390,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy-dim.png"
+    },
+    {
+      "theme": "dark",
+      "width": 600,
+      "scrollWidth": 600,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy-dim.png"
+    },
+    {
+      "theme": "dark",
+      "width": 820,
+      "scrollWidth": 820,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy-dim.png"
+    },
+    {
+      "theme": "dark",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy-dim.png"
+    },
+    {
+      "theme": "dark",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "overlaps": false,
+      "visibleModels": 1,
+      "modelSrc": "/introduction/leg-anatomy-dim.png"
+    }
+  ],
+  "errors": []
+}

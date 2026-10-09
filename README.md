@@ -38,13 +38,13 @@ The dev server uses http://127.0.0.1:5174. Every `scripts/*-browser-check.mjs` a
 
 Models load with byte-based progress when all content lengths are known, or an indeterminate bar otherwise. Failed existing assets retain procedural shapes and show an explanatory message for 2.5 seconds. Neurovascular assets load lazily; if unavailable, their layers are hidden rather than replaced by invented geometry.
 
-## Anatomy, provenance, and the pending skin replacement
+## Anatomy, provenance, and illustrative skin
 
 Bones and muscle bellies use registered Z-Anatomy / BodyParts3D meshes. Gastrocnemius includes both source heads and is separately selectable from soleus. Tendons, ligaments, retinacula, and 78 cartilage patches across 39 modeled interfaces are fitted to the source surfaces. Arteries, veins and nerves are adapted from the same pinned source, converted from curves with their tube radii preserved, cropped at the full-tibia upper boundary and registered with the bone transform. Geometry is static and simplified, not clinical; bursae, tendon sheaths and some small structures are omitted.
 
 **Lymph is unavailable for this region in the pinned dataset:** there are no lymphatic vessels below the hip, and only three mid-shin nodes in range. Those nodes are excluded; no lymphatic geometry is modeled by hand. This describes dataset coverage, not the presence of lymphatics in real anatomy.
 
-**Real-skin replacement is blocked.** Inspection of the pinned `assets/source/Startup.blend` through the running Blender 5.2 **MCP** extension found no skin/integument mesh. Its Skin and Dermis collections are empty; Integument contains hair and nail appendages. Under the requested stop condition, the existing exterior GLB and manifest were preserved. The skin remains an illustrative fitted surface, and its provenance remains `illustrative-envelope`. No claim of right-leg skin extraction, capping, ≤40k triangles, or 95% bone enclosure is made. The new skin material and Exterior preset are implemented independently.
+The Skin layer is an illustrative envelope derived from each side’s own registered structures. It is not scanned skin. The pipeline samples triangle surfaces, fills and inflates the structure union with a smooth project-defined thickness field, then extracts and simplifies the outer surface. Free toes use independent source-derived section fields; their padding was tuned below the initial starting range to preserve gaps. The field is extracted at 0.5 mm in bounded slabs, including the fine toe grid. The gastrocnemius accessor bytes remain unchanged. Caps have their own checkbox and opacity, default on at 100%; combined views hide only matching seam caps. See the current geometry reports in `validation/skin-*.json` for measured results and limitations.
 
 The prescribed group taxonomy places MTP collateral bands under “Midfoot ligaments”; source comments record this taxonomy limitation. Source fact links are in `src/muscleFacts.ts` and `src/neurovascularFacts.ts`, and attachment references in `src/attachments.ts`.
 
@@ -68,7 +68,7 @@ python scripts/blender-command.py
 python scripts/blender-command.py scripts/inspect-exterior.py
 ```
 
-The bridge uses NUL-delimited JSON with `type: execute`, `code`, and `strict_json`. Inspection/export scripts may replace Blender's open scene; save work first. `prepare-exterior.py` remains the existing illustrative exporter until a real skin source is supplied. See [COORDINATES.md](COORDINATES.md), [credits.md](credits.md), [public/models/CREDITS.md](public/models/CREDITS.md), and [continuation.md](continuation.md).
+The bridge uses NUL-delimited JSON with `type: execute`, `code`, and `strict_json`. Inspection/export scripts may replace Blender's open scene; save work first. `prepare-exterior.py` is the legacy ring-envelope exporter. `prepare-structure-skin.py` replaces that workflow; the old GLB remains in Git history. See [COORDINATES.md](COORDINATES.md), [credits.md](credits.md), [public/models/CREDITS.md](public/models/CREDITS.md), and [continuation.md](continuation.md).
 
 
 ### Display theme
@@ -83,9 +83,15 @@ vessels and nerves with muscles at 20% opacity.
 
 ## Regions and viewer lifecycle
 
-The app opens at `#/`, the Muscle Map region hub. Open the lower-leg card or use
+The app opens at `#/`, the Fabrica introduction. **Start exploring** opens the existing
+person-based browser at `#/browser`; **How it works** opens `#/how-it-works`.
+The introduction uses actual Anatomy/Skeleton stills of the combined left leg,
+supports the existing themes, and links to `#/credits`. Its CSS is scoped to the
+introduction pages, and it does not load the 3D engine or models. Regenerate the
+stills against the dev server with `node scripts/capture-introduction-models.mjs`
+(or supply `VIEWER_URL`). Open a region from the browser or use
 `#/lower-leg` directly. A link such as `#/lower-leg?select=talus` selects a structure.
-The home button beside the viewer title and the region menu return to All regions. Browser Back restores
+The brand link beside the viewer title returns to the browser. Browser Back restores
 the previous route; Escape closes the region menu or clears a selection first, then
 returns an idle viewer to the hub.
 
@@ -106,7 +112,11 @@ The last opened region is remembered under `muscle-map-last-region`. Existing th
 graphics, inspector-width and collapsed-section settings keep their per-browser keys.
 New region-specific settings should use `regionStorageKey(regionId, key)`.
 
-Run all browser checks against the preview with:
+Run the introduction flow check with `node scripts/introduction-browser-check.mjs`.
+It covers responsive layouts, themes, keyboard preview switching, guide and
+attribution navigation, combined regions, disposal, and existing deep links.
+Browser check URL helpers target `#/browser` by default. Run browser checks
+against the preview with:
 
 ```sh
 npm run build
@@ -140,8 +150,9 @@ The graphics gauge reflects the effective High / Low tier, including Auto.
   The source crop runs from 0.32 to 1.025 meters in source superior coordinates.
   Full psoas origins and proximal nerve paths extend beyond this crop.
 
-The upper-leg Exterior uses the source's open body-region surface patches with
-both sides rendered. Anatomy leaves the full fascia lata shell hidden initially;
+The upper-leg Exterior displays the structure-derived envelope with outward
+front faces and independent cut caps. Original body-region patches are retained
+as hidden source references. Anatomy leaves the full fascia lata shell hidden initially;
 its layer switch exposes it. Tendons are separated using source material faces.
 The source includes portions of the extensor mechanism in those tendon meshes;
 there is no separately named patellar-ligament source object in this pack.
@@ -181,3 +192,12 @@ The updated hub check covers all four cards at mobile, tablet and desktop widths
 Combined views use shareable routes such as `#/regions?region=left-lower-leg&region=left-upper-leg`. Model loaders remain independent and neurovascular assets remain lazy. Original export datums restore a shared coordinate frame; complete lower-leg tibia/fibula meshes replace upper-leg shaft context, and paired upper legs share one sacrum. Structure IDs are namespaced by region to keep opposite sides selectable. The existing mirrored-left lower-leg provenance still applies.
 
 Run `node scripts/combined-regions-browser-check.mjs` against the preview to verify multi-selection, attachments, layers, region changes, deep links and disposal.
+
+
+## Rebuilding the illustrative skin
+
+Run `npm exec vitest -- run --config scripts/skin-export.config.ts` to export the actual generated lower-leg connective tissues. Then run `python scripts/prepare-structure-skin.py --side right` and `--side left`, each from its own lower/upper packs. Parameters are in `scripts/skin-parameters.json`. Run `python scripts/inspect-structure-skin.py`, `node scripts/measure-skin-clearance.mjs` and `node scripts/validate-skin-enclosure.mjs` for the remaining audits. `--publish` automatically runs `node scripts/validate-structure-skin.mjs <side> --limit-mm=<hausdorffLimitMm>` when the side-specific mesh audit is missing, stale or failing, then rereads the report and refuses publication unless its hashes, configured Hausdorff limit and fixed 0.15 mm validation spacing match and it passes. The configured `surfaceValidationSpacingMm` remains 0.15 mm; uncertain Lipschitz bounds refine to 0.005 mm without changing the 0.3 mm error limit. `targetTriangles` records the desired count and `maximumTriangles` the publication ceiling; locked details can prevent reaching the desired count. Frozen per-side preservation indices in the JSON make simplification independent of previous scratch audits; `--reuse-field` permits triangulation refinement without changing the field. `scripts/measure-skin-source-toes.mjs` records exact bone surface spacing. No pip packages are required: the Python stack is NumPy/SciPy/scikit-image, and installed Node meshoptimizer/earcut perform simplification and cap triangulation.
+
+The region packs do not share a local origin. The full side is constructed in its lower-leg talus frame using frozen source-datum offsets, and the upper piece is exported back to its femur-midpoint frame. The skin seam is Y=450.125 mm in the lower frame, above the preserved calf heads; bones and vessels were originally cropped at Y=365.3445 mm and the upper shafts start around Y=252.3309 mm, an overlap of about 113.014 mm. The groin-level study cut is Y=790 mm. Skin ownership follows those planes even where source anatomy overlaps them. More proximal pelvis/gluteal anatomy remains visible as source context but lies outside the skin crop.
+
+The nine original upper-leg body-region patches are compared in `validation/skin-source-audit.json`. All nine original patch geometries remain byte-identical in the upper GLBs as hidden `sourceReference` meshes because their hip/pelvis coverage exceeds the groin cut. The visible envelope covers the configured thigh/knee study region. This envelope has no creases, nails or person-specific fat. Thickness, smoothing, webbing and cut levels are project choices. Clearance and landmark reports distinguish measured departures from the intended profile; do not infer uniform skin-to-bone clearance from the illustrative parameters.

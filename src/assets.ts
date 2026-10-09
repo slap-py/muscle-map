@@ -40,15 +40,16 @@ interface StagedAssets {
 }
 
 /** Consume a meter-scale GLTF scene. Keep each existing part/group/anchor identity. */
-function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, lookup: StructureLookup = byId, skinSource = "illustrative-envelope"): AssetReport {
+function installAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, lookup: StructureLookup = byId, skinSource = "structure-envelope"): AssetReport {
   return commitAssets(stageAssets(scene, parts, ids, tissue, true, lookup, skinSource), parts, ids);
 }
 
 /** As installAssets, but picking BVHs are built by `bvh` before any mesh joins the scene. */
-async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh: BvhBuilder, lookup: StructureLookup = byId, skinSource = "illustrative-envelope"): Promise<AssetReport> {
+async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh: BvhBuilder, lookup: StructureLookup = byId, skinSource = "structure-envelope"): Promise<AssetReport> {
   const assets = stageAssets(scene, parts, ids, tissue, false, lookup, skinSource);
   try {
-    await bvh([...assets.staged.values()].flat());
+    // Surface skin stays on the regular raycast path; do not build BVHs for its envelope or caps.
+    await bvh([...assets.staged.values()].flat().filter(mesh => !mesh.userData.skinSurface && !mesh.userData.skinCap));
     return commitAssets(assets, parts, ids);
   } catch (error) {
     disposeMeshes([...assets.staged.values()].flat());
@@ -57,7 +58,7 @@ async function installAssetsAsync(scene: THREE.Object3D, parts: Parts, ids: stri
   }
 }
 
-function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, pick: boolean, lookup: StructureLookup = byId, skinSource = "illustrative-envelope"): StagedAssets {
+function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, pick: boolean, lookup: StructureLookup = byId, skinSource = "structure-envelope"): StagedAssets {
   const report: AssetReport = { loaded: [], fallback: [], warnings: [] };
   const staged = new Map<string, THREE.Mesh[]>();
   const invalid = new Set<string>();
@@ -66,6 +67,8 @@ function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue:
   scene.traverse(object => {
     if (!(object instanceof THREE.Mesh)) return;
     sourceMeshes.push(object);
+    // Preserve reference-only source patches in the GLB for provenance, but never install or pick them.
+    if (object.userData.sourceReference === true) return;
     let id: unknown = object.userData.atlasId;
     for (let parent = object.parent; !id && parent; parent = parent.parent)
       id = parent.userData.atlasId;
@@ -98,19 +101,29 @@ function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue:
         geometry.setIndex(indices);
       }
       geometry.clearGroups();
-      geometry.computeVertexNormals();
+      const actualTissue = structure.tissue;
+      // Preserve authored skin normals; cap normals are intentionally flat.
+      const skinSurface = actualTissue === "skin";
+      if (!skinSurface && !geometry.getAttribute("normal")) geometry.computeVertexNormals();
       geometry.computeBoundingBox();
       geometry.computeBoundingSphere();
       if (!geometry.boundingSphere || geometry.boundingSphere.radius <= 0)
         throw new Error("Empty anatomical surface");
-      const actualTissue = structure.tissue;
-      mesh = new THREE.Mesh(geometry, actualTissue === "skin" ? new THREE.MeshPhysicalMaterial({color: "#d8a68a", roughness: .55, sheen: .3, sheenColor: "#ffd9c4", clearcoat: .05, side: skinSource === "z-anatomy-regional-surface" ? THREE.DoubleSide : THREE.FrontSide}) : new THREE.MeshStandardMaterial({
+      const skinCap = skinSurface && (object.userData.skinCap === true || object.name.startsWith("skin-cap-"));
+      const capEnd = skinCap && (object.userData.capEnd === "seam" || object.userData.capEnd === "proximal") ? object.userData.capEnd : undefined;
+      const authoredSource = skinSurface && typeof object.userData.source === "string" ? object.userData.source : undefined;
+      mesh = new THREE.Mesh(geometry, skinSurface ? new THREE.MeshPhysicalMaterial({
+        color: skinCap ? "#b87362" : "#d8a68a", roughness: skinCap ? .72 : .55,
+        sheen: skinCap ? .08 : .3, sheenColor: skinCap ? "#d28c78" : "#ffd9c4", clearcoat: skinCap ? 0 : .05,
+        flatShading: skinCap, side: THREE.FrontSide,
+      }) : new THREE.MeshStandardMaterial({
         color: colors[actualTissue], roughness: actualTissue === "cartilage" ? 0.36 : actualTissue === "bone" ? 0.76 : 0.68,
         side: actualTissue === "fascia" ? THREE.DoubleSide : THREE.FrontSide,
       }));
       mesh.name = id;
-      mesh.userData = { id, atlasId: id, fiber: false, source: actualTissue === "skin" ? skinSource : "z-anatomy" };
-      mesh.castShadow = actualTissue !== "skin";
+      mesh.userData = { id, atlasId: id, fiber: false, source: authoredSource ?? (skinSurface ? skinSource : "z-anatomy"), skinSurface, skinCap, capEnd };
+      mesh.castShadow = !skinSurface;
+      if (skinSurface) mesh.renderOrder = 10;
       mesh.receiveShadow = true;
       if (pick) enableMeshPicking(mesh);
       const list = staged.get(id) ?? [];
@@ -157,7 +170,7 @@ function commitAssets({ report, staged, invalid, sourceMeshes }: StagedAssets, p
 }
 
 /** Install synchronously, or with worker-built BVHs when a builder is given. */
-const install = (scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh?: BvhBuilder, lookup: StructureLookup = byId, skinSource = "illustrative-envelope") =>
+const install = (scene: THREE.Object3D, parts: Parts, ids: string[], tissue: Tissue, bvh?: BvhBuilder, lookup: StructureLookup = byId, skinSource = "structure-envelope") =>
   bvh ? installAssetsAsync(scene, parts, ids, tissue, bvh, lookup, skinSource) : installAssets(scene, parts, ids, tissue, lookup, skinSource);
 const exteriorIds = ['skin', 'gastrocnemius'];
 const importedMuscleIds = muscleIds.filter(id => id !== "gastrocnemius");
@@ -258,7 +271,7 @@ async function loadRegionalGroup(
   const groupIds = [...ids];
   const visibility = preparePartAssets(parts, groupIds);
   try {
-    const report = await install(await loadScene(url), parts, groupIds, tissue, bvh, lookup, "z-anatomy-regional-surface");
+    const report = await install(await loadScene(url), parts, groupIds, tissue, bvh, lookup, "structure-envelope");
     for (const id of new Set(groupIds)) {
       const part = parts.get(id);
       if (!part) continue;

@@ -5,12 +5,16 @@ export interface ViewerSettings {
   /** Most passive labels shown at once, at full zoom. */
   maxLabels: number;
   showFps: boolean;
+  /** Whether skin seam/proximal caps are on when a viewer opens or resets. */
+  skinCapsDefault: boolean;
+  /** Default opacity for skin seam/proximal caps. */
+  skinCapOpacityDefault: number;
 }
 
 export const SETTINGS_STORAGE_KEY = "muscle-map-settings";
 export const MIN_LABELS = 1;
 export const MAX_LABELS = 24;
-export const defaultSettings: Readonly<ViewerSettings> = { labelsDefault: false, maxLabels: 12, showFps: false };
+export const defaultSettings: Readonly<ViewerSettings> = { labelsDefault: false, maxLabels: 12, showFps: false, skinCapsDefault: true, skinCapOpacityDefault: 1 };
 
 export function readSettings(): ViewerSettings {
   try {
@@ -20,6 +24,8 @@ export function readSettings(): ViewerSettings {
       labelsDefault: typeof saved.labelsDefault === "boolean" ? saved.labelsDefault : defaultSettings.labelsDefault,
       maxLabels: Number.isFinite(max) ? Math.round(Math.min(MAX_LABELS, Math.max(MIN_LABELS, max))) : defaultSettings.maxLabels,
       showFps: typeof saved.showFps === "boolean" ? saved.showFps : defaultSettings.showFps,
+      skinCapsDefault: typeof saved.skinCapsDefault === "boolean" ? saved.skinCapsDefault : defaultSettings.skinCapsDefault,
+      skinCapOpacityDefault: Number.isFinite(Number(saved.skinCapOpacityDefault)) ? Math.min(1, Math.max(0, Number(saved.skinCapOpacityDefault))) : defaultSettings.skinCapOpacityDefault,
     };
   } catch {
     return { ...defaultSettings };

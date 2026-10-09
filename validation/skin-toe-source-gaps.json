@@ -1,0 +1,78 @@
+{
+  "right": [
+    {
+      "pair": [
+        1,
+        2
+      ],
+      "minimumSurfaceGapMm": 5.562080921918418,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        2,
+        3
+      ],
+      "minimumSurfaceGapMm": 4.203856803819624,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        3,
+        4
+      ],
+      "minimumSurfaceGapMm": 3.0753799962882447,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        4,
+        5
+      ],
+      "minimumSurfaceGapMm": 6.999324002692029,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    }
+  ],
+  "left": [
+    {
+      "pair": [
+        1,
+        2
+      ],
+      "minimumSurfaceGapMm": 5.562080921918418,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        2,
+        3
+      ],
+      "minimumSurfaceGapMm": 4.203856803819624,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        3,
+        4
+      ],
+      "minimumSurfaceGapMm": 3.0753799962882447,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        4,
+        5
+      ],
+      "minimumSurfaceGapMm": 6.999324002692029,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    }
+  ]
+}

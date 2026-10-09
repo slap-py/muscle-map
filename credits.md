@@ -182,3 +182,8 @@ Nerves:
 - `Superficial fibular nerve.r`
 - `Sural nerve.r`
 - `Tibial nerve.r`
+
+
+## Illustrative structure envelope (October 2026)
+
+The displayed skin is derived from the side-specific Z-Anatomy structure exports and the viewer’s generated connective tissues, rather than extracted from a skin scan. Each side is constructed from its own packs; the left lower-leg anatomy remains a mirrored right-side derivative, while its upper-leg source is native. Triangle surfaces are voxel-sampled, filled, inflated by a smooth project-defined thickness field and extracted with gradient normals. Independent per-toe fields use source-derived cross-section hulls and preserve air gaps; bounded half-millimetre extraction slabs resolve their contours. The lower-leg gastrocnemius geometry is preserved byte for byte. Cut caps are separately triangulated meshes. The nine original upper-leg open surface patches are compared in `validation/skin-source-audit.json`; the new envelope stops at a groin-level study cut and omits more proximal pelvis/gluteal context. No creases, nails or person-specific fat are modeled. Derived envelopes: CC BY-SA 4.0. Source attribution and upstream license notices above continue to apply.

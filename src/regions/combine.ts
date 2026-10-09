@@ -24,6 +24,16 @@ export const assemblyOffsets: Readonly<Record<string, readonly [number, number, 
 };
 const sideOf = (pack: RegionPack) => pack.id.startsWith('left-') ? 'left' : 'right';
 const isUpper = (pack: RegionPack) => pack.id.endsWith('upper-leg');
+
+/** Hide only the two regional skin cut caps when both matching side packs are selected. */
+function syncCombinedSkinCaps(contexts: readonly Context[]) {
+  const pairedSides = new Set(contexts.filter(context => isUpper(context.pack)).map(context => sideOf(context.pack)).filter(side => contexts.some(other => !isUpper(other.pack) && sideOf(other.pack) === side)));
+  for (const context of contexts) for (const part of context.parts.values()) for (const mesh of part.meshes) {
+    const cap = mesh.userData.skinCap === true || mesh.name.startsWith("skin-cap-");
+    const end = mesh.userData.capEnd;
+    mesh.userData.combineCapHidden = cap && pairedSides.has(sideOf(context.pack)) && end === "seam";
+  }
+}
 interface Member { pack: RegionPack; local: string; }
 interface Context { pack: RegionPack; parts: AnatomyParts; offset: THREE.Vector3; }
 
@@ -89,7 +99,7 @@ export function combineRegionPacks(input: readonly RegionPack[]): RegionPack {
     const overview = proximal ? proximal.pack.byId[proximal.local] : data;
     const unique = <T>(values: T[], key: (value: T) => string) => [...new Map(values.map(value => [key(value), value])).values()];
     return {
-      ...data, id, name: data.name,
+      ...data, id, name: data.tissue === "cartilage" ? data.name.replace(" · articular cartilage", " articular cartilage") : data.name,
       ...(sharedNeurovascular.has(id) ? {
         description: overview.description, role: overview.role, connection: overview.connection,
         facts: unique(sections.flatMap(section => section.facts ?? []), fact => fact.text + ':' + fact.source.url),
@@ -127,6 +137,7 @@ export function combineRegionPacks(input: readonly RegionPack[]): RegionPack {
       }
       if (!bounds.isEmpty()) bounds.getCenter(combined.anchor);
     }
+    syncCombinedSkinCaps(getContexts(parts));
   }
   const createAnkle: RegionPack['createAnkle'] = () => {
     const root = new THREE.Group(), parts: AnatomyParts = new Map(), list: Context[] = [];
@@ -298,7 +309,7 @@ export function combineRegionPacks(input: readonly RegionPack[]): RegionPack {
   };
   const tissueKeys = base.tissueKeys.filter(tissue => structures.some(structure => structure.tissue === tissue));
   const title = combinedTitle(packs);
-  const overview = 'Explore the selected regions together. Shared vessels and nerves are selected as one structure across regions. Use Area to browse each region and the region picker to add or remove regions.';
+  const overview = 'Explore the selected regions together. Shared tibia/fibula context copies, the sacrum when shared, and matching vessels and nerves are counted once across regions; other regional entries remain separate. Skin is excluded from browsable totals. Use Area to browse each region. Return to Browser to change the selected regions.';
   const target = new THREE.Vector3(0, packs.some(isUpper) ? 450 : 160, 0);
   const cameraPreset: RegionPack['cameraPreset'] = (view, aspect) => {
     const direction = new THREE.Vector3(...(base.cameraViews[view] ?? base.cameraViews[base.defaultView])).normalize();
@@ -315,6 +326,6 @@ export function combineRegionPacks(input: readonly RegionPack[]): RegionPack {
     structureCounts: { total: structures.length, byTissue: Object.fromEntries(tissueKeys.map(tissue => [tissue, structures.filter(structure => structure.tissue === tissue).length])) },
     cameraPreset, viewPresets: base.viewPresets.map(view => ({ ...view, preset: aspect => cameraPreset(view.id, aspect) })),
     scene: { ...base.scene, initialCamera: cameraPreset(base.defaultView, 1).position, keyTarget: target.clone(), fillTarget: target.clone(), floorPosition: new THREE.Vector3(0, -20, 0) },
-    about: { ...base.about, title, overview, overviewHtml: `<p>${overview}</p>${packs.map(pack => `<section><h3>${pack.title}</h3>${pack.about.overviewHtml}</section>`).join('')}` },
+    about: { ...base.about, title, overview, overviewHtml: `<p>${overview}</p><p class="stats">${structures.filter(s=>s.tissue!=="skin").length} browsable structures across ${packs.length} regions</p>${packs.map(pack => `<section><h3>${pack.title}</h3>${pack.about.overviewHtml}</section>`).join('')}` },
   });
 }

@@ -112,7 +112,7 @@ try {
 
   const cycles = [];
   for (let cycle = 0; cycle < 10; cycle += 1) {
-    await go('#/');
+    await go('#/browser');
     const disposed = await diagnostics();
     assert(disposed, `diagnostics missing after hub transition ${cycle + 1}`);
     assert.equal(numeric(disposed.activeListeners), 0, `scoped listener leak after cycle ${cycle + 1}`);
@@ -146,11 +146,11 @@ try {
       if (!/already handled|target closed|browser has been closed/i.test(String(error))) throw error;
     }
   });
-  await go('#/');
+  await go('#/browser');
   await page.evaluate(value => { window.location.hash = value; }, '#/lower-leg');
   await page.waitForTimeout(80);
   const duringCancellation = await diagnostics();
-  await page.evaluate(() => { window.location.hash = '#/'; });
+  await page.evaluate(() => { window.location.hash = '#/browser'; });
   await waitHub();
   await page.waitForTimeout(250);
   const cancelled = await diagnostics();
@@ -170,7 +170,7 @@ try {
   assert.equal(await page.locator('button[data-graphics-choice="low"]').getAttribute('aria-pressed'), 'true');
   assert(collectionSize(low.activeWorkers) > 0, 'low graphics should create a picking worker while mounted');
   assert.equal(collectionSize(low.pendingLoads), 0);
-  await go('#/');
+  await go('#/browser');
   const lowDisposed = await diagnostics();
   assert(lowDisposed, 'diagnostics missing after low graphics disposal');
   assert.equal(numeric(lowDisposed.activeViewers), 0);

@@ -1,0 +1,1137 @@
+{
+  "wholeLimbUrl": "http://127.0.0.1:5178/#/regions?region=lower-leg&region=right-upper-leg",
+  "lowerLegUrl": "http://127.0.0.1:5178/#/lower-leg",
+  "qaPhoneGateBypass": true,
+  "productionPhoneViewerSupported": false,
+  "timings": [
+    {
+      "graphics": "normal",
+      "elapsedMs": 10871,
+      "route": "combined",
+      "viewport": {
+        "graphics": "high",
+        "graphicsChoice": "auto",
+        "highlightedStructures": "",
+        "footprints": "0",
+        "focusedConnection": "",
+        "ghost": "false",
+        "cutaway": "",
+        "boneAssets": "ready",
+        "softTissues": "ready",
+        "labelTier": "1",
+        "exteriorAssets": "ready",
+        "loadedMuscles": "40",
+        "cartilagePatches": "86",
+        "loadedBones": "34"
+      }
+    },
+    {
+      "graphics": "low",
+      "elapsedMs": 22854,
+      "route": "combined",
+      "viewport": {
+        "graphics": "low",
+        "graphicsChoice": "low",
+        "highlightedStructures": "",
+        "footprints": "0",
+        "focusedConnection": "",
+        "ghost": "false",
+        "cutaway": "",
+        "boneAssets": "ready",
+        "softTissues": "ready",
+        "labelTier": "1",
+        "loadedMuscles": "1",
+        "cartilagePatches": "86",
+        "loadedBones": "34",
+        "layerAssets": "ready",
+        "exteriorAssets": "ready"
+      }
+    }
+  ],
+  "captures": [
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-anterior-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "anterior",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-anterior-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "anterior",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-medial-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "medial",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-medial-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "medial",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-lateral-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "lateral",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-lateral-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "lateral",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-posterior-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "posterior",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-posterior-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "posterior",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-dorsal-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "dorsal",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-dorsal-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "dorsal",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-plantar-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "plantar",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-plantar-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "plantar",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-anterior-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "anterior",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-anterior-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "anterior",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-medial-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "medial",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-medial-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "medial",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-lateral-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "lateral",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-lateral-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "lateral",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-posterior-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "posterior",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-posterior-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "posterior",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-dorsal-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "dorsal",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-dorsal-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "dorsal",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-plantar-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "plantar",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-plantar-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "plantar",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-anterior-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "anterior",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-anterior-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "anterior",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-medial-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "medial",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-medial-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "medial",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-lateral-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "lateral",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-lateral-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "lateral",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-posterior-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "posterior",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-posterior-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "posterior",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-dorsal-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "dorsal",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-dorsal-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "dorsal",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-plantar-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "plantar",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-light-plantar-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "light",
+      "direction": "plantar",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-anterior-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "anterior",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-anterior-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "anterior",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-medial-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "medial",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-medial-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "medial",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-lateral-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "lateral",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-lateral-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "lateral",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-posterior-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "posterior",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-posterior-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "posterior",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-dorsal-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "dorsal",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-dorsal-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "dorsal",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-plantar-skin100-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "plantar",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-plantar-skin100-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "plantar",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-anterior-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "anterior",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-anterior-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "anterior",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-medial-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "medial",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-medial-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "medial",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-lateral-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "lateral",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-lateral-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "lateral",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-posterior-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "posterior",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-posterior-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "posterior",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-dorsal-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "dorsal",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-dorsal-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "dorsal",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-plantar-skin50-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "plantar",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-plantar-skin50-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "plantar",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-anterior-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "anterior",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-anterior-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "anterior",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-medial-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "medial",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-medial-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "medial",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-lateral-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "lateral",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-lateral-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "lateral",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-posterior-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "posterior",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-posterior-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "posterior",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-dorsal-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "dorsal",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-dorsal-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "dorsal",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-plantar-skin20-capson.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "plantar",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-1440-dim-plantar-skin20-capsoff.png",
+      "route": "combined",
+      "size": "1440",
+      "theme": "dim",
+      "direction": "plantar",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-ankle-skin100-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-ankle-skin100-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-heel-skin100-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-heel-skin100-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-toes-skin100-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-toes-skin100-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-ankle-skin50-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-ankle-skin50-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-heel-skin50-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-heel-skin50-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-toes-skin50-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-toes-skin50-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-ankle-skin20-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-ankle-skin20-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-heel-skin20-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-heel-skin20-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-toes-skin20-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-light-toes-skin20-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "light",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-ankle-skin100-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-ankle-skin100-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-heel-skin100-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-heel-skin100-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-toes-skin100-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 100,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-toes-skin100-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 100,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-ankle-skin50-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-ankle-skin50-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-heel-skin50-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-heel-skin50-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-toes-skin50-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 50,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-toes-skin50-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 50,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-ankle-skin20-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-ankle-skin20-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "ankle",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-heel-skin20-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-heel-skin20-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "heel",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-toes-skin20-capson.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 20,
+      "caps": true,
+      "graphics": "high"
+    },
+    {
+      "file": "validation/skin-visual-reviewed-right/right-closeup-1440-dim-toes-skin20-capsoff.png",
+      "route": "http://127.0.0.1:5178/#/lower-leg",
+      "closeup": "toes",
+      "size": "1440",
+      "theme": "dim",
+      "skinOpacity": 20,
+      "caps": false,
+      "graphics": "high"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "supersededPhoneCaptureReport": "validation/skin-visual-phone-right/skin-visual-browser-check.json",
+  "phoneCaptureCorrection": "The original phone captures scrolled the viewer off screen; corrected captures explicitly scroll the viewer into the 390 px viewport."
+}

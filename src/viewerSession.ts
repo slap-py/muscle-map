@@ -11,6 +11,9 @@ export interface ViewerSession {
   onlyVisible: boolean;
   opacity: number;
   skinOpacity: number;
+  /** Skin cap controls are optional for sessions saved before cap support. */
+  skinCaps?: boolean;
+  skinCapOpacity?: number;
   neurovascularOpacity: number;
   labels: boolean;
   highlightConnections: boolean;

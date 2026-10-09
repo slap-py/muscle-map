@@ -51,18 +51,13 @@
     "z": "subject-right"
   },
   "units": "mm at runtime; meters in GLB",
-  "processing": [
-    "Original side-specific source objects, no reflection",
-    "Muscle tendon and bone cartilage material separation",
-    "Regional crop and boundary caps; source surface subdivision and triangle budgets",
-    "Source curves preserve tube radii; GLB Y-up export"
-  ],
   "limitations": [
     "Surface subdivision adds no measured detail",
     "Regional exterior comprises source body-region surface patches; not histologic skin",
     "Psoas and proximal nerves are cropped at the superior boundary; their full origins are outside this region",
     "Some source connective-tissue sheets have open borders; no clinical measurements or biomechanical simulation",
-    "Open exterior surface patches are displayed double-sided to preserve their source coverage."
+    "Visible skin is an illustrative structure envelope, not a source skin scan. Original open exterior patches remain hidden references.",
+    "The groin crop excludes proximal context; crest/heel clearance and uniform clearance acceptance remain unmet."
   ],
   "exports": [
     {
@@ -82,8 +77,15 @@
     },
     {
       "group": "exterior",
-      "bytes": 79284,
-      "sha256": "58d7c3d1572f2ea7e14487b591738cdd7a2e4ede76a0b46e736b4911d04bac0c"
+      "bytes": 1632696,
+      "sha256": "846175c62b9dfc048b1fc2700d8ef909406663dfcab79858534310e8bb756fcd",
+      "sourcePatchExport": {
+        "bytes": 79284,
+        "sha256": "58d7c3d1572f2ea7e14487b591738cdd7a2e4ede76a0b46e736b4911d04bac0c"
+      },
+      "skinSource": "structure-envelope",
+      "visibleMeshes": 3,
+      "hiddenReferenceMeshes": 9
     }
   ],
   "structures": [
@@ -3158,7 +3160,8 @@
       ],
       "boundaryEdges": 100,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3181,7 +3184,8 @@
       ],
       "boundaryEdges": 58,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3204,7 +3208,8 @@
       ],
       "boundaryEdges": 60,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3227,7 +3232,8 @@
       ],
       "boundaryEdges": 22,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3250,7 +3256,8 @@
       ],
       "boundaryEdges": 52,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3273,7 +3280,8 @@
       ],
       "boundaryEdges": 61,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3296,7 +3304,8 @@
       ],
       "boundaryEdges": 19,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3319,7 +3328,8 @@
       ],
       "boundaryEdges": 28,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     },
     {
       "id": "skin",
@@ -3342,7 +3352,35 @@
       ],
       "boundaryEdges": 14,
       "materialSeparation": "all",
-      "sourceAttachments": {}
+      "sourceAttachments": {},
+      "sourceReference": true
     }
+  ],
+  "sourceProcessing": [
+    "Original side-specific source objects, no reflection",
+    "Muscle tendon and bone cartilage material separation",
+    "Regional crop and boundary caps; source surface subdivision and triangle budgets",
+    "Source curves preserve tube radii; GLB Y-up export"
+  ],
+  "processing": [
+    "Original side-specific source objects, no reflection",
+    "Muscle tendon and bone cartilage material separation",
+    "Regional crop and boundary caps; source surface subdivision and triangle budgets",
+    "Source curves preserve tube radii; GLB Y-up export",
+    "Visible exterior is a structure-envelope derivative; original nine open skin source patches remain hidden byte-identical references. See exterior.manifest.json for parameters, validation and asset hash."
+  ],
+  "skinDerivative": {
+    "skinSource": "structure-envelope",
+    "manifest": "exterior.manifest.json",
+    "originalPatchRecordsRetained": true,
+    "proximalYLowerMm": 790,
+    "seamYLowerMm": 450.125
+  },
+  "sourceLimitations": [
+    "Surface subdivision adds no measured detail",
+    "Regional exterior comprises source body-region surface patches; not histologic skin",
+    "Psoas and proximal nerves are cropped at the superior boundary; their full origins are outside this region",
+    "Some source connective-tissue sheets have open borders; no clinical measurements or biomechanical simulation",
+    "Open exterior surface patches are displayed double-sided to preserve their source coverage."
   ]
 }

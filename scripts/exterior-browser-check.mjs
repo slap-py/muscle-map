@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
 import {chromium} from '@playwright/test';
 import { viewerUrl } from './browser-url.mjs';
 const browser=await chromium.launch({channel:'msedge',headless:true});
@@ -28,17 +29,26 @@ await page.waitForTimeout(500);await page.screenshot({path:'validation/gastrocne
 assert(await page.locator('.attachment-details').count());
 await page.locator('[data-mode="anatomy"]').click();
 await page.locator('[data-layer="skin"]').check();
+await page.locator('#skin-caps').scrollIntoViewIfNeeded();
+assert.equal(await page.locator('#skin-caps').isChecked(),true);
+await page.locator('#skin-cap-opacity').fill('35');
+assert.equal(await page.locator('#skin-cap-opacity-value').textContent(),'35%');
+await page.locator('#skin-caps').uncheck();
+assert.equal(await page.locator('#skin-caps').isChecked(),false);
 await page.locator('#skin-opacity').fill('35');
 assert.equal(await page.locator('#skin-opacity-value').textContent(),'35%');
 await page.locator('#skin-opacity').fill('0');
 await page.locator('#reset').click();
 assert.equal(await page.locator('#skin-opacity').inputValue(),'100');
+assert.equal(await page.locator('#skin-cap-opacity').inputValue(),'35', 'Reset uses the persisted cap opacity preference');
+assert.equal(await page.locator('#skin-caps').isChecked(),false, 'Reset uses the persisted cap enabled preference');
 assert.equal(await page.locator('[data-layer="skin"]').isChecked(),false);
+await page.locator('#skin-caps').check();await page.locator('#skin-cap-opacity').fill('100');
 await page.setViewportSize({width:1100,height:800});await page.screenshot({path:'validation/exterior-narrow.png'});
 await page.route('**/models/exterior.glb',r=>r.fulfill({status:404,body:'missing'}));
 await page.reload({waitUntil:'networkidle'});
 await page.waitForFunction(()=>document.querySelector('#viewport').dataset.exteriorAssets==='fallback');
 await page.locator('[data-mode="exterior"]').click();
 assert.equal(await page.locator('.structure-row[data-id="skin"]').count(),1);
-assert.deepEqual(errors,[]);console.log('Browser checks passed: exterior, five toe area filters, 13 muscles, opacity sweep; no page errors');
+assert.deepEqual(errors,[]);await fs.writeFile('validation/exterior-browser-check.json',JSON.stringify({checks:['Exterior preset, toe filters, preserved calf heads, skin opacity sweep','Cap controls persist preferences and reset respects those preferences','Missing exterior fallback remains usable'],errors},null,2));console.log('Browser checks passed: exterior, five toe area filters, 13 muscles, opacity sweep; no page errors');
 } finally { await browser.close(); }

@@ -1,7 +1,7 @@
 {
   "side": "left",
   "license": "CC-BY-SA-4.0",
-  "adaptation": "Anatomical-Z reflection of the registered right lower-leg assets with reversed triangle winding and recalculated normals. Not an independent left specimen.",
+  "adaptation": "Anatomical-Z reflection of the registered right lower-leg assets with reversed triangle winding and recalculated normals. Not an independent left specimen. The new exterior envelope is built separately from its own left lower and native left upper packs; it is not a reflection of the right envelope.",
   "assets": [
     {
       "asset": "bones",
@@ -21,11 +21,12 @@
     },
     {
       "asset": "exterior",
-      "objects": 3,
-      "sourceAsset": "../exterior.glb",
-      "sourceSha256": "468571581213eb8718fc141cc5ad229c1915cf2233a1c0ee499ce03a2a5b85bf",
-      "glbSha256": "238a1fd8b1bc66025a770f03589a72a813b747d162e13647e6837a20828caf2e",
-      "bytes": 2613528
+      "objects": 4,
+      "glbSha256": "7daff851fda457192fd91695b180d9647056adb90a97a4fea2ea0cd9dc00be2c",
+      "bytes": 2724700,
+      "adaptation": "Own left lower and native left upper structure envelope; original mirrored gastrocnemius buffers preserved verbatim.",
+      "skinSource": "structure-envelope",
+      "legacyExteriorSourceSha256": "468571581213eb8718fc141cc5ad229c1915cf2233a1c0ee499ce03a2a5b85bf"
     },
     {
       "asset": "neurovascular",

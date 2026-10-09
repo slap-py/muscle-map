@@ -16,7 +16,9 @@ async function readMeshes(name:string):Promise<MeshMap>{
   if(!(object instanceof THREE.Mesh))return;
   const attribute=object.geometry.getAttribute('position'),points=[];
   for(let i=0;i<attribute.count;i++)points.push(new THREE.Vector3().fromBufferAttribute(attribute,i).applyMatrix4(object.matrixWorld).multiplyScalar(1000));
-  result.set(object.userData.atlasId??object.name,{mesh:object,points});
+  const key = object.userData.atlasId??object.name;
+  const existing = result.get(key);
+  if (existing) existing.points.push(...points); else result.set(key,{mesh:object,points});
  });return result;
 }
 let vessels:MeshMap,bones:MeshMap,exterior:MeshMap;

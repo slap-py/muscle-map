@@ -1,3 +1,5 @@
+import { version } from "../package.json";
+import { mainNavigation, siteFooter } from "./siteChrome";
 import { loadingScreen } from "./loading";
 import { brandLockup } from "./branding";
 import type { RegionPack } from "./regions";
@@ -6,7 +8,7 @@ import type { Connection } from "./connections";
 import type { AssetReport } from "./assets";
 import { createViewerScope, disposeObject, viewerDiagnostics } from "./viewerResources";
 import { resolveStructureId, restoreViewerSession, selectionAliases, type ViewerSession } from "./viewerSession";
-import { createPickingWorker, intersectThinStructures } from "./picking";
+import { createPickingWorker, intersectThinStructures, chooseDepthAwareHit, isSkinSurface, isSkinCap } from "./picking";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { TAARenderPass } from "three/addons/postprocessing/TAARenderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
@@ -29,8 +31,8 @@ import { createSlowFrameMonitor, graphicsSettings, readAutoOverride, readGraphic
 import { applySceneTheme, effectiveTheme, listenForThemeChanges, readThemeChoice, setThemeChoice, type ThemeChoice } from "./theme";
 import { MAX_LABELS, MIN_LABELS, passiveLabelCap, readSettings, saveSettings } from "./settings";
 
-/** The skin exterior is not functional yet. Its loaders, materials and data stay; only its controls are hidden. */
-const SKIN_UI_ENABLED = false;
+/** Skin exterior controls and cap controls are enabled for the structure-envelope assets. */
+const SKIN_UI_ENABLED = true;
 
 const icon = {
   search: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>',
@@ -54,6 +56,7 @@ const { structures, byId, tissueNames, colors, atlasIds, labelTier, tierForZoom,
   connectionCameraPose, connectionOccluders, connectionClinicalPoints,
   relatedIds, neurovascularTissues, isNeurovascular } = pack;
 const { loadBoneAssets, loadMuscleAssets, loadExteriorAssets, loadNeurovascularAssets, createAssetSceneLoader } = pack.loaders;
+const browsableStructures = structures.filter(d => SKIN_UI_ENABLED || d.tissue !== "skin");
 const areaOptions = pack.atlasAreas.filter(area => !area.group).map(area => `<option value="${area.id}">${area.label}</option>`).join('') +
   [...new Set(pack.atlasAreas.map(area => area.group).filter(Boolean))].map(group => `<optgroup label="${group}">${pack.atlasAreas.filter(area => area.group === group).map(area => `<option value="${area.id}">${area.label}</option>`).join('')}</optgroup>`).join('');
 
@@ -62,14 +65,14 @@ const presets = pack.presets.filter(preset => SKIN_UI_ENABLED || !preset.tissues
 const openingLoader = app.querySelector("#loading");
 app.innerHTML = `
 <header class="topbar">
-  <div class="brand"><a class="viewer-home" href="#/" aria-label="Back to home" title="Back to home">${brandLockup}</a><span class="title">${pack.title}</span><span class="brand-subtitle">Interactive anatomy</span></div>
+  <div class="brand"><a class="viewer-home" href="#/" aria-label="Fabrica home" title="Home">${brandLockup}</a><span class="title" title="${pack.title}">${pack.title}</span></div>
   <div class="segmented modes" aria-label="Tissue presets">${presets.map(preset => `<button data-mode="${preset.id}" class="${preset.id === pack.defaultMode ? 'active' : ''}">${preset.icon ?? ''}${preset.label}</button>`).join('')}</div>
-  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset (R)" aria-label="Reset"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
+  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items">${mainNavigation(location.hash)}<button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset model, selection, layers and filters (R)" aria-label="Reset model"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
 </header>
 <main>
 <aside class="panel atlas" aria-label="Structures">
   <div class="atlas-head">
-    <label class="search">${icon.search}<input id="search" placeholder="Search ${structures.length} structures" aria-label="Find a structure" type="search"/></label>
+    <label class="search">${icon.search}<input id="search" placeholder="Search ${browsableStructures.length} structures" aria-label="Find a structure" type="search"/></label>
     <div id="type-filters" class="type-filters" aria-label="Structure types"></div>
     <label class="area-filter" for="atlas-area">Area<select id="atlas-area">${areaOptions}</select></label>
     <label class="visible-filter"><input id="only-visible" type="checkbox"/>Only visible layers</label>
@@ -97,13 +100,16 @@ app.innerHTML = `
     <button id="highlight-connections" class="toggle-row" aria-pressed="false" aria-describedby="highlight-connections-hint"><span>Highlight connections</span><span class="switch" aria-hidden="true"></span></button>
     <p id="highlight-connections-hint" class="sr-only">Highlight attached tendons and bones with your selection. Hidden connections appear temporarily.</p>
     <div class="slider-row"><label for="opacity">Muscle</label><input id="opacity" type="range" min="10" max="100" value="100"/><output id="opacity-value">100%</output></div>
+    <div class="slider-row"><label for="dim-opacity" title="How visible other structures stay while something is selected">Others</label><input id="dim-opacity" type="range" min="0" max="100" value="50"/><output id="dim-opacity-value">50%</output></div>
     <div class="slider-row" ${SKIN_UI_ENABLED ? '' : 'hidden'}><label for="skin-opacity">Skin</label><input id="skin-opacity" type="range" min="0" max="100" value="100"/><output id="skin-opacity-value">100%</output></div>
+    <div id="skin-cap-controls"><label class="layer-row skin-cap-row"><i style="background:#b87362"></i><span>Cap</span><input id="skin-caps" type="checkbox" checked/><span class="switch" aria-hidden="true"></span></label><div class="slider-row"><label for="skin-cap-opacity">Cap opacity</label><input id="skin-cap-opacity" type="range" min="0" max="100" value="100"/><output id="skin-cap-opacity-value">100%</output></div></div>
     <div id="neurovascular-opacity-controls" hidden><div class="slider-row"><label for="neurovascular-opacity">Vessels &amp; nerves</label><input id="neurovascular-opacity" type="range" min="10" max="100" value="100"/><output id="neurovascular-opacity-value">100%</output></div></div>
     <p id="neurovascular-status" role="status" hidden></p>
-    <p id="layer-hint" class="layer-hint"></p>
   </section>
+  <p id="layer-hint" class="layer-hint"></p>
 </aside>
 </main>
+${siteFooter}
 <dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close icon-button" aria-label="Close model information">${icon.close}</button><h2 id="about-title">${pack.about.title}</h2>
 <div class="about-tabs" role="tablist" aria-label="About sections">${[['overview','Overview'],['controls','Controls'],['settings','Settings']].map(([id,name])=>`<button id="about-tab-${id}" role="tab" data-about-tab="${id}" aria-controls="about-panel-${id}" aria-selected="${id==='overview'}" tabindex="${id==='overview'?0:-1}">${name}</button>`).join('')}</div>
 <section id="about-panel-overview" role="tabpanel" data-about-panel="overview" aria-labelledby="about-tab-overview">${pack.about.overviewHtml}</section>
@@ -113,7 +119,8 @@ app.innerHTML = `
   <div class="setting-block"><p class="setting-title" id="theme-heading">Theme</p><div class="segmented theme-control" role="group" aria-labelledby="theme-heading"><button data-theme-choice="system">System</button><button data-theme-choice="light">Light</button><button data-theme-choice="dark">Dim</button></div></div>
   <div class="setting-block"><button id="setting-labels-default" class="toggle-row" aria-pressed="false"><span>Labels on by default</span><span class="switch" aria-hidden="true"></span></button><p class="setting-note">Applies when a region opens or is reset. The Labels button still toggles them while you explore.</p></div>
   <div class="setting-block"><div class="slider-row"><label for="setting-max-labels">Max labels</label><input id="setting-max-labels" type="range" min="${MIN_LABELS}" max="${MAX_LABELS}" step="1"/><output id="setting-max-labels-value"></output></div><p class="setting-note">Most passive labels shown at once when zoomed in. Fewer appear when zoomed out. Selected and hovered structures are always labeled.</p></div>
-  <div class="setting-block"><button id="setting-fps" class="toggle-row" aria-pressed="false"><span>Show FPS meter</span><span class="switch" aria-hidden="true"></span></button><p class="setting-version">v1.0</p></div>
+  <div class="setting-block"><button id="setting-skin-caps" class="toggle-row" aria-pressed="true"><span>Show skin caps by default</span><span class="switch" aria-hidden="true"></span></button><div class="slider-row"><label for="setting-skin-cap-opacity">Default cap opacity</label><input id="setting-skin-cap-opacity" type="range" min="0" max="100" value="100"/><output id="setting-skin-cap-opacity-value">100%</output></div><p class="setting-note">Show flat surfaces at the model’s cut ends.</p></div>
+  <div class="setting-block"><button id="setting-fps" class="toggle-row" aria-pressed="false"><span>Show FPS meter</span><span class="switch" aria-hidden="true"></span></button><p class="setting-version">Version ${version}</p></div>
 </section>
 </dialog>${loadingScreen(pack.title)}`;
 // Keep the same loading element (and bar animation) through the lazy import.
@@ -134,14 +141,20 @@ let muscleReport: AssetReport | undefined;
 let exteriorReport: AssetReport | undefined;
 const state = {
   selected: null as string | null,
+  /** Every selected structure when shift-click built a multi-selection (empty or one entry otherwise); `selected` is the latest. */
+  multi: [] as string[],
   hovered: null as string | null,
   layers: new Set<Tissue>(pack.presets.find(preset => preset.id === pack.defaultMode)!.tissues),
   atlasRegion: "all",
-  atlasTypes: new Set<Tissue>(tissueKeys.filter(t => t !== "cartilage")),
+  atlasTypes: new Set<Tissue>(tissueKeys),
   onlyVisible: false,
   neurovascularOpacity: 1,
   skinOpacity: 1,
+  skinCaps: viewerSettings.skinCapsDefault,
+  skinCapOpacity: viewerSettings.skinCapOpacityDefault,
   opacity: 1,
+  /** Visibility cap for unselected structures while a selection exists. */
+  dimOpacity: 0.5,
   labels: viewerSettings.labelsDefault,
   isolated: false,
   connections: false,
@@ -161,6 +174,8 @@ if (restored) {
   state.onlyVisible = restored.onlyVisible;
   state.opacity = restored.opacity;
   state.skinOpacity = restored.skinOpacity;
+  state.skinCaps = restored.skinCaps ?? viewerSettings.skinCapsDefault;
+  state.skinCapOpacity = restored.skinCapOpacity ?? viewerSettings.skinCapOpacityDefault;
   state.neurovascularOpacity = restored.neurovascularOpacity;
   state.labels = restored.labels;
   state.highlightConnections = restored.highlightConnections;
@@ -182,22 +197,23 @@ function marked(text: string, query: string): string {
   while (index >= 0) { result += escapeHtml(text.slice(start,index)) + '<mark>' + escapeHtml(text.slice(index,index+query.length)) + '</mark>'; start=index+query.length; index=text.toLowerCase().indexOf(query,start); }
   return result + escapeHtml(text.slice(start));
 }
+const isSelected = (id: string) => id === state.selected || state.multi.includes(id);
 function renderList() {
   const focusedRow=(document.activeElement as HTMLElement)?.closest<HTMLButtonElement>('.structure-row')?.dataset.id;
   const q = $<HTMLInputElement>('#search').value.trim().toLowerCase();
   const ids = atlasIds(state.atlasRegion);
-  const items = structures.filter(d => d.id === state.selected || (ids.has(d.id) && state.atlasTypes.has(d.tissue) && (!state.onlyVisible || state.layers.has(d.tissue)) && `${d.name} ${d.group} ${d.description}`.toLowerCase().includes(q)));
+  const items = browsableStructures.filter(d => ids.has(d.id) && state.atlasTypes.has(d.tissue) && (!state.onlyVisible || state.layers.has(d.tissue)) && `${d.name} ${d.group} ${d.description}`.toLowerCase().includes(q));
   $('#type-filters').innerHTML = atlasOrder.map(t => `<button data-atlas-type="${t}" aria-pressed="${state.atlasTypes.has(t)}"><i style="background:${colors[t]}"></i>${atlasNames[t]} <span>${structures.filter(d=>d.tissue===t).length}</span></button>`).join('');
   app.querySelectorAll<HTMLButtonElement>('[data-atlas-type]').forEach(b=>b.onclick=()=>{const t=b.dataset.atlasType as Tissue;state.atlasTypes.has(t)?state.atlasTypes.delete(t):state.atlasTypes.add(t);renderList();});
   $<HTMLSelectElement>('#atlas-area').value=state.atlasRegion;
   $<HTMLInputElement>('#only-visible').checked=state.onlyVisible;
-  $('#list-count').textContent=`Showing ${items.length} of ${structures.length}`;
-  $('#clear-filters').hidden=!q && state.atlasRegion==='all' && !state.onlyVisible && atlasOrder.every(t=>state.atlasTypes.has(t)===(t!=='cartilage'));
+  $('#list-count').textContent=`Showing ${items.length} of ${browsableStructures.length}`;
+  $('#clear-filters').hidden=!q && state.atlasRegion==='all' && !state.onlyVisible && atlasOrder.every(t=>state.atlasTypes.has(t));
   const container=$('#structure-list');container.replaceChildren();
   for (const tissue of atlasOrder) {
     const members=items.filter(d=>d.tissue===tissue);if(!members.length)continue;
     const section=document.createElement('details');section.className='tissue-section';section.dataset.tissue=tissue;
-    section.open=!!q || !collapsedTissues.has(tissue) || members.some(d=>d.id===state.selected);
+    section.open=!!q || !collapsedTissues.has(tissue) || members.some(d=>isSelected(d.id));
     section.innerHTML=`<summary>${atlasNames[tissue]} <span>${members.length}</span></summary>`;
     section.ontoggle=()=>{if(q || disposed)return;section.open?collapsedTissues.delete(tissue):collapsedTissues.add(tissue);try{localStorage.setItem('atlas-collapsed',JSON.stringify([...collapsedTissues]));}catch{}};
     for(const group of [...new Set(members.map(d=>d.group))].sort()) {
@@ -207,7 +223,7 @@ function renderList() {
     }
     container.append(section);
   }
-  if(!items.length)container.innerHTML='<p class="empty">No matches. Try “talus” or clear the filters.</p>';
+  if(!items.length)container.innerHTML='<p class="empty">No matches. Try another structure name or clear the filters.</p>';
   updateRows();
   if(focusedRow)app.querySelector<HTMLButtonElement>(`.structure-row[data-id="${focusedRow}"]`)?.focus({preventScroll:true});
 }
@@ -215,13 +231,13 @@ let lastScrolledSelection: string | null = null;
 function updateRows() {
   const highlighted=selectedConnectionHighlights();
   app.querySelectorAll<HTMLButtonElement>('.structure-row').forEach(b=>{
-    const selected=b.dataset.id===state.selected;
+    const selected=isSelected(b.dataset.id!);
     b.classList.toggle('selected',selected);b.classList.toggle('connected',!selected&&highlighted.has(b.dataset.id!));b.classList.toggle('hovered',b.dataset.id===state.hovered);b.setAttribute('aria-pressed',String(selected));
-    if(selected && lastScrolledSelection!==state.selected){b.closest('details')!.open=true;b.scrollIntoView({block:'nearest'});}
+    if(b.dataset.id===state.selected && lastScrolledSelection!==state.selected){b.closest('details')!.open=true;b.scrollIntoView({block:'nearest'});}
   });
   lastScrolledSelection=state.selected;
 }
-function clearFilters(){state.atlasRegion='all';state.atlasTypes=new Set(tissueKeys.filter(t=>t!=='cartilage'));state.onlyVisible=false;$<HTMLInputElement>('#search').value='';renderList();}
+function clearFilters(){state.atlasRegion='all';state.atlasTypes=new Set(tissueKeys);state.onlyVisible=false;$<HTMLInputElement>('#search').value='';renderList();}
 $('#clear-filters').onclick=clearFilters;
 $<HTMLSelectElement>('#atlas-area').onchange=e=>{state.atlasRegion=(e.target as HTMLSelectElement).value;renderList();};
 $<HTMLInputElement>('#only-visible').onchange=e=>{state.onlyVisible=(e.target as HTMLInputElement).checked;renderList();};
@@ -232,10 +248,41 @@ $('#structure-list').onkeydown=e=>{
   if(e.key==='Enter'){if(current>=0){e.preventDefault();rows[current].click();}return;}
   e.preventDefault();const next=current<0?0:Math.max(0,Math.min(rows.length-1,current+(e.key==='ArrowDown'?1:-1)));rows[next]?.focus();
 };
+function toggleIsolate() {
+  state.isolated = !state.isolated;
+  state.connections = false;
+  state.attachmentFade = false;
+  clearConnectionFocus();
+  renderDetails();
+  updateAppearance();
+}
+function toggleNeighbors(related: string[]) {
+  state.connections = !state.connections;
+  state.isolated = false;
+  state.attachmentFade = false;
+  clearConnectionFocus();
+  if (state.connections)
+    for (const id of related) state.layers.add(byId[id].tissue);
+  state.mode = "custom";
+  renderDetails();
+  updateAppearance();
+}
 function renderDetails() {
+  const attachmentsOpen = app.querySelector<HTMLDetailsElement>(".attachment-details")?.open ?? false;
   const d = state.selected ? byId[state.selected] : null;
   $("#clear").style.visibility = d ? "visible" : "hidden";
   $(".inspector").classList.toggle("inspector--empty", !d);
+  if (d && state.multi.length > 1) {
+    const picked = state.multi.map(id => byId[id]);
+    $("#details").innerHTML =
+      `<div class="structure-tag">Multiple selected</div><h2>${picked.length} structures selected</h2><p class="group-name">Shift-click to add or remove structures. Select a single structure to see its details.</p><div class="selection-tools"><button id="focus-selected" class="button" title="Frame the selected structures (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only the selected structures">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button></div><ul class="multi-list">${picked.map(item => `<li><i style="background:${colors[item.tissue]}"></i>${escapeHtml(item.name)}</li>`).join('')}</ul>`;
+    $("#focus-selected").onclick = () => focusParts(focusIds());
+    $("#isolate").onclick = toggleIsolate;
+    const related = [...new Set(state.multi.flatMap(id => [...relatedIds(id)]))];
+    $<HTMLButtonElement>("#show-connections").disabled = !related.length;
+    $("#show-connections").onclick = () => toggleNeighbors(related);
+    return;
+  }
   if (!d) {
     $("#details").innerHTML =
       `<p class="empty-inspector">Select a structure to see details.</p>`;
@@ -249,19 +296,12 @@ function renderDetails() {
     const quickFacts = facts.filter(([,value])=>value).map(([name,value])=>`<dt>${name}</dt><dd>${escapeHtml(value!)}</dd>`).join('');
     $("#details").innerHTML =
       `<div class="structure-tag"><i style="background:${colors[d.tissue]}"></i>${spansRegions ? 'Across regions' : d.region} · ${d.tissue}</div><h2>${d.name}</h2><p class="group-name">${d.group}</p>${regionNote}<div class="selection-tools"><button id="focus-selected" class="button" title="Frame this structure (F)">Focus</button><button id="isolate" class="button" aria-pressed="${state.isolated}" title="Show only this structure">Isolate</button><button id="show-connections" class="button" aria-pressed="${state.connections}" title="Show only adjacent and attached structures">Neighbors</button></div><div class="inspector-content">${quickFacts ? `<section class="quick-facts"><h3>Quick facts</h3><dl>${quickFacts}</dl></section>` : ''}<section class="structure-description"><h3>Description</h3><p>${escapeHtml(d.description)}</p></section></div>`;
-    $("#isolate").onclick = () => {
-      state.isolated = !state.isolated;
-      state.connections = false;
-      state.attachmentFade = false;
-      clearConnectionFocus();
-      renderDetails();
-      updateAppearance();
-    };
-    $("#focus-selected").onclick = () => focusParts(state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : [d.id]);
+    $("#isolate").onclick = toggleIsolate;
+    $("#focus-selected").onclick = () => focusParts(focusIds());
     const connections = connectionsFor(leg.parts, d.id);
     if (connections.length) {
       const section = document.createElement('details');
-      section.open = false;
+      section.open = attachmentsOpen || !!state.focusedConnection;
       section.className = 'attachment-details';
       section.innerHTML = '<summary>Attachments</summary><p class="footprint-key">Select one to zoom in; select again to return.</p>';
       // Bone insertions first, then junctions and soft-to-soft attachments.
@@ -309,17 +349,7 @@ function renderDetails() {
     if(d.clinical){const clinical=document.createElement('section');clinical.innerHTML=`<h3>Clinical note</h3><p>${escapeHtml(d.clinical)}</p>`;$('#details').append(clinical);}
     const related = [...relatedIds(d.id)];
     $<HTMLButtonElement>("#show-connections").disabled = !related.length;
-    $("#show-connections").onclick = () => {
-      state.connections = !state.connections;
-      state.isolated = false;
-      state.attachmentFade = false;
-      clearConnectionFocus();
-      if (state.connections)
-        for (const id of related) state.layers.add(byId[id].tissue);
-      state.mode = "custom";
-      renderDetails();
-      updateAppearance();
-    };
+    $("#show-connections").onclick = () => toggleNeighbors(related);
     if (related.length) {
       const links = document.createElement("details");
       links.open = true;
@@ -328,7 +358,7 @@ function renderDetails() {
         "<summary>Related structures</summary>";
       for (const id of related) {
         const b = document.createElement("button");
-        b.textContent = byId[id].name;
+        b.textContent = byId[id].name + (byId[id].tissue === "cartilage" && pack.structureRegions?.[id] ? ` · ${pack.structureRegions[id].join(" + ")}` : "");
         b.onclick = () => {
           $<HTMLInputElement>("#search").value = "";
           if (byId[id].region !== "Foot")
@@ -353,8 +383,9 @@ for (const tissue of tissueKeys) {
     state.attachmentFade = false;
     clearConnectionFocus();
     checked ? state.layers.add(tissue) : state.layers.delete(tissue);
-    if (!checked && state.selected && byId[state.selected].tissue === tissue) {
-      select(null);
+    const picked = state.multi.length ? state.multi : state.selected ? [state.selected] : [];
+    if (!checked && picked.some(id => byId[id].tissue === tissue)) {
+      setSelection(picked.filter(id => byId[id].tissue !== tissue));
       renderDetails();
       updateRows();
     }
@@ -618,7 +649,7 @@ function applySkinMaterial(simple: boolean) {
     const current = mesh.material as THREE.Material;
     if (simple && current instanceof THREE.MeshPhysicalMaterial) {
       const standard = new THREE.MeshStandardMaterial({
-        color: current.color, roughness: current.roughness, metalness: current.metalness, side: current.side,
+        color: current.color, roughness: current.roughness, metalness: current.metalness, flatShading: current.flatShading, side: current.side,
       });
       standard.userData = { ...current.userData };
       mesh.userData.fullMaterial = current;
@@ -824,26 +855,47 @@ function focusOverview() {
 $("#pan").onclick = () => setPan(!state.pan);
 function select(id: string | null, revealLayer = true) {
   id = resolveStructureId(pack, id);
+  setSelection(id ? [id] : [], revealLayer);
+}
+/** Shift-click: add the structure to the selection, or remove it if already selected. */
+function toggleSelection(id: string | null) {
+  id = resolveStructureId(pack, id);
+  if (!id) return;
+  const current = state.multi.length ? state.multi : state.selected ? [state.selected] : [];
+  setSelection(current.includes(id) ? current.filter(item => item !== id) : [...current, id]);
+}
+function setSelection(ids: string[], revealLayer = true) {
   clearConnectionFocus();
   state.attachmentFade = false;
-  state.selected = id;
-  if(id && !atlasIds(state.atlasRegion).has(id)) state.atlasRegion="all";
+  state.multi = ids.length > 1 ? ids : [];
+  state.selected = ids[ids.length - 1] ?? null;
+  if (!state.selected) state.highlightConnections = false;
+  if (ids.some(id => !atlasIds(state.atlasRegion).has(id))) state.atlasRegion="all";
   renderList();
   state.isolated = false;
   state.connections = false;
-  if (id && revealLayer && !state.layers.has(byId[id].tissue)) {
-    state.layers.add(byId[id].tissue);
-    state.mode = "custom";
+  for (const id of ids) {
+    if (revealLayer && !state.layers.has(byId[id].tissue)) {
+      state.layers.add(byId[id].tissue);
+      state.mode = "custom";
+    }
   }
   updateRows();
   renderDetails();
   $("#details").scrollTop = 0;
   updateAppearance();
+  if (state.selected && matchMedia("(max-width: 900px)").matches) $("#details").scrollIntoView({block:"start"});
 }
 function selectedConnectionHighlights() {
-  return state.highlightConnections && state.selected && !state.isolated
-    ? connectionHighlightIds(state.selected)
-    : new Set<string>();
+  const ids = new Set<string>();
+  if (!state.highlightConnections || !state.selected || state.isolated) return ids;
+  for (const id of state.multi.length ? state.multi : [state.selected])
+    for (const related of connectionHighlightIds(id)) ids.add(related);
+  return ids;
+}
+/** Parts to frame for Focus / F: the selection, widened to its connections when highlighting. */
+function focusIds() {
+  return state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : state.multi.length ? state.multi : [state.selected!];
 }
 function updateAppearance() {
   invalidate();
@@ -862,26 +914,28 @@ function updateAppearance() {
   if (focused && state.attachmentFade) { attached.add(focused.record.structureId); attached.add(focused.footprint.structureId); }
   const related =
     state.connections && state.selected
-      ? relatedIds(state.selected)
+      ? new Set((state.multi.length ? state.multi : [state.selected]).flatMap(id => [...relatedIds(id)]))
       : new Set<string>();
   for (const [id, part] of leg.parts) {
     const d = byId[id],
-      selected = id === state.selected;
+      selected = isSelected(id);
     part.group.visible =
       part.meshes.length > 0 && !part.group.userData.unavailable &&
       ((state.attachmentFade && d.tissue !== "skin") || highlighted.has(id) || state.layers.has(d.tissue)) &&
       (!state.isolated || selected) &&
       (!state.connections || selected || highlighted.has(id) || related.has(id));
     for (const mesh of part.meshes) {
+      const cap = mesh.userData.skinCap === true;
       const mat = mesh.material as THREE.MeshStandardMaterial;
       mat.userData.connectionBaseColor ??= mat.color.clone();
       mat.color.copy(mat.userData.connectionBaseColor);
       if (highlighted.has(id) && !selected) mat.color.set("#1d8a7a");
-      const tissueOpacity = d.tissue === "muscle" ? state.opacity : d.tissue === "skin" ? state.skinOpacity : isNeurovascular(d.tissue) ? state.neurovascularOpacity : 1;
+      const tissueOpacity = d.tissue === "muscle" ? state.opacity : d.tissue === "skin" ? (cap ? state.skinCapOpacity : state.skinOpacity) : isNeurovascular(d.tissue) ? state.neurovascularOpacity : 1;
       let alpha = tissueOpacity;
+      if (cap && (!state.skinCaps || mesh.userData.combineCapHidden)) alpha = 0;
       if (state.attachmentFade) alpha = attached.has(id) ? 1 : Math.min(alpha, 0.07);
       else if (state.selected && !selected && !state.isolated && !state.connections)
-        alpha = Math.min(alpha, state.highlightConnections ? 0.12 : 0.5);
+        alpha = Math.min(alpha, state.highlightConnections ? state.dimOpacity * 0.24 : state.dimOpacity);
       if (highlighted.has(id) && !selected) alpha = 1;
       if (cutAwayIds.has(id)) alpha = Math.min(alpha, 0.025);
       if (selected) alpha = tissueOpacity;
@@ -891,8 +945,9 @@ function updateAppearance() {
         if (mesh.parent) mesh.parent.userData.alpha = alpha;
       }
       if (mesh.userData.fiber) alpha *= 0.22;
-      applyCoverage(mesh, alpha);
-      mesh.visible = alpha > 0;
+      mesh.userData.alpha = alpha;
+      applyCoverage(mesh, alpha, state.attachmentFade);
+      mesh.visible = alpha > 0 && (!cap || (state.skinCaps && !mesh.userData.combineCapHidden));
       mat.emissive.set(selected ? "#2b62a0" : highlighted.has(id) ? "#1d8a7a" : "#000000");
       mat.emissiveIntensity = selected ? 0.13 : highlighted.has(id) ? 0.25 : 0;
 
@@ -938,6 +993,8 @@ function preset(mode: string) {
   if (settings?.skinOpacity !== undefined) {state.skinOpacity=settings.skinOpacity;$<HTMLInputElement>("#skin-opacity").value=String(settings.skinOpacity*100);$("#skin-opacity-value").textContent=`${settings.skinOpacity*100}%`;}
   if (settings?.opacity !== undefined) {state.opacity=settings.opacity;$<HTMLInputElement>("#opacity").value=String(settings.opacity*100);$("#opacity-value").textContent=`${settings.opacity*100}%`;}
   state.selected = null;
+  state.multi = [];
+  state.highlightConnections = false;
   state.isolated = false;
   state.connections = false;
   state.layers = new Set<Tissue>(presetLayers(mode));
@@ -974,9 +1031,20 @@ $("#labels").onclick = () => {
 };
 const fpsMeter = $("#fps-meter");
 let fpsFrames = 0, fpsSince = 0;
+function syncSkinControls() {
+  const caps = state.skinCaps;
+  $<HTMLInputElement>("#skin-caps").checked = caps;
+  $<HTMLInputElement>("#skin-cap-opacity").value = String(Math.round(state.skinCapOpacity * 100));
+  $("#skin-cap-opacity-value").textContent = `${Math.round(state.skinCapOpacity * 100)}%`;
+  $<HTMLButtonElement>("#setting-skin-caps").setAttribute("aria-pressed", String(viewerSettings.skinCapsDefault));
+  $<HTMLInputElement>("#setting-skin-cap-opacity").value = String(Math.round(viewerSettings.skinCapOpacityDefault * 100));
+  $("#setting-skin-cap-opacity-value").textContent = `${Math.round(viewerSettings.skinCapOpacityDefault * 100)}%`;
+}
+
 function syncSettings() {
   $("#setting-labels-default").setAttribute("aria-pressed", String(viewerSettings.labelsDefault));
   $("#setting-fps").setAttribute("aria-pressed", String(viewerSettings.showFps));
+  syncSkinControls();
   $<HTMLInputElement>("#setting-max-labels").value = String(viewerSettings.maxLabels);
   $("#setting-max-labels-value").textContent = String(viewerSettings.maxLabels);
   fpsMeter.hidden = !viewerSettings.showFps;
@@ -984,6 +1052,10 @@ function syncSettings() {
 }
 $("#setting-labels-default").onclick = () => { viewerSettings.labelsDefault = !viewerSettings.labelsDefault; saveSettings(viewerSettings); syncSettings(); };
 $("#setting-fps").onclick = () => { viewerSettings.showFps = !viewerSettings.showFps; saveSettings(viewerSettings); syncSettings(); };
+$<HTMLInputElement>("#skin-caps").onchange = e => { state.skinCaps = (e.target as HTMLInputElement).checked; viewerSettings.skinCapsDefault = state.skinCaps; saveSettings(viewerSettings); syncSkinControls(); updateAppearance(); };
+$<HTMLInputElement>("#skin-cap-opacity").oninput = e => { state.skinCapOpacity = Number((e.target as HTMLInputElement).value) / 100; viewerSettings.skinCapOpacityDefault = state.skinCapOpacity; saveSettings(viewerSettings); syncSkinControls(); updateAppearance(); };
+$("#setting-skin-caps").onclick = () => { viewerSettings.skinCapsDefault = !viewerSettings.skinCapsDefault; state.skinCaps = viewerSettings.skinCapsDefault; saveSettings(viewerSettings); syncSkinControls(); updateAppearance(); };
+$<HTMLInputElement>("#setting-skin-cap-opacity").oninput = e => { viewerSettings.skinCapOpacityDefault = Number((e.target as HTMLInputElement).value) / 100; state.skinCapOpacity = viewerSettings.skinCapOpacityDefault; saveSettings(viewerSettings); syncSkinControls(); updateAppearance(); };
 $<HTMLInputElement>("#setting-max-labels").oninput = e => {
   viewerSettings.maxLabels = Number((e.target as HTMLInputElement).value);
   saveSettings(viewerSettings); syncSettings(); invalidate();
@@ -993,6 +1065,11 @@ $("#all-layers").onclick = () => { preset("anatomy");state.layers=new Set(tissue
 $<HTMLInputElement>("#opacity").oninput = (e) => {
   state.opacity = Number((e.target as HTMLInputElement).value) / 100;
   $("#opacity-value").textContent = `${Math.round(state.opacity * 100)}%`;
+  updateAppearance();
+};
+$<HTMLInputElement>("#dim-opacity").oninput = (e) => {
+  state.dimOpacity = Number((e.target as HTMLInputElement).value) / 100;
+  $("#dim-opacity-value").textContent = `${Math.round(state.dimOpacity * 100)}%`;
   updateAppearance();
 };
 $<HTMLInputElement>("#skin-opacity").oninput = e => {
@@ -1017,9 +1094,15 @@ function reset() {
   $<HTMLInputElement>("#neurovascular-opacity").value="100";
   $("#neurovascular-opacity-value").textContent="100%";
   state.skinOpacity = 1;
+  state.skinCaps = viewerSettings.skinCapsDefault;
+  state.skinCapOpacity = viewerSettings.skinCapOpacityDefault;
+  syncSkinControls();
   $<HTMLInputElement>("#skin-opacity").value="100";
   $("#skin-opacity-value").textContent="100%";
   state.opacity = 1;
+  state.dimOpacity = 0.5;
+  $<HTMLInputElement>("#dim-opacity").value = "50";
+  $("#dim-opacity-value").textContent = "50%";
   state.labels = viewerSettings.labelsDefault;
   $<HTMLInputElement>("#opacity").value = "100";
   $("#opacity-value").textContent = "100%";
@@ -1046,7 +1129,7 @@ raycaster.firstHitOnly = true;
 function hoverConnectionIds() {
   return new Set([
     ...selectedConnectionHighlights(),
-    ...(state.selected ? [state.selected] : []),
+    ...(state.multi.length ? state.multi : state.selected ? [state.selected] : []),
   ]);
 }
 function pickStructure(clientX: number, clientY: number, hoverOnly = false): string | null {
@@ -1060,16 +1143,24 @@ function pickStructure(clientX: number, clientY: number, hoverOnly = false): str
   const targets = [...leg.parts.values()]
     .filter((p) => p.group.visible && (!hoverIds || hoverIds.has(p.id)))
     .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber));
-  const hits = raycaster.intersectObjects(targets, false);
+  const anatomyTargets = targets.filter(mesh => !isSkinSurface(mesh) && !isSkinCap(mesh));
+  const hits = raycaster.intersectObjects(anatomyTargets, false);
   // Preserve exact selected-surface priority before assisting neighboring tubes.
-  const selectedHit = hits.find(hit => hit.object.userData.id === state.selected);
-  if (selectedHit) return selectedHit.object.userData.id;
-  const opaque = hits.find(hit => (hit.object.parent?.userData.alpha ?? 1) >= .99);
+  const selectedHit = hits.find(hit => isSelected(hit.object.userData.id));
+  // A previously selected skin surface must still yield to deeper anatomy; caps are never selectable.
+  if (selectedHit && !isSkinSurface(selectedHit.object) && !isSkinCap(selectedHit.object)) return selectedHit.object.userData.id;
+  const depthAware = chooseDepthAwareHit(hits);
+  const opaque = hits.find(hit => (hit.object.userData.alpha ?? hit.object.parent?.userData.alpha ?? 1) >= .99);
   const directThin = hits.find(hit => hit.object.userData.thinStructure && (!opaque || hit.distance <= opaque.distance + .05));
   if (directThin) return directThin.object.userData.id;
+  if (depthAware) return depthAware.object.userData.id;
   // Low graphics keeps the 48-ray assist for clicks, where it matters, and skips it on hover.
-  const thinHit = hoverOnly && !graphics.thinHoverAssist ? undefined : intersectThinStructures(raycaster, camera, mouse, rect.width, rect.height, targets);
-  return (thinHit ?? hits[0])?.object.userData.id ?? null;
+  const thinHit = hoverOnly && !graphics.thinHoverAssist ? undefined : intersectThinStructures(raycaster, camera, mouse, rect.width, rect.height, anatomyTargets);
+  if (thinHit) return thinHit.object.userData.id;
+  // Only test the unaccelerated skin when no anatomical hit exists and its opacity allows picking.
+  const skinTargets = targets.filter(mesh => isSkinSurface(mesh) && !isSkinCap(mesh) &&
+    (mesh.userData.alpha ?? mesh.parent?.userData.alpha ?? 1) >= .6);
+  return chooseDepthAwareHit(raycaster.intersectObjects(skinTargets, false))?.object.userData.id ?? null;
 }
 let pendingHover: string | null | undefined;
 let hoverTimer: number | undefined;
@@ -1113,7 +1204,6 @@ listen(renderer.domElement, "pointerdown", (e) => {
       pointers.size === 1 &&
       e.button === 0 &&
       !state.pan &&
-      !e.shiftKey &&
       !e.ctrlKey &&
       !e.metaKey,
     moved: false,
@@ -1146,7 +1236,8 @@ listen(renderer.domElement, "pointerup", (e) => {
     Math.hypot(e.clientX - down.x, e.clientY - down.y) > 5
   )
     return;
-  select(pickStructure(e.clientX, e.clientY));
+  const hit = pickStructure(e.clientX, e.clientY);
+  if (e.shiftKey) toggleSelection(hit); else select(hit);
 });
 type LabelNode = {
   id: string;
@@ -1217,7 +1308,7 @@ function buildLabels() {
   const visible = new Set([
     ...(state.hovered ? [state.hovered] : []),
     ...ids,
-    ...(state.selected ? [state.selected] : []),
+    ...(state.multi.length ? state.multi : state.selected ? [state.selected] : []),
   ]);
   for (const id of visible) {
     if (!leg.parts.get(id)!.group.visible || (leg.parts.get(id)!.group.userData.alpha ?? 1) < .5) continue;
@@ -1235,7 +1326,7 @@ function buildLabels() {
     existing.delete(id);
     label.retiringAt = undefined;
     label.node.classList.remove("leaving");
-    label.node.classList.toggle("selected", id === state.selected);
+    label.node.classList.toggle("selected", isSelected(id));
     label.node.classList.toggle("hovered", id === state.hovered);
     // A transient label must not intercept the model pointer and flicker.
     label.node.classList.toggle("hover-preview", id === state.hovered);
@@ -1258,7 +1349,7 @@ function buildLabels() {
 listen(document, "keydown", (e) => {
   if (e.key === "Escape" && !dialog.open) {
     if (state.selected || state.attachmentFade || state.isolated || state.connections) select(null);
-    else location.hash = "#/";
+    else location.hash = "#/browser";
     return;
   }
   if (
@@ -1273,7 +1364,7 @@ listen(document, "keydown", (e) => {
     if (view === pack.defaultView) focusOverview(); else setView(view);
   }
   if (k === "p") setPan(!state.pan);
-  if (k === "f" && state.selected) focusParts(state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : [state.selected]);
+  if (k === "f" && state.selected) focusParts(focusIds());
   if (k === "l") $("#labels").click();
   if (k === "r") reset();
 
@@ -1360,19 +1451,19 @@ function frame(time: number) {
     const p=(seenPoints.get(label.id)??leg.parts.get(label.id)!.anchor).clone().project(camera);
     return {label,p,ax:(p.x*.5+.5)*viewport.clientWidth,ay:(-p.y*.5+.5)*height};
   }).sort((a,b)=>{
-    const priority=(id:string)=>id===state.selected?-2:id===state.hovered?-1:labelTier[id]??3;
+    const priority=(id:string)=>isSelected(id)?-2:id===state.hovered?-1:labelTier[id]??3;
     return priority(a.label.id)-priority(b.label.id)||Math.hypot(a.ax-freeWidth/2,a.ay-height/2)-Math.hypot(b.ax-freeWidth/2,b.ay-height/2);
   });
   // Passive labels are capped (Settings → Max labels) so the view stays calm; zooming in allows more.
   const passiveCap=passiveLabelCap(viewerSettings.maxLabels,maxTier);
   let passiveShown=0;
-  const hoverOnly=(id:string)=>id===state.hovered&&id!==state.selected;
+  const hoverOnly=(id:string)=>id===state.hovered&&!isSelected(id);
   const ease=1-Math.exp(-dt*14);
   const clampX=(v:number,w:number)=>THREE.MathUtils.clamp(v,w/2+8,Math.max(w/2+8,freeWidth-w/2-8));
   const clampY=(v:number,h:number)=>THREE.MathUtils.clamp(v,h/2+(innerWidth<=900?60:10),height-h/2-65);
   for(const {label,p,ax,ay} of projected){
     const {id,node}=label,part=leg.parts.get(id)!;
-    const important=id===state.selected||id===state.hovered;
+    const important=isSelected(id)||id===state.hovered;
     const w=node.offsetWidth,h=node.offsetHeight,side=ax>=freeWidth/2?1:-1;
     const onScreen=p.z>=-1&&p.z<=1&&ax>=24&&ax<=freeWidth-24&&ay>=24&&ay<=height-24;
     let x:number,y:number;
@@ -1509,7 +1600,7 @@ return {
       layers: [...state.layers], atlasTypes: [...state.atlasTypes],
       atlasRegion: !pack.regionIds && state.atlasRegion !== 'all' ? pack.id + ':' + state.atlasRegion : state.atlasRegion,
       search: $<HTMLInputElement>('#search').value, onlyVisible: state.onlyVisible,
-      opacity: state.opacity, skinOpacity: state.skinOpacity, neurovascularOpacity: state.neurovascularOpacity,
+      opacity: state.opacity, skinOpacity: state.skinOpacity, skinCaps: state.skinCaps, skinCapOpacity: state.skinCapOpacity, neurovascularOpacity: state.neurovascularOpacity,
       labels: state.labels, highlightConnections: state.highlightConnections,
       view: state.view, viewDirection: pack.viewPresets.find(view => view.id === state.view)?.direction,
       overview: state.view === pack.defaultView,
