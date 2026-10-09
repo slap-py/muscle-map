@@ -52,7 +52,6 @@ try {
   assert.equal(new URL(page.url()).hash, '#/how-it-works');
   assert.equal(await page.locator('.intro-steps li').count(), 4);
   assert.match(await page.locator('.intro-steps').innerText(), /Layers[\s\S]*Focus[\s\S]*Highlight connections[\s\S]*same side/);
-  assert.equal(await page.locator('.site-nav [aria-current="page"]').innerText(), 'How it works');
   for (const width of [320, 390, 820, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -67,7 +66,7 @@ try {
   await page.locator('.credits-back').click();
   await page.locator('.intro-steps').waitFor();
   assert.equal(new URL(page.url()).hash, '#/how-it-works');
-  await page.locator('.site-nav a[href="#/browser"]').click();
+  await page.locator('.intro-guide-heading a[href="#/browser"]').click();
   await page.locator('.body-map').waitFor();
   assert.equal(new URL(page.url()).hash, '#/browser');
   assert.equal(await page.locator('.body-section').count(), 6);

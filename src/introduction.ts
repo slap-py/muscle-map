@@ -1,4 +1,5 @@
-import { mainNavigation, siteFooter } from "./siteChrome";
+import { bindSkipLink, siteFooter, skipLink } from "./siteChrome";
+import { renderRegionsPreview } from "./bodyMap";
 import { brandLockup } from './branding';
 import { renderStudyTools } from './studyTools';
 
@@ -16,11 +17,10 @@ const features = [
   { id: 'regions', title: 'Combine regions', summary: 'Open touching regions on the same side in one aligned 3D view.', instruction: 'In the browser, select an available region on the body, then add a touching section on the same side and press Go. For example, combine the left upper leg with the left lower leg and foot. Clear the selection before switching sides. Only the available leg regions can be opened today.' },
 ] as const;
 
-function header(guide: boolean) {
-  return `<a class="skip-link" href="#intro-main">Skip to main content</a>
+function header() {
+  return `${skipLink("intro-main")}
   <header class="intro-header">
     <a class="intro-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>
-    ${mainNavigation(guide ? "#/how-it-works" : "#/")}
   </header>`;
 }
 
@@ -34,14 +34,14 @@ function featureIcon(id: keyof typeof icons) {
 
 function modelPreview() {
   return `<figure class="intro-preview">
-    <div class="intro-preview-heading"><span>Inside the model</span><div class="intro-preview-controls" role="group" aria-label="Model preview"><button data-preview="anatomy" aria-pressed="true">Anatomy</button><button data-preview="skeleton" aria-pressed="false">Skeleton</button></div></div>
-    <div class="intro-preview-stage">${(['anatomy', 'skeleton'] as const).map(mode => `<div data-preview-view="${mode}" ${mode === 'skeleton' ? 'hidden' : ''}><img class="intro-model-light" src="${import.meta.env.BASE_URL}introduction/leg-${mode}.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'anatomy' ? 'fetchpriority="high"' : 'loading="lazy"'}/><img class="intro-model-dim" src="${import.meta.env.BASE_URL}introduction/leg-${mode}-dim.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'skeleton' ? 'loading="lazy"' : ''}/></div>`).join('')}</div>
-    <figcaption><span>Left upper &amp; lower leg</span><span>Still views from Fabrica</span></figcaption>
+    <div class="intro-preview-heading"><span>Inside the model</span><div class="intro-preview-controls" role="group" aria-label="Model preview"><button data-preview="anatomy" aria-pressed="true">Anatomy</button><button data-preview="skeleton" aria-pressed="false">Skeleton</button><button data-preview="regions" aria-pressed="false">Regions</button></div></div>
+    <div class="intro-preview-stage">${(['anatomy', 'skeleton'] as const).map(mode => `<div data-preview-view="${mode}" ${mode === 'skeleton' ? 'hidden' : ''}><img class="intro-model-light" src="${import.meta.env.BASE_URL}introduction/leg-${mode}.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'anatomy' ? 'fetchpriority="high"' : 'loading="lazy"'}/><img class="intro-model-dim" src="${import.meta.env.BASE_URL}introduction/leg-${mode}-dim.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'skeleton' ? 'loading="lazy"' : ''}/></div>`).join('')}<div data-preview-view="regions" hidden>${renderRegionsPreview()}</div></div>
+    <figcaption>${[['anatomy', 'Left upper &amp; lower leg', 'Still views from Fabrica'], ['skeleton', 'Left upper &amp; lower leg', 'Still views from Fabrica'], ['regions', 'Choose a region in the browser', 'Hatched regions are coming soon']].map(([mode, left, right]) => `<span data-preview-caption="${mode}" ${mode === 'anatomy' ? '' : 'hidden'}><span>${left}</span><span>${right}</span></span>`).join('')}</figcaption>
   </figure>`;
 }
 
 export function introductionPage(guide = false) {
-  return `<div class="intro-page">${header(guide)}${guide ? `
+  return `<div class="intro-page">${header()}${guide ? `
     <main id="intro-main" class="intro-main intro-guide">
       <a class="intro-back" href="#/">← Back to Home</a>
       <div class="intro-guide-heading"><p class="intro-eyebrow">A quick guide</p><h1>How it works</h1><p>Choose a region, open the model, and explore it at your own pace.</p><a class="intro-button intro-button-primary" href="#/browser">Start exploring ${arrow}</a></div>
@@ -57,17 +57,12 @@ export function introductionPage(guide = false) {
 }
 
 export function bindIntroductionPreview(container: HTMLElement) {
-  // Hash routing owns location.hash, so the skip link moves focus instead of navigating.
-  container.querySelector<HTMLAnchorElement>('.skip-link')?.addEventListener('click', event => {
-    event.preventDefault();
-    const main = container.querySelector<HTMLElement>('#intro-main');
-    main?.setAttribute('tabindex', '-1');
-    main?.focus();
-  });
+  bindSkipLink(container);
   container.querySelectorAll<HTMLButtonElement>('[data-preview]').forEach(button => {
     button.onclick = () => {
       container.querySelectorAll<HTMLButtonElement>('[data-preview]').forEach(control => control.setAttribute('aria-pressed', String(control === button)));
       container.querySelectorAll<HTMLElement>('[data-preview-view]').forEach(view => { view.hidden = view.dataset.previewView !== button.dataset.preview; });
+      container.querySelectorAll<HTMLElement>('[data-preview-caption]').forEach(caption => { caption.hidden = caption.dataset.previewCaption !== button.dataset.preview; });
     };
   });
 }

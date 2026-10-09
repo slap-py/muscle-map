@@ -188,3 +188,30 @@ export function bindBodyMap(root: HTMLElement) {
   clear.onclick = () => { selected = []; hideTip(); update(); };
   update();
 }
+
+/** Where each segment's leader line lands on its shape (right side; the left side mirrors across x = 120). */
+const previewAnchors: Record<Segment, { x: number; y: number }> = {
+  'arm-back': { x: 105, y: 215 }, 'hip-leg': { x: 95, y: 320 }, 'foot-ankle': { x: 96, y: 440 },
+};
+
+/** Static, labelled copy of the body map for the landing page: every section named, availability shown. */
+export function renderRegionsPreview() {
+  const lines: string[] = [], shapesMarkup: string[] = [];
+  const labels: Record<Side, string[]> = { right: [], left: [] };
+  for (const section of bodySections) {
+    const mirror = section.side === 'left';
+    const { x, y } = previewAnchors[section.segment];
+    const ax = mirror ? 240 - x : x, edge = mirror ? 248 : -8;
+    const soon = !section.regionId;
+    shapesMarkup.push(`<path class="body-section" d="${shapes[section.segment]}"${mirror ? ' transform="matrix(-1 0 0 1 240 0)"' : ''} data-state="${soon ? 'soon' : 'available'}"${soon ? ' style="fill:url(#intro-soon-hatch)"' : ''}/>`);
+    lines.push(`<path d="M${edge} ${y} H${ax}"/><circle cx="${ax}" cy="${y}" r="3.5"/>`);
+    labels[section.side].push(`<li style="top:${(y / 516 * 100).toFixed(2)}%"><strong>${segmentTitles[section.segment]}</strong><span class="${soon ? 'soon' : 'ready'}">${soon ? 'Coming soon' : 'Available'}</span></li>`);
+  }
+  const summary = bodySections.map(section => `${section.title}${section.regionId ? '' : ' (coming soon)'}`).join('; ');
+  return `<div class="intro-regions" role="img" aria-label="Body map showing every region. ${summary}.">
+    <ul class="intro-regions-side" data-side="right"><li class="side-name">Right</li>${labels.right.join('')}</ul>
+    <div class="intro-regions-figure"><svg viewBox="0 0 240 516" aria-hidden="true"><defs><pattern id="intro-soon-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="hatch-bg"/><line x1="3" y1="0" x2="3" y2="6" class="hatch-line"/></pattern></defs>
+      ${faceMarkup}${shapesMarkup.join('')}<g class="body-details"><path d="${sideDetails}"/><path d="${sideDetails}" transform="matrix(-1 0 0 1 240 0)"/><ellipse cx="120" cy="200" rx="1.6" ry="2.6"/></g><g class="intro-regions-lines">${lines.join('')}</g></svg></div>
+    <ul class="intro-regions-side" data-side="left"><li class="side-name">Left</li>${labels.left.join('')}</ul>
+  </div>`;
+}

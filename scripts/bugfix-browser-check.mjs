@@ -19,7 +19,7 @@ try {
       await page.waitForURL('**/#/credits');
       check(await page.locator('.credits-main h1').evaluate(el=>el.getBoundingClientRect().top>=0),'Credits starts at top from '+label+' at '+size.width);
       check(await page.locator('.credits-back').getAttribute('href')==='#'+hash,'Credits returns to '+label+' at '+size.width);
-      check(await page.locator('.site-nav').count()===1 && await page.locator('.site-footer').count()===1,'Shared navigation/footer on Credits at '+size.width);
+      check(await page.locator('.site-footer').count()===1,'Shared footer on Credits at '+size.width);
     }
     check(await page.locator('a[href$="manifest.json"]').count()===7,'Credits links to all model manifests at '+size.width);
   }

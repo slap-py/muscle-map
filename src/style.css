@@ -1341,12 +1341,9 @@ body[data-page="viewer"] { --gap:12px; }
 @media(max-width:600px) {
   .atlas-scroll { max-height:none; overflow:visible; }
   .hub-header { flex-wrap:wrap; gap:12px; }
-  .hub-header .site-nav { order:3; width:100%; }
-  .intro-header .site-nav { font-size:12px; gap:12px; }
   .action-items .site-nav { align-items:flex-start; flex-direction:column; padding:8px; }
 }
 
-.intro-header .site-nav { margin-left:auto; }
 
 @media(min-width:901px) {
   #viewport { bottom:44px; }
