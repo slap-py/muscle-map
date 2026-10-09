@@ -194,7 +194,9 @@ const previewAnchors: Record<Segment, { x: number; y: number }> = {
   'arm-back': { x: 105, y: 215 }, 'hip-leg': { x: 95, y: 320 }, 'foot-ankle': { x: 96, y: 440 },
 };
 /** Vertical centre of each preview label, in the same 516-unit space; leader lines angle from here to the anchor. */
-const previewLabelY: Record<Segment, number> = { 'arm-back': 140, 'hip-leg': 300, 'foot-ankle': 450 };
+const previewLabelY: Record<Segment, number> = { 'arm-back': 110, 'hip-leg': 300, 'foot-ankle': 450 };
+/** Phone-size label centres: popups are shorter there (no counts), so the lower-leg label sits lower. */
+const previewLabelYPhone: Record<Segment, number> = { 'arm-back': 110, 'hip-leg': 300, 'foot-ankle': 470 };
 
 /** Static, labelled copy of the body map for the landing page: every section named, availability shown. */
 export function renderRegionsPreview() {
@@ -206,12 +208,12 @@ export function renderRegionsPreview() {
     const ax = mirror ? 240 - x : x, edge = mirror ? 248 : -8;
     const soon = !section.regionId;
     shapesMarkup.push(`<path class="body-section" d="${shapes[section.segment]}"${mirror ? ' transform="matrix(-1 0 0 1 240 0)"' : ''} data-state="${soon ? 'soon' : 'available'}"${soon ? ' style="fill:url(#intro-soon-hatch)"' : ''}/>`);
-    const ly = previewLabelY[section.segment];
-    lines.push(`<path d="M${edge} ${ly} L${ax} ${y}"/><circle cx="${ax}" cy="${y}" r="3.5"/>`);
+    const ly = previewLabelY[section.segment], lyPhone = previewLabelYPhone[section.segment];
+    lines.push(`<path class="leader-desk" d="M${edge} ${ly} L${ax} ${y}"/><path class="leader-phone" d="M${edge} ${lyPhone} L${ax} ${y}"/><circle cx="${ax}" cy="${y}" r="3.5"/>`);
     const region = catalogFor(section);
     const counts = region ? browsableCounts(region.structureCounts) : undefined;
     const summary = counts ? `<span class="counts"><span><strong>${counts.total}</strong> structures</span><span>${counts.byTissue.bone ?? 0} bones · ${counts.byTissue.muscle ?? 0} muscles</span></span>` : '';
-    labels[section.side].push(`<li style="top:${(ly / 516 * 100).toFixed(2)}%"><strong>${segmentTitles[section.segment]}</strong>${summary}<span class="${soon ? 'soon' : 'ready'}">${soon ? 'Coming soon' : 'Available now'}</span></li>`);
+    labels[section.side].push(`<li style="--top-desk:${(ly / 516 * 100).toFixed(2)}%;--top-phone:${(lyPhone / 516 * 100).toFixed(2)}%"><strong>${segmentTitles[section.segment]}</strong>${summary}<span class="${soon ? 'soon' : 'ready'}">${soon ? 'Coming soon' : 'Available now'}</span></li>`);
   }
   const summary = bodySections.map(section => `${section.title}${section.regionId ? '' : ' (coming soon)'}`).join('; ');
   return `<div class="intro-regions" role="img" aria-label="Body map showing every region. ${summary}.">

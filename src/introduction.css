@@ -166,6 +166,8 @@ body[data-page="introduction"] { overflow: auto; }
 .intro-regions-lines path { fill: none; stroke: color-mix(in srgb, var(--text) 55%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .intro-regions-lines circle { fill: var(--text); }
 .intro-regions-side { position: relative; height: calc(var(--regions-h) * var(--regions-scale)); margin: 0; padding: 0; list-style: none; }
+.intro-regions-side li:not(.side-name) { top: var(--top-desk); }
+.intro-regions-lines .leader-phone { display: none; }
 .intro-regions-side li { position: absolute; display: flex; flex-direction: column; gap: 2px; transform: translateY(-50%); padding: 8px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px var(--shadow-soft); font-size: 14px; line-height: 1.3; }
 .intro-regions-side[data-side="right"] li { right: 12px; align-items: flex-end; text-align: right; }
 .intro-regions-side[data-side="left"] li { left: 12px; }
@@ -207,10 +209,15 @@ body[data-page="introduction"] { overflow: auto; }
   .intro-regions-box { grid-template-columns: minmax(0, 1fr); gap: 32px; margin-top: 24px; }
   .intro-regions-figure-box { max-width: 800px; width: 100%; }
   .intro-regions-figure-box .intro-preview-heading { font-size: 16px; }
-  .intro-regions { --regions-h: 720px; --regions-scale: .7; }
+  .intro-regions { --regions-h: 720px; --regions-scale: .75; }
+  .intro-regions-side li:not(.side-name) { top: var(--top-phone); }
+  .intro-regions-lines .leader-desk { display: none; }
+  .intro-regions-lines .leader-phone { display: block; }
+  .intro-page .site-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .intro-page .site-footer a { order: -1; }
   .intro-regions-side li { width: 168px; }
   .intro-regions-side li.side-name { width: 168px; align-items: center; text-align: center; }
-  .intro-regions-side .side-name { font-size: 14px; top: 1%; }
+  .intro-regions-side .side-name { font-size: 14px; top: 0; }
   .intro-regions-side .counts { display: none; }
   .intro-regions-copy h3 { font-size: 38px; margin-bottom: 18px; }
   .intro-regions-copy p, .intro-regions-howto { font-size: 22px; line-height: 1.6; }
