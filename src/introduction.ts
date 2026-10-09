@@ -32,11 +32,18 @@ function featureIcon(id: keyof typeof icons) {
   return `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[id]}</svg>`;
 }
 
+function regionsBox() {
+  return `<div class="intro-regions-box">
+    <div class="intro-regions-copy"><h3>Pick a region, then explore it.</h3><p>Every section of the body map opens its own 3D model. Choose one, or combine touching sections on the same side to explore them together.</p><p class="intro-regions-note">Hatched sections are coming soon.</p><a class="intro-button intro-button-secondary" href="#/browser">Open the browser ${arrow}</a></div>
+    <figure class="intro-preview intro-regions-figure-box"><div class="intro-preview-heading"><span>Body regions</span></div><div class="intro-regions-stage">${renderRegionsPreview()}</div></figure>
+  </div>`;
+}
+
 function modelPreview() {
   return `<figure class="intro-preview">
-    <div class="intro-preview-heading"><span>Inside the model</span><div class="intro-preview-controls" role="group" aria-label="Model preview"><button data-preview="anatomy" aria-pressed="true">Anatomy</button><button data-preview="skeleton" aria-pressed="false">Skeleton</button><button data-preview="regions" aria-pressed="false">Regions</button></div></div>
-    <div class="intro-preview-stage">${(['anatomy', 'skeleton'] as const).map(mode => `<div data-preview-view="${mode}" ${mode === 'skeleton' ? 'hidden' : ''}><img class="intro-model-light" src="${import.meta.env.BASE_URL}introduction/leg-${mode}.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'anatomy' ? 'fetchpriority="high"' : 'loading="lazy"'}/><img class="intro-model-dim" src="${import.meta.env.BASE_URL}introduction/leg-${mode}-dim.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'skeleton' ? 'loading="lazy"' : ''}/></div>`).join('')}<div data-preview-view="regions" hidden>${renderRegionsPreview()}</div></div>
-    <figcaption>${[['anatomy', 'Left upper &amp; lower leg', 'Still views from Fabrica'], ['skeleton', 'Left upper &amp; lower leg', 'Still views from Fabrica'], ['regions', 'Choose a region in the browser', 'Hatched regions are coming soon']].map(([mode, left, right]) => `<span data-preview-caption="${mode}" ${mode === 'anatomy' ? '' : 'hidden'}><span>${left}</span><span>${right}</span></span>`).join('')}</figcaption>
+    <div class="intro-preview-heading"><span>Inside the model</span><div class="intro-preview-controls" role="group" aria-label="Model preview"><button data-preview="anatomy" aria-pressed="true">Anatomy</button><button data-preview="skeleton" aria-pressed="false">Skeleton</button></div></div>
+    <div class="intro-preview-stage">${(['anatomy', 'skeleton'] as const).map(mode => `<div data-preview-view="${mode}" ${mode === 'skeleton' ? 'hidden' : ''}><img class="intro-model-light" src="${import.meta.env.BASE_URL}introduction/leg-${mode}.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'anatomy' ? 'fetchpriority="high"' : 'loading="lazy"'}/><img class="intro-model-dim" src="${import.meta.env.BASE_URL}introduction/leg-${mode}-dim.png" alt="${mode === 'anatomy' ? 'Fabrica model of the left upper and lower leg, showing muscles, tendons, and bones with structure labels.' : 'The same left leg model with the muscles hidden to show the bones.'}" width="860" height="1000" ${mode === 'skeleton' ? 'loading="lazy"' : ''}/></div>`).join('')}</div>
+    <figcaption><span>Left upper &amp; lower leg</span><span>Still views from Fabrica</span></figcaption>
   </figure>`;
 }
 
@@ -51,7 +58,7 @@ export function introductionPage(guide = false) {
     </main>` : `
     <main id="intro-main" class="intro-main">
       <section class="intro-hero" aria-labelledby="intro-headline"><div class="intro-hero-copy"><p class="intro-eyebrow"><span aria-hidden="true"></span> An interactive anatomy browser</p><h1 id="intro-headline">Anatomy you can<br/>take apart.</h1><p class="intro-lead">Explore structures in 3D, layer by layer. A place to study anatomy, or show a patient how things fit together.</p><div class="intro-cta"><a class="intro-button intro-button-primary" href="#/browser">Start exploring ${arrow}</a><a class="intro-button intro-button-secondary" href="#/how-it-works">How it works</a></div><p class="intro-availability">Available now: upper leg, lower leg, foot &amp; ankle.</p></div>${modelPreview()}</section>
-      <section class="intro-features" aria-labelledby="intro-features-heading"><div class="intro-section-heading"><p class="intro-eyebrow">What you can do</p><h2 id="intro-features-heading">Explore layer by layer.</h2></div><div class="intro-feature-grid">${features.map(feature => `<article><div class="intro-feature-icon">${featureIcon(feature.id)}</div><h3>${feature.title}</h3><p>${feature.summary}</p></article>`).join('')}</div><a class="intro-text-link" href="#/how-it-works">See how it works ${arrow}</a></section>
+      <section class="intro-features" aria-labelledby="intro-features-heading"><div class="intro-section-heading"><p class="intro-eyebrow">What you can do</p><h2 id="intro-features-heading">Do all of this, on every region.</h2></div><div class="intro-feature-grid">${features.map(feature => `<article><div class="intro-feature-icon">${featureIcon(feature.id)}</div><h3>${feature.title}</h3><p>${feature.summary}</p></article>`).join('')}</div>${regionsBox()}<a class="intro-text-link" href="#/how-it-works">See how it works ${arrow}</a></section>
       ${renderStudyTools()}
     </main>`}${footer()}</div>`;
 }
@@ -62,7 +69,6 @@ export function bindIntroductionPreview(container: HTMLElement) {
     button.onclick = () => {
       container.querySelectorAll<HTMLButtonElement>('[data-preview]').forEach(control => control.setAttribute('aria-pressed', String(control === button)));
       container.querySelectorAll<HTMLElement>('[data-preview-view]').forEach(view => { view.hidden = view.dataset.previewView !== button.dataset.preview; });
-      container.querySelectorAll<HTMLElement>('[data-preview-caption]').forEach(caption => { caption.hidden = caption.dataset.previewCaption !== button.dataset.preview; });
     };
   });
 }
