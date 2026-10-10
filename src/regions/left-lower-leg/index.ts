@@ -256,8 +256,8 @@ export const scene = {
   fillTarget: sourceScene.fillTarget.clone().applyMatrix4(reflection),
   floorPosition: sourceScene.floorPosition.clone().applyMatrix4(reflection),
 };
-const mirroredOverview = sourcePack.about.overview.replace(/\bright foot and ankle\b/gi, "left lower leg and foot");
-const mirroredOverviewHtml = sourcePack.about.overviewHtml.replace(/\bright foot and ankle\b/gi, "left lower leg and foot");
+const mirroredOverview = sourcePack.about.overview.replace(/\bright (?:foot and ankle|lower leg and foot)\b/gi, "left lower leg and foot");
+const mirroredOverviewHtml = sourcePack.about.overviewHtml.replace(/\bright (?:foot and ankle|lower leg and foot)\b/gi, "left lower leg and foot");
 export const about = {
   ...sourcePack.about,
   title: "Left Lower Leg & Foot",

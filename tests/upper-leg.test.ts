@@ -26,8 +26,8 @@ describe("upper-leg region packs", () => {
   it("exposes independent side-specific catalogs and source facts", () => {
     expect(leftUpperLegPack.id).toBe("left-upper-leg");
     expect(rightUpperLegPack.id).toBe("right-upper-leg");
-    expect(leftUpperLegPack.title).toBe("Left Upper Leg");
-    expect(rightUpperLegPack.title).toBe("Right Upper Leg");
+    expect(leftUpperLegPack.title).toBe("Left Hip & Upper Leg");
+    expect(rightUpperLegPack.title).toBe("Right Hip & Upper Leg");
     expect(new Set(leftUpperLegPack.structures.map(structure => structure.id)).size).toBe(leftUpperLegPack.structures.length);
     expect(new Set(rightUpperLegPack.structures.map(structure => structure.id)).size).toBe(rightUpperLegPack.structures.length);
     for (const pack of packs) {

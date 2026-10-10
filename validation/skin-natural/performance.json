@@ -1,0 +1,110 @@
+{
+  "origin": "http://127.0.0.1:5176/",
+  "method": "45-step real pointer drag, 1440x1000, fresh Edge headless contexts; RAF intervals during drag include CPU label work and rendering; local observations",
+  "rows": [
+    {
+      "side": "right",
+      "graphics": "high",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 1842,
+      "frames": 109,
+      "medianFrameMs": 16.69999999999891,
+      "p95FrameMs": 16.80000000000109,
+      "maxFrameMs": 16.900000000001455,
+      "meanFrameMs": 16.68165137614678,
+      "errors": []
+    },
+    {
+      "side": "right",
+      "graphics": "high",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 1763,
+      "frames": 104,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.899999999999636,
+      "maxFrameMs": 17,
+      "meanFrameMs": 16.68365384615383,
+      "errors": []
+    },
+    {
+      "side": "right",
+      "graphics": "low",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 1778,
+      "frames": 105,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.799999999999272,
+      "maxFrameMs": 16.899999999997817,
+      "meanFrameMs": 16.68285714285715,
+      "errors": []
+    },
+    {
+      "side": "right",
+      "graphics": "low",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 1807,
+      "frames": 107,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.80000000000291,
+      "maxFrameMs": 16.899999999997817,
+      "meanFrameMs": 16.682242990654206,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "high",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 1817,
+      "frames": 108,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.80000000000109,
+      "maxFrameMs": 16.80000000000109,
+      "meanFrameMs": 16.683333333333344,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "high",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 1769,
+      "frames": 105,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.80000000000109,
+      "maxFrameMs": 16.899999999999636,
+      "meanFrameMs": 16.68285714285713,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "low",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 1703,
+      "frames": 101,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.799999999999272,
+      "maxFrameMs": 16.80000000000291,
+      "meanFrameMs": 16.682178217821797,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "low",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 1708,
+      "frames": 101,
+      "medianFrameMs": 16.700000000000728,
+      "p95FrameMs": 16.799999999999272,
+      "maxFrameMs": 16.80000000000291,
+      "meanFrameMs": 16.682178217821797,
+      "errors": []
+    }
+  ]
+}

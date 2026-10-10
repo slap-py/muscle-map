@@ -1,0 +1,236 @@
+{
+  "origin": "http://127.0.0.1:5178/",
+  "productionPreview": true,
+  "rows": [
+    {
+      "side": "right",
+      "graphics": "high",
+      "cache": "fresh browser context, local production preview",
+      "skeletonReadyMs": 8694,
+      "exteriorSwitchReadyMs": 343,
+      "totalReadyMs": 9037,
+      "dataset": {
+        "graphics": "high",
+        "graphicsChoice": "high",
+        "highlightedStructures": "",
+        "footprints": "0",
+        "focusedConnection": "",
+        "ghost": "false",
+        "cutaway": "",
+        "boneAssets": "ready",
+        "softTissues": "ready",
+        "labelTier": "1",
+        "exteriorAssets": "ready",
+        "loadedMuscles": "40",
+        "cartilagePatches": "86",
+        "loadedBones": "34"
+      },
+      "errors": [],
+      "resources": [
+        {
+          "name": "/models/bones.glb",
+          "durationMs": 507.5,
+          "transferSize": 5651904
+        },
+        {
+          "name": "/models/right-upper-leg/bones.glb",
+          "durationMs": 398.2999997138977,
+          "transferSize": 2109284
+        },
+        {
+          "name": "/models/muscles.glb",
+          "durationMs": 405.40000009536743,
+          "transferSize": 2372032
+        },
+        {
+          "name": "/models/right-upper-leg/muscles.glb",
+          "durationMs": 733.7000002861023,
+          "transferSize": 6913936
+        },
+        {
+          "name": "/models/exterior.glb",
+          "durationMs": 413,
+          "transferSize": 2979452
+        },
+        {
+          "name": "/models/right-upper-leg/exterior.glb",
+          "durationMs": 38,
+          "transferSize": 1414108
+        }
+      ]
+    },
+    {
+      "side": "right",
+      "graphics": "low",
+      "cache": "fresh browser context, local production preview",
+      "skeletonReadyMs": 14070,
+      "exteriorSwitchReadyMs": 397,
+      "totalReadyMs": 14467,
+      "dataset": {
+        "graphics": "low",
+        "graphicsChoice": "low",
+        "highlightedStructures": "",
+        "footprints": "0",
+        "focusedConnection": "",
+        "ghost": "false",
+        "cutaway": "",
+        "boneAssets": "ready",
+        "softTissues": "ready",
+        "labelTier": "1",
+        "loadedMuscles": "40",
+        "cartilagePatches": "86",
+        "loadedBones": "34",
+        "layerAssets": "ready",
+        "exteriorAssets": "ready"
+      },
+      "errors": [],
+      "resources": [
+        {
+          "name": "/models/bones.glb",
+          "durationMs": 331.69999980926514,
+          "transferSize": 5651904
+        },
+        {
+          "name": "/models/right-upper-leg/bones.glb",
+          "durationMs": 320.5,
+          "transferSize": 2109284
+        },
+        {
+          "name": "/models/muscles.glb",
+          "durationMs": 131.59999990463257,
+          "transferSize": 2372032
+        },
+        {
+          "name": "/models/right-upper-leg/muscles.glb",
+          "durationMs": 213.19999980926514,
+          "transferSize": 6913936
+        },
+        {
+          "name": "/models/exterior.glb",
+          "durationMs": 140.40000009536743,
+          "transferSize": 2979452
+        },
+        {
+          "name": "/models/right-upper-leg/exterior.glb",
+          "durationMs": 32.200000286102295,
+          "transferSize": 1414108
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "graphics": "high",
+      "cache": "fresh browser context, local production preview",
+      "skeletonReadyMs": 9768,
+      "exteriorSwitchReadyMs": 415,
+      "totalReadyMs": 10183,
+      "dataset": {
+        "graphics": "high",
+        "graphicsChoice": "high",
+        "highlightedStructures": "",
+        "footprints": "0",
+        "focusedConnection": "",
+        "ghost": "false",
+        "cutaway": "",
+        "boneAssets": "ready",
+        "softTissues": "ready",
+        "labelTier": "1",
+        "exteriorAssets": "ready",
+        "loadedMuscles": "40",
+        "cartilagePatches": "86",
+        "loadedBones": "34"
+      },
+      "errors": [],
+      "resources": [
+        {
+          "name": "/models/left-lower-leg/bones.glb",
+          "durationMs": 246.19999980926514,
+          "transferSize": 5655348
+        },
+        {
+          "name": "/models/left-upper-leg/bones.glb",
+          "durationMs": 145,
+          "transferSize": 2109416
+        },
+        {
+          "name": "/models/left-lower-leg/muscles.glb",
+          "durationMs": 154.40000009536743,
+          "transferSize": 2372892
+        },
+        {
+          "name": "/models/left-upper-leg/muscles.glb",
+          "durationMs": 478.69999980926514,
+          "transferSize": 6914176
+        },
+        {
+          "name": "/models/left-lower-leg/exterior.glb",
+          "durationMs": 163.7000002861023,
+          "transferSize": 2974508
+        },
+        {
+          "name": "/models/left-upper-leg/exterior.glb",
+          "durationMs": 36.89999961853027,
+          "transferSize": 1351016
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "graphics": "low",
+      "cache": "fresh browser context, local production preview",
+      "skeletonReadyMs": 16504,
+      "exteriorSwitchReadyMs": 346,
+      "totalReadyMs": 16850,
+      "dataset": {
+        "graphics": "low",
+        "graphicsChoice": "low",
+        "highlightedStructures": "",
+        "footprints": "0",
+        "focusedConnection": "",
+        "ghost": "false",
+        "cutaway": "",
+        "boneAssets": "ready",
+        "softTissues": "ready",
+        "labelTier": "1",
+        "loadedMuscles": "40",
+        "cartilagePatches": "86",
+        "loadedBones": "34",
+        "layerAssets": "ready",
+        "exteriorAssets": "ready"
+      },
+      "errors": [],
+      "resources": [
+        {
+          "name": "/models/left-lower-leg/bones.glb",
+          "durationMs": 186.40000009536743,
+          "transferSize": 5655348
+        },
+        {
+          "name": "/models/left-upper-leg/bones.glb",
+          "durationMs": 173.30000019073486,
+          "transferSize": 2109416
+        },
+        {
+          "name": "/models/left-lower-leg/muscles.glb",
+          "durationMs": 212.10000038146973,
+          "transferSize": 2372892
+        },
+        {
+          "name": "/models/left-upper-leg/muscles.glb",
+          "durationMs": 345.80000019073486,
+          "transferSize": 6914176
+        },
+        {
+          "name": "/models/left-lower-leg/exterior.glb",
+          "durationMs": 215.5,
+          "transferSize": 2974508
+        },
+        {
+          "name": "/models/left-upper-leg/exterior.glb",
+          "durationMs": 24.90000009536743,
+          "transferSize": 1351016
+        }
+      ]
+    }
+  ]
+}

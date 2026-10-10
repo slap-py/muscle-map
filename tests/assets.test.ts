@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { createAnkle } from "../src/ankle";
-import { boneIds, installBoneAssets, loadBoneAssets } from "../src/assets";
+import { boneIds, installBoneAssets, installExteriorAssets, loadBoneAssets } from "../src/assets";
 
 function dispose(model: ReturnType<typeof createAnkle>) {
   for (const part of model.parts.values()) for (const mesh of part.meshes) {
@@ -44,6 +44,22 @@ describe("bone asset integration", () => {
     dispose(model);
   });
 
+  it("keeps source-reference patches out of visible parts while installing the replacement skin", () => {
+    const model = createAnkle();
+    const scene = new THREE.Group();
+    const reference = bone("skin");
+    reference.userData = { atlasId: "skin", sourceReference: true, source: "z-anatomy-regional-surface" };
+    const replacement = bone("skin");
+    replacement.userData = { atlasId: "skin", source: "structure-envelope" };
+    scene.add(reference, replacement);
+    const report = installExteriorAssets(scene, model.parts);
+    expect(report.loaded).toContain("skin");
+    expect(report.warnings).toEqual([]);
+    expect(model.parts.get("skin")!.meshes).toHaveLength(1);
+    expect(model.parts.get("skin")!.meshes[0].userData.sourceReference).toBeUndefined();
+    expect(model.parts.get("skin")!.meshes[0].userData.source).toBe("structure-envelope");
+    dispose(model);
+  });
   it("keeps missing, unmatched and malformed bones procedural without affecting soft tissues", () => {
     const model = createAnkle();
     const oldTalus = model.parts.get("talus")!.meshes[0];

@@ -4,7 +4,7 @@ import { relatedIds } from './foot';
 import { attachmentRecords } from './attachments';
 export const atlasTabs = [
   ['all','All'], ['leg','Leg'], ['ankle','Ankle & heel'], ['midfoot','Midfoot'],
-  ['toe-1','Big toe'], ['toe-2','Toe 2'], ['toe-3','Toe 3'], ['toe-4','Toe 4'], ['toe-5','Toe 5'],
+  ['toe-1','Great toe'], ['toe-2','Toe 2'], ['toe-3','Toe 3'], ['toe-4','Toe 4'], ['toe-5','Toe 5'],
 ] as const;
 const toeMembers = (n: number) => {
   const ids = new Set(structures.filter(s => s.id === `metatarsal-${n}` || s.id.startsWith(`phalanx-${n}-`) || (n === 1 && s.id.startsWith('sesamoid-'))).map(s => s.id));

@@ -1,0 +1,195 @@
+{
+  "version": 2,
+  "gridMm": 1,
+  "sampleSpacingMm": 0.5,
+  "closingRadiusMm": 6,
+  "thicknessSmoothingMm": 8,
+  "fieldSmoothingVoxels": 7,
+  "toeThicknessMm": 0.65,
+  "toeFieldSmoothingVoxels": 0.6,
+  "webDistalMm": 1,
+  "webBlendMm": 5,
+  "thicknessProfile": [
+    [
+      -90,
+      8
+    ],
+    [
+      -35,
+      8
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      70,
+      7
+    ],
+    [
+      200,
+      11
+    ],
+    [
+      350,
+      11
+    ],
+    [
+      400,
+      12
+    ],
+    [
+      460,
+      13
+    ],
+    [
+      620,
+      17
+    ],
+    [
+      800,
+      18
+    ]
+  ],
+  "pads": [
+    {
+      "bone": "calcaneus",
+      "selection": "posterior-plantar",
+      "amplitudeMm": 5,
+      "sigmaMm": [
+        20,
+        12,
+        17
+      ]
+    },
+    {
+      "bone": "metatarsal-1",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.5,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ]
+    },
+    {
+      "bone": "metatarsal-2",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ]
+    },
+    {
+      "bone": "metatarsal-3",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ]
+    },
+    {
+      "bone": "metatarsal-4",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ]
+    },
+    {
+      "bone": "metatarsal-5",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ]
+    },
+    {
+      "bone": "patella",
+      "region": "upper",
+      "selection": "anterior-patella",
+      "amplitudeMm": 10,
+      "sigmaMm": [
+        34,
+        38,
+        34
+      ]
+    }
+  ],
+  "seamYLowerMm": 450.125,
+  "proximalYLowerMm": 790,
+  "inputCropPaddingMm": 20,
+  "boundsPaddingMm": 30,
+  "flatSole": false,
+  "targetTriangles": 150000,
+  "quadricErrorMm": 0.06,
+  "hausdorffLimitMm": 0.3,
+  "surfaceValidationSpacingMm": 0.15,
+  "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+  "limitations": [
+    "Illustrative structure envelope; no scanned skin, creases, nails, or person-specific fat.",
+    "Thickness and cuts are project choices, not clinically sourced measurements.",
+    "Full source inputs are read; proximal pelvis context is trimmed at a configured groin-level study cut.",
+    "Region skins share a seam; overlapping source structures belong to the envelope on the side of the seam where their vertices lie.",
+    "Uniform minimum clearance within 0.5 mm is not met; final measured deviations are reported rather than inferred from the configured field.",
+    "Fuller illustrative soft tissue follows photo references qualitatively; regional padding is an artistic choice.",
+    "Independent rounded toe fields use toe-labelled bones/cartilage and endpoint-associated tendons; grouped digital neurovascular vertices are associated by nearest own-side phalanges as containment constraints, while continuous separators define the webs.",
+    "Continuous intertoe separators replace voxel carving and patchwise source repair; actual containment is measured independently."
+  ],
+  "sectionFloodFill": true,
+  "webFilletMm": 2.5,
+  "seamChoice": "Offset 0.125 mm from the voxel-aligned Y450 plane to avoid coplanar extracted facets altering opposite cut loops.",
+  "extractionGridMm": 0.5,
+  "extractionSlabIntervals": 32,
+  "toeSectionEnvelopes": true,
+  "skinToeGaussianSigmaVoxels": 1.1,
+  "skinSectionThicknessMm": 0.65,
+  "skinToeCarveIterations": 2,
+  "skinToeMoatField": 1.2,
+  "skinToeSourceRepairClearanceMm": 0.5,
+  "skinCropXMinMm": 65,
+  "skinCropTopYMm": 30,
+  "preserveSourceMarginMm": 0.2,
+  "preserveSourceRadiusMm": 0.8,
+  "preserveToeWallGridMm": 1,
+  "preserveToeWallPhaseToleranceMm": 0.05,
+  "maximumTriangles": 260000,
+  "hybridExtraction": true,
+  "hybridExtractionType": "foot-x-collar",
+  "hybridFinePlaneXmm": 80.375,
+  "hybridCoarsePlaneXmm": 80.125,
+  "hybridFootYMaxMm": 50,
+  "sideQuadricErrorMm": {
+    "right": 0.06,
+    "left": 0.06
+  },
+  "signedBodyField": true,
+  "smoothToeEnvelopes": true,
+  "toeGapMm": 0.6,
+  "toeProfileSmoothingMm": 4,
+  "toeDorsalPaddingMm": 4,
+  "toeLateralPaddingMm": 1.2,
+  "toeRootBlendMm": 22,
+  "auditPreservationRings": 8,
+  "auditIntersectionPaddingMm": 3,
+  "preservation": {
+    "right": {
+      "vertexSha256": "6a50db419ee99383f5ce6e7e1f4181431ed99e53b0d39b0bb2e825e090132b66",
+      "indicesFile": "scripts/skin-preservation-right.json",
+      "indicesSha256": "2e4b08b5b2410d1fd5f4a5d258f4f38a1f97f34060514af8b5f3010ed2790127"
+    },
+    "left": {
+      "vertexSha256": "11748988fa5780040e9cc715d71f303ed9a85b7e76dd17ee018560697ecb6fa0",
+      "indicesFile": "scripts/skin-preservation-left.json",
+      "indicesSha256": "c440f1df0a972189fa4ca3dbe98de8c87b99dd99156465ad799420c334926c53"
+    }
+  }
+}

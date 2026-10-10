@@ -1,0 +1,31 @@
+{
+  "maps": {
+    "public/models/skin-detail/left-bump.png": {
+      "sha256": "4537d0fb26db3fc229718a4957cfde81f6317850fa3aaa5f3bbeab7fa6a34a6d",
+      "bytes": 49973,
+      "freshBakeMatched": true
+    },
+    "public/models/skin-detail/left-color.png": {
+      "sha256": "5bed77d27d108dbd66ad50cc8b6cc0630775cae181c922abbc635d71fa94f3bd",
+      "bytes": 59933,
+      "freshBakeMatched": true
+    },
+    "public/models/skin-detail/right-bump.png": {
+      "sha256": "ae9f6c0d507a651a6ae8c111a30608af6e39b6cf0762a804c1fa763dd1db87ab",
+      "bytes": 49131,
+      "freshBakeMatched": true
+    },
+    "public/models/skin-detail/right-color.png": {
+      "sha256": "8d3ae14decc5bd924b624dd9351d59c9b1cb8c14aab37af8e8144c7286188e70",
+      "bytes": 59171,
+      "freshBakeMatched": true
+    }
+  },
+  "generatorSha256": "4156bf64a842bf3835da21a3f26431348ac6ab8e57ed29f6966f430f4ae53fd4",
+  "unchangedPublishedGlbSha256": {
+    "public/models/exterior.glb": "80f939481f7985f1c1a16ed506b40a6222559cf8dfe7ced41b2ed0da50f906d8",
+    "public/models/right-upper-leg/exterior.glb": "e2f33c5c45b268f696f1e2c7daedebcc2fe310db417bacb173e93688e8977a4d",
+    "public/models/left-lower-leg/exterior.glb": "ef550a43467d2f2993cbf30561e107c8ecd53d1cc57cc2959fb153c9ff1157ae",
+    "public/models/left-upper-leg/exterior.glb": "ec708c08116f22cba4d14bbddfc7a5904d9c54524fff17bcc14b3c1b0b74cc46"
+  }
+}

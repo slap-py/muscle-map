@@ -1,0 +1,61 @@
+{
+  "parameters": "scripts/skin-parameters.json",
+  "parametersSha256": "8350d0682a313f55e9db334608361007f22161f67e0c11c23a155c2ff8c1fe13",
+  "freshFieldsRebuilt": true,
+  "matchingSurfaceRasterCacheReused": true,
+  "sides": {
+    "right": {
+      "mesh.vertices.bin": {
+        "sha256": "6a50db419ee99383f5ce6e7e1f4181431ed99e53b0d39b0bb2e825e090132b66",
+        "freshRebuildMatched": true
+      },
+      "mesh.faces.bin": {
+        "sha256": "c400fdaddeddcae1ecf9c7d43abe7abdcd2fceffeee3e17dd4da9970c4d02347",
+        "freshRebuildMatched": true
+      },
+      "mesh.simplified.bin": {
+        "sha256": "f79b2fb94584a83a1c46af1b12339c3d22e8a9fbeba9a4a6206889f64ab2a159",
+        "freshRebuildMatched": true
+      },
+      "lower-exterior.glb": {
+        "sha256": "80f939481f7985f1c1a16ed506b40a6222559cf8dfe7ced41b2ed0da50f906d8",
+        "freshRebuildMatched": true
+      },
+      "upper-exterior.glb": {
+        "sha256": "e2f33c5c45b268f696f1e2c7daedebcc2fe310db417bacb173e93688e8977a4d",
+        "freshRebuildMatched": true
+      }
+    },
+    "left": {
+      "mesh.vertices.bin": {
+        "sha256": "11748988fa5780040e9cc715d71f303ed9a85b7e76dd17ee018560697ecb6fa0",
+        "freshRebuildMatched": true
+      },
+      "mesh.faces.bin": {
+        "sha256": "2ea290dfce8674e428f66c1b583e9d41322d7da5efabdbd02fcdaac3ef4120aa",
+        "freshRebuildMatched": true
+      },
+      "mesh.simplified.bin": {
+        "sha256": "79e3588aca3613452dd4c8f65c2be090eb90f6bea55db5d909bb6ecd12b7b226",
+        "freshRebuildMatched": true
+      },
+      "lower-exterior.glb": {
+        "sha256": "ef550a43467d2f2993cbf30561e107c8ecd53d1cc57cc2959fb153c9ff1157ae",
+        "freshRebuildMatched": true
+      },
+      "upper-exterior.glb": {
+        "sha256": "ec708c08116f22cba4d14bbddfc7a5904d9c54524fff17bcc14b3c1b0b74cc46",
+        "freshRebuildMatched": true
+      }
+    }
+  },
+  "pipelineCodeSha256": {
+    "prepare-structure-skin.py": "4bec7fa94fa6a1528ab22db6510cb3b37eab7449813f8a261ad967211dcbe0fa",
+    "skin_soft_toes.py": "30bf913f6e0e301e6df0f69921f42f316e3a6281f4e27d26dd9cadf4df562d7f",
+    "skin_toes.py": "96318b2203c9fa3e19819080bbf2be04ecc2a50bf3222675966550b13a9339f3",
+    "skin_hybrid.py": "7977d9d0e457cea5a0b1461f19688c84ecc6da619fbc1a5bebb6f80245b68531",
+    "skin_extract.py": "90d64a430f28e3733c5a91494af5e5d920230e1e5496f98ea793ece49649da39",
+    "skin_winding.py": "6f0fafc191aac98832810077509d9db93976a13d42ce9f7129d02d61080edb58",
+    "skin_glb.py": "3a6eeb4b55916816a9d2a5673c58ef1cb4958ebb9c94d2a797e0d90409c86a70"
+  }
+}

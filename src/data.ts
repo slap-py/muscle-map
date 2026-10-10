@@ -305,7 +305,7 @@ export const structures: Structure[] = [
       s.region === "Foot" ||
       ["tibia", "fibula", "anterior", "fibularis", "achilles", "gastrocnemius"].includes(s.id),
   ),
-  {id:"skin",name:"Skin exterior",tissue:"skin",region:"Lower leg",group:"Outer surface",description:"An illustrative outer contour covering the lower leg, ankle, foot and five toes, fitted around the registered anatomy. This is not scanned skin.",role:"Shows the external shape and helps relate deeper structures to the surface.",connection:"Continuous exterior over the leg and foot",hint:"Use Exterior or the skin layer toggle. Lower skin opacity to reveal anatomy beneath; nails and skin creases are not modeled."},
+  {id:"skin",name:"Skin exterior",tissue:"skin",region:"Lower leg",group:"Outer surface",description:"An illustrative envelope derived from the registered bones, muscles, connective tissues, vessels and nerves, inflated by a smooth soft-tissue thickness field. This is not scanned skin.",role:"Shows the external shape and helps relate deeper structures to the surface.",connection:"Continuous exterior over the leg and foot",hint:"Use Exterior or the skin layer toggle. Lower skin opacity to reveal anatomy beneath. Cap controls show the regional cut; nails, creases and person-specific fat are not modeled."},
   ...ankleStructures,
   ...softTissueStructures,
   ...neurovascularStructures,

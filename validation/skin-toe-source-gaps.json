@@ -1,0 +1,594 @@
+{
+  "scope": "Original phalanx surfaces plus a separate audit of explicitly toe-labelled generated cartilage/tendon branches in the free-toe zone",
+  "limitations": "Digital vessel and nerve source groups span several toes without separate toe IDs; the phalanx-only gap does not bound all digital soft tissue.",
+  "detailedToeStructures": {
+    "right": {
+      "includedGeneratedBranches": [
+        {
+          "toe": 5,
+          "id": "abductor-digiti-tendon",
+          "component": "fifth-toe"
+        },
+        {
+          "toe": 1,
+          "id": "abductor-hallucis-tendon",
+          "component": "hallux"
+        },
+        {
+          "toe": 1,
+          "id": "cartilage-phalanx-1-distal",
+          "component": null
+        },
+        {
+          "toe": 1,
+          "id": "cartilage-phalanx-1-proximal",
+          "component": null
+        },
+        {
+          "toe": 1,
+          "id": "cartilage-phalanx-1-proximal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-distal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-middle",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-middle",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-proximal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-proximal",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-distal",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-middle",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-middle",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-proximal",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-proximal",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-distal",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-middle",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-middle",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-proximal",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-proximal",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-distal",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-middle",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-middle",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-proximal",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-proximal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "edb-tendons",
+          "component": "toe-2-expansion"
+        },
+        {
+          "toe": 3,
+          "id": "edb-tendons",
+          "component": "toe-3-expansion"
+        },
+        {
+          "toe": 4,
+          "id": "edb-tendons",
+          "component": "toe-4-expansion"
+        },
+        {
+          "toe": 2,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-2-middle"
+        },
+        {
+          "toe": 2,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-2-distal"
+        },
+        {
+          "toe": 3,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-3-middle"
+        },
+        {
+          "toe": 3,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-3-distal"
+        },
+        {
+          "toe": 4,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-4-middle"
+        },
+        {
+          "toe": 4,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-4-distal"
+        },
+        {
+          "toe": 5,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-5-middle"
+        },
+        {
+          "toe": 5,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-5-distal"
+        },
+        {
+          "toe": 1,
+          "id": "extensor-hallucis-tendon",
+          "component": "hallux"
+        },
+        {
+          "toe": 2,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-2"
+        },
+        {
+          "toe": 3,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-3"
+        },
+        {
+          "toe": 4,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-4"
+        },
+        {
+          "toe": 5,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-5"
+        },
+        {
+          "toe": 1,
+          "id": "flexor-hallucis-tendon",
+          "component": "hallux"
+        }
+      ],
+      "adjacentPairs": [
+        {
+          "pair": [
+            1,
+            2
+          ],
+          "freeZoneXMinMm": 122.90903372938435,
+          "minimumSurfaceGapMm": 5.562080921918418,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        },
+        {
+          "pair": [
+            2,
+            3
+          ],
+          "freeZoneXMinMm": 122.90903372938435,
+          "minimumSurfaceGapMm": 6.31204973777495,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        },
+        {
+          "pair": [
+            3,
+            4
+          ],
+          "freeZoneXMinMm": 119.67945533121626,
+          "minimumSurfaceGapMm": 8.232510756263654,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        },
+        {
+          "pair": [
+            4,
+            5
+          ],
+          "freeZoneXMinMm": 110.65602168689172,
+          "minimumSurfaceGapMm": 6.999324002692029,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        }
+      ]
+    },
+    "left": {
+      "includedGeneratedBranches": [
+        {
+          "toe": 5,
+          "id": "abductor-digiti-tendon",
+          "component": "fifth-toe"
+        },
+        {
+          "toe": 1,
+          "id": "abductor-hallucis-tendon",
+          "component": "hallux"
+        },
+        {
+          "toe": 1,
+          "id": "cartilage-phalanx-1-distal",
+          "component": null
+        },
+        {
+          "toe": 1,
+          "id": "cartilage-phalanx-1-proximal",
+          "component": null
+        },
+        {
+          "toe": 1,
+          "id": "cartilage-phalanx-1-proximal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-distal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-middle",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-middle",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-proximal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "cartilage-phalanx-2-proximal",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-distal",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-middle",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-middle",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-proximal",
+          "component": null
+        },
+        {
+          "toe": 3,
+          "id": "cartilage-phalanx-3-proximal",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-distal",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-middle",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-middle",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-proximal",
+          "component": null
+        },
+        {
+          "toe": 4,
+          "id": "cartilage-phalanx-4-proximal",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-distal",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-middle",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-middle",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-proximal",
+          "component": null
+        },
+        {
+          "toe": 5,
+          "id": "cartilage-phalanx-5-proximal",
+          "component": null
+        },
+        {
+          "toe": 2,
+          "id": "edb-tendons",
+          "component": "toe-2-expansion"
+        },
+        {
+          "toe": 3,
+          "id": "edb-tendons",
+          "component": "toe-3-expansion"
+        },
+        {
+          "toe": 4,
+          "id": "edb-tendons",
+          "component": "toe-4-expansion"
+        },
+        {
+          "toe": 2,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-2-middle"
+        },
+        {
+          "toe": 2,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-2-distal"
+        },
+        {
+          "toe": 3,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-3-middle"
+        },
+        {
+          "toe": 3,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-3-distal"
+        },
+        {
+          "toe": 4,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-4-middle"
+        },
+        {
+          "toe": 4,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-4-distal"
+        },
+        {
+          "toe": 5,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-5-middle"
+        },
+        {
+          "toe": 5,
+          "id": "extensor-digitorum-tendons",
+          "component": "toe-5-distal"
+        },
+        {
+          "toe": 1,
+          "id": "extensor-hallucis-tendon",
+          "component": "hallux"
+        },
+        {
+          "toe": 2,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-2"
+        },
+        {
+          "toe": 3,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-3"
+        },
+        {
+          "toe": 4,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-4"
+        },
+        {
+          "toe": 5,
+          "id": "flexor-digitorum-tendons",
+          "component": "toe-5"
+        },
+        {
+          "toe": 1,
+          "id": "flexor-hallucis-tendon",
+          "component": "hallux"
+        }
+      ],
+      "adjacentPairs": [
+        {
+          "pair": [
+            1,
+            2
+          ],
+          "freeZoneXMinMm": 122.90903372938435,
+          "minimumSurfaceGapMm": 5.562080921918418,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        },
+        {
+          "pair": [
+            2,
+            3
+          ],
+          "freeZoneXMinMm": 122.90903372938435,
+          "minimumSurfaceGapMm": 6.31204973777495,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        },
+        {
+          "pair": [
+            3,
+            4
+          ],
+          "freeZoneXMinMm": 119.67945533121626,
+          "minimumSurfaceGapMm": 8.235351918894489,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        },
+        {
+          "pair": [
+            4,
+            5
+          ],
+          "freeZoneXMinMm": 110.65602168689172,
+          "minimumSurfaceGapMm": 6.999324002692029,
+          "surfaceTouchOrOverlap": false,
+          "method": "Exact triangle-to-triangle distance after clipping explicitly toe-labelled source bones/cartilage/tendons distal to both metatarsal-head landmarks plus4mm"
+        }
+      ]
+    }
+  },
+  "right": [
+    {
+      "pair": [
+        1,
+        2
+      ],
+      "minimumSurfaceGapMm": 5.562080921918418,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        2,
+        3
+      ],
+      "minimumSurfaceGapMm": 4.203856803819624,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        3,
+        4
+      ],
+      "minimumSurfaceGapMm": 3.0753799962882447,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        4,
+        5
+      ],
+      "minimumSurfaceGapMm": 6.999324002692029,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    }
+  ],
+  "left": [
+    {
+      "pair": [
+        1,
+        2
+      ],
+      "minimumSurfaceGapMm": 5.562080921918418,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        2,
+        3
+      ],
+      "minimumSurfaceGapMm": 4.203856803819624,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        3,
+        4
+      ],
+      "minimumSurfaceGapMm": 3.0753799962882447,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    },
+    {
+      "pair": [
+        4,
+        5
+      ],
+      "minimumSurfaceGapMm": 6.999324002692029,
+      "method": "Exact triangle-to-triangle closest distance via BVH",
+      "surfaceOverlap": false
+    }
+  ]
+}

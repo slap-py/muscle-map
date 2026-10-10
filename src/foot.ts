@@ -444,7 +444,7 @@ for (let i = 0; i < 5; i++) {
     id: `mtp-collateral-${n}`,
     // The fixed atlas taxonomy collects foot ligaments here, including forefoot MTP bands.
     group: "Midfoot ligaments",
-    name: `Toe ${n} MTP collateral ligaments`,
+    name: `${n === 1 ? "Great toe" : `Toe ${n}`} MTP collateral ligaments`,
     tissue: "ligament",
     attachments: [`metatarsal-${n}`, `phalanx-${n}-proximal`],
     paths: [-1, 1].map((side) => [

@@ -1,0 +1,306 @@
+{
+  "sides": [
+    {
+      "side": "right",
+      "seamMatched": true,
+      "seamMaxErrorMm": 8.71931918945159e-06,
+      "pieces": [
+        {
+          "region": "lower",
+          "method": "Smooth radial expansion and outward elliptical rounding in shared lower-leg frame",
+          "sourceGlbSha256": "80f939481f7985f1c1a16ed506b40a6222559cf8dfe7ced41b2ed0da50f906d8",
+          "profileYmmScaleRoundness": [
+            [
+              50.0,
+              0.0,
+              0.0
+            ],
+            [
+              90.0,
+              0.025,
+              0.1
+            ],
+            [
+              200.0,
+              0.075,
+              0.25
+            ],
+            [
+              300.0,
+              0.09,
+              0.3
+            ],
+            [
+              400.0,
+              0.06,
+              0.25
+            ],
+            [
+              450.125,
+              0.075,
+              0.35
+            ],
+            [
+              560.0,
+              0.1,
+              0.55
+            ],
+            [
+              680.0,
+              0.11,
+              0.55
+            ],
+            [
+              790.0,
+              0.09,
+              0.45
+            ],
+            [
+              850.0,
+              0.09,
+              0.45
+            ]
+          ],
+          "source": "output/skin/right/lower-exterior.glb",
+          "scriptSha256": "3bd3eeb6a492b2d9e3ae9683b71ccfaf91e5d56f80d9584a76107b4a52a87bc4",
+          "minimumSampledJacobian": 0.8744237486870609,
+          "maxOutwardMovementMm": 9.023150002353269,
+          "topology": {
+            "closed": true,
+            "consistentWinding": true,
+            "windingDisagreements": 0,
+            "edgeIncidences": {
+              "2": 150066
+            },
+            "signedVolumeMm3": 5712816.262759057
+          },
+          "illustrative": true,
+          "glbSha256": "2686ca8e36534200cbb419713f31c0bda9997d4f79591a0b5fa97d56e018dd77"
+        },
+        {
+          "region": "upper",
+          "method": "Smooth radial expansion and outward elliptical rounding in shared lower-leg frame",
+          "sourceGlbSha256": "e2f33c5c45b268f696f1e2c7daedebcc2fe310db417bacb173e93688e8977a4d",
+          "profileYmmScaleRoundness": [
+            [
+              50.0,
+              0.0,
+              0.0
+            ],
+            [
+              90.0,
+              0.025,
+              0.1
+            ],
+            [
+              200.0,
+              0.075,
+              0.25
+            ],
+            [
+              300.0,
+              0.09,
+              0.3
+            ],
+            [
+              400.0,
+              0.06,
+              0.25
+            ],
+            [
+              450.125,
+              0.075,
+              0.35
+            ],
+            [
+              560.0,
+              0.1,
+              0.55
+            ],
+            [
+              680.0,
+              0.11,
+              0.55
+            ],
+            [
+              790.0,
+              0.09,
+              0.45
+            ],
+            [
+              850.0,
+              0.09,
+              0.45
+            ]
+          ],
+          "source": "output/skin/right/upper-exterior.glb",
+          "scriptSha256": "3bd3eeb6a492b2d9e3ae9683b71ccfaf91e5d56f80d9584a76107b4a52a87bc4",
+          "minimumSampledJacobian": 0.752260755832638,
+          "maxOutwardMovementMm": 19.72444963681479,
+          "topology": {
+            "closed": true,
+            "consistentWinding": true,
+            "windingDisagreements": 0,
+            "edgeIncidences": {
+              "2": 82200
+            },
+            "signedVolumeMm3": 10211551.396332271
+          },
+          "illustrative": true,
+          "glbSha256": "aafef5427d7d226aa79f62b33dd7e984b4b7f6472726cb593d69b6f0b51707be"
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "seamMatched": true,
+      "seamMaxErrorMm": 9.080309277932816e-06,
+      "pieces": [
+        {
+          "region": "lower",
+          "method": "Smooth radial expansion and outward elliptical rounding in shared lower-leg frame",
+          "sourceGlbSha256": "ef550a43467d2f2993cbf30561e107c8ecd53d1cc57cc2959fb153c9ff1157ae",
+          "profileYmmScaleRoundness": [
+            [
+              50.0,
+              0.0,
+              0.0
+            ],
+            [
+              90.0,
+              0.025,
+              0.1
+            ],
+            [
+              200.0,
+              0.075,
+              0.25
+            ],
+            [
+              300.0,
+              0.09,
+              0.3
+            ],
+            [
+              400.0,
+              0.06,
+              0.25
+            ],
+            [
+              450.125,
+              0.075,
+              0.35
+            ],
+            [
+              560.0,
+              0.1,
+              0.55
+            ],
+            [
+              680.0,
+              0.11,
+              0.55
+            ],
+            [
+              790.0,
+              0.09,
+              0.45
+            ],
+            [
+              850.0,
+              0.09,
+              0.45
+            ]
+          ],
+          "source": "output/skin/left/lower-exterior.glb",
+          "scriptSha256": "3bd3eeb6a492b2d9e3ae9683b71ccfaf91e5d56f80d9584a76107b4a52a87bc4",
+          "minimumSampledJacobian": 0.8743713434774547,
+          "maxOutwardMovementMm": 8.979604545346499,
+          "topology": {
+            "closed": true,
+            "consistentWinding": true,
+            "windingDisagreements": 0,
+            "edgeIncidences": {
+              "2": 149697
+            },
+            "signedVolumeMm3": 5713062.804716724
+          },
+          "illustrative": true,
+          "glbSha256": "4188a9881522ec11bcde164908f687358c9305f1eeb336a5d4e0ffeeb94734ff"
+        },
+        {
+          "region": "upper",
+          "method": "Smooth radial expansion and outward elliptical rounding in shared lower-leg frame",
+          "sourceGlbSha256": "ec708c08116f22cba4d14bbddfc7a5904d9c54524fff17bcc14b3c1b0b74cc46",
+          "profileYmmScaleRoundness": [
+            [
+              50.0,
+              0.0,
+              0.0
+            ],
+            [
+              90.0,
+              0.025,
+              0.1
+            ],
+            [
+              200.0,
+              0.075,
+              0.25
+            ],
+            [
+              300.0,
+              0.09,
+              0.3
+            ],
+            [
+              400.0,
+              0.06,
+              0.25
+            ],
+            [
+              450.125,
+              0.075,
+              0.35
+            ],
+            [
+              560.0,
+              0.1,
+              0.55
+            ],
+            [
+              680.0,
+              0.11,
+              0.55
+            ],
+            [
+              790.0,
+              0.09,
+              0.45
+            ],
+            [
+              850.0,
+              0.09,
+              0.45
+            ]
+          ],
+          "source": "output/skin/left/upper-exterior.glb",
+          "scriptSha256": "3bd3eeb6a492b2d9e3ae9683b71ccfaf91e5d56f80d9584a76107b4a52a87bc4",
+          "minimumSampledJacobian": 0.7522443961805221,
+          "maxOutwardMovementMm": 19.708875619720587,
+          "topology": {
+            "closed": true,
+            "consistentWinding": true,
+            "windingDisagreements": 0,
+            "edgeIncidences": {
+              "2": 78219
+            },
+            "signedVolumeMm3": 10211414.888844177
+          },
+          "illustrative": true,
+          "glbSha256": "3d2eefeaf83ce545374e964f5384ef0c36eba6006d114f55c2905b2dd1d2a9a3"
+        }
+      ]
+    }
+  ]
+}

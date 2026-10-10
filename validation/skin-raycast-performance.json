@@ -1,0 +1,25 @@
+{
+  "method": "960 rays on the actual published lower skin; first-hit BVH, indirect indices, same nearest hit within 0.00001 mm",
+  "rows": [
+    {
+      "side": "right",
+      "triangles": 99791,
+      "rays": 960,
+      "bruteMs": 3458.5429999999997,
+      "acceleratedMs": 4.7914999999998145,
+      "speedup": 721.8079933215347,
+      "bvhBuildMs": 41.92230000000018,
+      "mismatches": 0
+    },
+    {
+      "side": "left",
+      "triangles": 99520,
+      "rays": 960,
+      "bruteMs": 3541.4933,
+      "acceleratedMs": 1.9728000000004613,
+      "speedup": 1795.1608373880636,
+      "bvhBuildMs": 30.823500000000422,
+      "mismatches": 0
+    }
+  ]
+}

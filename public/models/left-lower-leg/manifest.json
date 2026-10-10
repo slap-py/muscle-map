@@ -1,7 +1,7 @@
 {
   "side": "left",
   "license": "CC-BY-SA-4.0",
-  "adaptation": "Anatomical-Z reflection of the registered right lower-leg assets with reversed triangle winding and recalculated normals. Not an independent left specimen.",
+  "adaptation": "Anatomical-Z reflection of the registered right lower-leg assets with reversed triangle winding and recalculated normals. Not an independent left specimen. The new exterior envelope is built separately from its own left lower and native left upper packs; it is not a reflection of the right envelope.",
   "assets": [
     {
       "asset": "bones",
@@ -21,11 +21,12 @@
     },
     {
       "asset": "exterior",
-      "objects": 3,
-      "sourceAsset": "../exterior.glb",
-      "sourceSha256": "468571581213eb8718fc141cc5ad229c1915cf2233a1c0ee499ce03a2a5b85bf",
-      "glbSha256": "238a1fd8b1bc66025a770f03589a72a813b747d162e13647e6837a20828caf2e",
-      "bytes": 2613528
+      "objects": 4,
+      "glbSha256": "ef550a43467d2f2993cbf30561e107c8ecd53d1cc57cc2959fb153c9ff1157ae",
+      "bytes": 2974208,
+      "adaptation": "Own left lower and native left upper structure envelope; original mirrored gastrocnemius buffers preserved verbatim.",
+      "skinSource": "structure-envelope",
+      "legacyExteriorSourceSha256": "468571581213eb8718fc141cc5ad229c1915cf2233a1c0ee499ce03a2a5b85bf"
     },
     {
       "asset": "neurovascular",
@@ -42,5 +43,11 @@
   "attribution": [
     "Z-Anatomy \u2014 The libre 3D atlas of anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
     "BodyParts3D \u2014 The Database Center for Life Science \u2014 Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
-  ]
+  ],
+  "skinDerivative": {
+    "source": "structure-envelope",
+    "manifest": "exterior.manifest.json",
+    "sha256": "ef550a43467d2f2993cbf30561e107c8ecd53d1cc57cc2959fb153c9ff1157ae",
+    "bytes": 2974208
+  }
 }

@@ -10,9 +10,9 @@ export function viewerUrl(defaultUrl = 'http://127.0.0.1:5176/', route = '/lower
   return url.toString();
 }
 
-export function appUrl(defaultUrl = 'http://127.0.0.1:5176/') {
+export function appUrl(defaultUrl = 'http://127.0.0.1:5176/', route = '/browser') {
   const value = process.env.VIEWER_URL ?? defaultUrl;
   const url = new URL(value);
-  url.hash = '/';
+  url.hash = route;
   return url.toString();
 }

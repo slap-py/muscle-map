@@ -3,6 +3,26 @@ import { acceleratedRaycast, MeshBVH } from "three-mesh-bvh";
 import { GenerateMeshBVHWorker } from "three-mesh-bvh/worker";
 
 /** Build after geometry edits; preserve triangle indices for future annotations. */
+export function isSkinSurface(mesh: THREE.Object3D): boolean {
+  return mesh.userData.skinSurface === true || mesh.userData.id === "skin" || mesh.userData.atlasId === "skin";
+}
+
+export function isSkinCap(mesh: THREE.Object3D): boolean {
+  return mesh.userData.skinCap === true || mesh.name.startsWith("skin-cap-");
+}
+
+/** Pick through a translucent skin field while keeping opaque skin selectable at the surface. */
+export function chooseDepthAwareHit(hits: readonly THREE.Intersection[]): THREE.Intersection | undefined {
+  const eligible = hits.filter(hit => !isSkinCap(hit.object));
+  const first = eligible[0];
+  if (!first) return;
+  if (!isSkinSurface(first.object)) return first;
+  const deeper = eligible.find(hit => !isSkinSurface(hit.object));
+  if (deeper) return deeper;
+  const alpha = first.object.userData.alpha ?? first.object.parent?.userData.alpha ?? 1;
+  return alpha < 0.6 ? undefined : first;
+}
+
 export function enableMeshPicking(mesh: THREE.Mesh) {
   const geometry = mesh.geometry;
   if (!geometry.boundsTree) {

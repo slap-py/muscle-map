@@ -1,0 +1,117 @@
+{
+  "captures": [
+    {
+      "side": "right",
+      "theme": "light",
+      "end": "proximal",
+      "caps": true,
+      "file": "validation/skin-cut-caps/right-light-proximal-on.png"
+    },
+    {
+      "side": "right",
+      "theme": "light",
+      "end": "proximal",
+      "caps": false,
+      "file": "validation/skin-cut-caps/right-light-proximal-off.png"
+    },
+    {
+      "side": "right",
+      "theme": "light",
+      "end": "seam",
+      "caps": true,
+      "file": "validation/skin-cut-caps/right-light-seam-on.png"
+    },
+    {
+      "side": "right",
+      "theme": "light",
+      "end": "seam",
+      "caps": false,
+      "file": "validation/skin-cut-caps/right-light-seam-off.png"
+    },
+    {
+      "side": "right",
+      "theme": "dark",
+      "end": "proximal",
+      "caps": true,
+      "file": "validation/skin-cut-caps/right-dark-proximal-on.png"
+    },
+    {
+      "side": "right",
+      "theme": "dark",
+      "end": "proximal",
+      "caps": false,
+      "file": "validation/skin-cut-caps/right-dark-proximal-off.png"
+    },
+    {
+      "side": "right",
+      "theme": "dark",
+      "end": "seam",
+      "caps": true,
+      "file": "validation/skin-cut-caps/right-dark-seam-on.png"
+    },
+    {
+      "side": "right",
+      "theme": "dark",
+      "end": "seam",
+      "caps": false,
+      "file": "validation/skin-cut-caps/right-dark-seam-off.png"
+    },
+    {
+      "side": "left",
+      "theme": "light",
+      "end": "proximal",
+      "caps": true,
+      "file": "validation/skin-cut-caps/left-light-proximal-on.png"
+    },
+    {
+      "side": "left",
+      "theme": "light",
+      "end": "proximal",
+      "caps": false,
+      "file": "validation/skin-cut-caps/left-light-proximal-off.png"
+    },
+    {
+      "side": "left",
+      "theme": "light",
+      "end": "seam",
+      "caps": true,
+      "file": "validation/skin-cut-caps/left-light-seam-on.png"
+    },
+    {
+      "side": "left",
+      "theme": "light",
+      "end": "seam",
+      "caps": false,
+      "file": "validation/skin-cut-caps/left-light-seam-off.png"
+    },
+    {
+      "side": "left",
+      "theme": "dark",
+      "end": "proximal",
+      "caps": true,
+      "file": "validation/skin-cut-caps/left-dark-proximal-on.png"
+    },
+    {
+      "side": "left",
+      "theme": "dark",
+      "end": "proximal",
+      "caps": false,
+      "file": "validation/skin-cut-caps/left-dark-proximal-off.png"
+    },
+    {
+      "side": "left",
+      "theme": "dark",
+      "end": "seam",
+      "caps": true,
+      "file": "validation/skin-cut-caps/left-dark-seam-on.png"
+    },
+    {
+      "side": "left",
+      "theme": "dark",
+      "end": "seam",
+      "caps": false,
+      "file": "validation/skin-cut-caps/left-dark-seam-off.png"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-09",
+  "revision": "accelerated-skin-and-baked-foot-detail",
+  "preview": "http://127.0.0.1:5178/",
+  "geometryChanged": false,
+  "geometryEvidence": "validation/skin-acceptance-summary.json",
+  "unchangedGeometryAndReproducibleMaps": "validation/skin-detail-reproducibility.json",
+  "photographUse": "Qualitative appearance reference only; no photograph pixels are embedded in the generated textures. Crease, nail and tendon details are illustrative shading, with placement derived from the published bilateral bone packs.",
+  "reports": [
+    "validation/skin-runtime-right/skin-visual-browser-check.json",
+    "validation/skin-runtime-left/skin-visual-browser-check.json",
+    "validation/skin-runtime-caps/report.json"
+  ],
+  "captureCounts": {
+    "right": 5,
+    "left": 5,
+    "caps": 16
+  },
+  "scope": "1440x1000, High graphics, light theme, full opacity: bilateral anterior/lateral whole limbs and toe/ankle/heel closeups. Caps additionally cover both sides, light/dark, proximal/seam and on/off. Performance covers both graphics tiers, labels off/on and 100/50% opacity. The historical phone/transparency screenshot matrix was not rerun.",
+  "assistantQualitativeReview": {
+    "inspected": [
+      "bilateral dorsal toes",
+      "right anterior ankle",
+      "bilateral lateral whole limbs",
+      "bilateral posterior heels",
+      "representative proximal/seam caps on/off in light/dark"
+    ],
+    "findings": [
+      "Joint creases and nail beds are now visible on both feet, with restrained dorsal tendon relief.",
+      "Surface has a more matte finish; the broad structure-derived envelope and some relief remain visible.",
+      "Details fade off the foot sides/sole/ankle; no projected nail patterns appear on the heel or caps in reviewed views.",
+      "Toe clefts and cap controls remain intact in the reviewed views."
+    ],
+    "limitation": "The finish remains illustrative and stylized; these observations do not establish user visual acceptance or a photorealistic skin model."
+  },
+  "performanceReports": [
+    "validation/skin-raycast-performance.json",
+    "validation/skin-performance-before.json",
+    "validation/skin-performance-after.json",
+    "validation/skin-performance-labels.json"
+  ],
+  "tests": {
+    "passed": 145,
+    "files": 30
+  },
+  "productionBuildPassed": true,
+  "pageErrors": [],
+  "remainingFailures": [
+    "uniform clearance",
+    "uncropped all-source containment",
+    "original 2–4 mm landmark bands",
+    "right-side original 150000 triangle target"
+  ],
+  "allCriteriaPassed": false,
+  "userVisualApproval": null,
+  "runtimeCodeSha256": {
+    "src/picking.ts": "4088c336a1298db5d872c653a18964abdcba2b7f08fd55b6bb11db2bd54c99f1",
+    "src/main.ts": "90c9c865ba473d6d62acb6e8df807ee6454864a9dbdf743302deadd6dc4882cc",
+    "src/assets.ts": "7d38bb13d32a83dedf8951c49b3294db2539ac01da4e3bcde602d9064d1710d1",
+    "src/skinMaterial.ts": "73013752e4f4dae6dc09672ffc1d02b580f6ea6e52189889aee0cdd742e685a6",
+    "src/graphics.ts": "f3a981184f8808428483865ea12fc4519041ba298f1fb6581c79a48a976c3efa"
+  }
+}

@@ -1,0 +1,14 @@
+body[data-page="phone-screen"] { overflow: auto; }
+.phone-screen-page { min-height: 100svh; display: flex; flex-direction: column; }
+.phone-screen-header { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 24px; margin: 0 20px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.phone-screen-brand { display: inline-flex; align-items: center; gap: 8px; color: var(--text); text-decoration: none; }
+.phone-screen-brand .brand-mark { height: 40px; }
+.phone-screen-brand .brand-wordmark { font-size: 26px; }
+.phone-screen-header .site-nav { margin-left: auto; }
+.phone-screen-main { display: grid; grid-template-columns: minmax(0, 1fr); flex: 1; place-items: center; padding: 56px 24px; }
+.phone-screen-content { width: 100%; max-width: 420px; text-align: center; }
+.phone-screen-icon { width: 80px; height: 64px; margin-bottom: 24px; color: var(--brand-link); stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: var(--bg); }
+.phone-screen-content h1 { margin-bottom: 16px; font-family: var(--font-heading); font-size: clamp(28px, 7vw, 36px); font-weight: 650; letter-spacing: -.035em; line-height: 1.2; }
+.phone-screen-content p { color: var(--muted); line-height: 1.75; }
+.phone-screen-content .intro-button { margin-top: 28px; }
+.phone-screen-page .site-footer { margin-top: auto; }

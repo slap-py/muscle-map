@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "Exterior preset, toe filters, preserved calf heads, skin opacity sweep",
+    "Cap controls persist preferences and reset respects those preferences",
+    "Missing exterior fallback remains usable"
+  ],
+  "errors": []
+}

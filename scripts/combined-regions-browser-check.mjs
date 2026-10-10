@@ -29,14 +29,20 @@ try {
     await page.keyboard.press('Space');
   }
   await page.locator('[data-section="left-hip-leg"]').blur();
-  assert.equal(await page.locator('[data-body-selection]').innerText(), 'Left Hip & Upper Leg + Left Foot & Ankle');
+  assert.equal(await page.locator('[data-body-selection]').innerText(), 'Left Hip & Upper Leg + Left Lower Leg & Foot');
   assert.equal(await page.locator('.body-section[aria-checked="true"]').count(), 2);
   assert.equal(await page.locator('.body-section[data-section^="right-"][data-state="blocked"]').count(), 2, 'the other side should be blocked');
-  for (const width of [390, 820, 1440]) {
+  for (const width of [820, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    await page.screenshot({ path: `validation/combined-hub-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `validation/skin-combined-hub-${width}.png`, fullPage: true });
   }
+  await page.setViewportSize({width:390,height:844});
+  await page.locator('#phone-screen-title').waitFor();
+  assert.equal(await page.locator('#viewport').count(),0);
+  await page.screenshot({path:'validation/skin-combined-hub-390.png',fullPage:true});
+  await page.setViewportSize({width:1440,height:1000});
+  for (const id of ['left-foot-ankle','left-hip-leg']) {await page.locator(`[data-section="${id}"]`).focus();await page.keyboard.press('Space');}
   await submit.click();
   await waitViewer();
   assert.equal(await page.locator('.title').innerText(), 'Left Leg');
@@ -54,38 +60,42 @@ try {
   assert.match(await page.locator('#details h2').innerText(), /Gracilis/);
   await clickAttachment();
   assert.equal(await page.locator('.connection-focus').first().getAttribute('aria-pressed'), 'true');
-  await page.screenshot({ path: 'validation/combined-left-attachment.png' });
+  await page.screenshot({ path: 'validation/skin-combined-left-attachment.png' });
   await clickAttachment();
   await page.locator('#clear').click();
   await page.locator('#clear-filters').click();
   await page.locator('[data-view="overview"]').click();
-  await page.screenshot({ path: 'validation/combined-left-overview.png' });
+  await page.screenshot({ path: 'validation/skin-combined-left-overview.png' });
   await page.locator('[data-mode="neurovascular"]').click();
   await page.waitForFunction(() => document.querySelector('#viewport')?.dataset.neurovascularAssets === 'ready', undefined, { timeout: 60000 });
   await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
   await page.locator('[data-mode="exterior"]').click();
-  await page.screenshot({ path: 'validation/combined-left-exterior.png' });
+  await page.screenshot({ path: 'validation/skin-combined-left-exterior.png' });
+assert.equal(await page.locator('#skin-cap-controls,#skin-caps,#skin-cap-opacity').count(),0);
   checks.push('Both muscle sets, source-linked attachment focus, vessels and exterior layers');
-  await page.locator('.region-menu > summary').click();
-  assert.equal(await page.locator('.region-menu input:checked').count(), 2);
-  await page.locator('.region-menu input[value="left-upper-leg"]').uncheck();
-  await page.locator('.region-menu button[type="submit"]').click();
+  await page.getByRole('link',{name:'Browser',exact:true}).click();
+  await page.locator('#hub').waitFor();
+  await page.locator('[data-section="left-foot-ankle"]').click();
+  await page.locator('[data-body-go]').click();
   await waitViewer();
-  assert.equal(await page.locator('.title').innerText(), 'Left Lower Leg & Foot');
-  assert.equal(new URL(page.url()).hash, '#/left-lower-leg');
-  await page.locator('.region-menu > summary').click();
-  await page.locator('.region-menu input[value="left-upper-leg"]').check();
-  await page.locator('.region-menu button[type="submit"]').click();
+  assert.equal(await page.locator('.title').innerText(),'Left Lower Leg & Foot');
+  assert.equal(new URL(page.url()).hash,'#/left-lower-leg');
+  await page.getByRole('link',{name:'Browser',exact:true}).click();
+  await page.locator('#hub').waitFor();
+  for (const id of ['left-foot-ankle','left-hip-leg']) await page.locator(`[data-section="${id}"]`).click();
+  await page.locator('[data-body-go]').click();
   await waitViewer();
   await page.reload();
   await waitViewer();
   assert.equal(await page.locator('.title').innerText(), 'Left Leg');
-  checks.push('Add/remove regions in the viewer and reload a shareable combined URL');
+  checks.push('Change regions through Browser and reload a shareable combined URL');
   await page.goto(viewerUrl(undefined, '/regions?region=left-upper-leg&region=right-upper-leg&select=right-upper-leg%3Agracilis'));
   await waitViewer();
-  assert.match(await page.locator('#details h2').innerText(), /Gracilis.*Right/);
+  assert.match(await page.locator('#details h2').innerText(), /Gracilis/);
+  assert.equal(await page.locator('.structure-row[data-id="right-upper-leg:gracilis"]').getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('.structure-row[data-id="left-upper-leg:gracilis"]').getAttribute('aria-pressed'),'false');
   checks.push('Opposite-side combined deep links keep structure selection separate');
-  await page.locator('.viewer-home').click();
+  await page.getByRole('link',{name:'Browser',exact:true}).click();
   await page.locator('#hub').waitFor();
   await page.waitForFunction(() => window.__viewerDiagnostics?.pendingLoads === 0, undefined, { timeout: 60000 });
   const disposed = await page.evaluate(() => window.__viewerDiagnostics);
@@ -94,10 +104,10 @@ try {
   assert.equal(disposed.activeListeners, 0);
   checks.push('Combined viewer disposes models, workers and listeners on return home');
   assert.deepEqual(errors, []);
-  await fs.writeFile('validation/combined-regions-browser-check.json', JSON.stringify({ checks, errors, warnings, requests }, null, 2));
+  await fs.writeFile('validation/skin-combined-regions-browser-check.json', JSON.stringify({ checks, errors, warnings, requests }, null, 2));
   console.log(JSON.stringify({ checks, errors, warnings }, null, 2));
 } catch (error) {
   console.log(JSON.stringify({ checks, errors, warnings, url: page.url(), dataset: await page.locator('#viewport').evaluate(element => ({...element.dataset})).catch(() => null) }, null, 2));
-  await page.screenshot({ path: 'validation/combined-failure.png' }).catch(() => {});
+  await page.screenshot({ path: 'validation/skin-combined-failure.png' }).catch(() => {});
   throw error;
 } finally { await browser.close(); }

@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "shared brand and byte-based determinate model loading",
+    "4 non-overlapping overview labels with leaders; hidden and faded structures excluded",
+    "type/area/visibility filters, search highlighting, selected-row override, keyboard selection, persistent collapse",
+    "muscle facts and sources, computed bone articulations, resize keyboard, expand/restore and persistence",
+    "attachment focus, Escape, Reset, and forefoot zoom label tiers",
+    "Exterior skeleton and opacity reset; About tabs and shortcuts; 820px/390px layout and overflow menu",
+    "all-asset failure displays a 2.5-second message and preserves procedural interaction",
+    "blocked localStorage leaves filters and resize usable"
+  ],
+  "overviewLabels": 4,
+  "errors": []
+}

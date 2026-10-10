@@ -21,3 +21,13 @@ test-results/
 # Python inspection/export bytecode
 __pycache__/
 *.pyc
+
+# Reproducible skin grids, dense meshes, render scratch and exported build inputs
+/output/skin/
+/output/skin-input/
+
+/output/skin-toe-sections/
+/output/skin-hybrid/
+/output/skin-hybrid-x/
+/output/skin-toe-fine/
+/output/skin-toe-web/

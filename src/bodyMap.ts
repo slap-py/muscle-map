@@ -1,4 +1,4 @@
-import { regionCatalog, type RegionCatalogEntry } from './regions/catalog';
+import { browsableCounts, regionCatalog, type RegionCatalogEntry } from './regions/catalog';
 import { regionsHref } from './router';
 
 export type Side = 'right' | 'left';
@@ -14,7 +14,7 @@ export interface BodySection {
 
 /** Head to toe. Neighbouring segments on the same side touch; nothing crosses the midline. */
 const segmentOrder: readonly Segment[] = ['arm-back', 'hip-leg', 'foot-ankle'];
-const segmentTitles: Record<Segment, string> = { 'arm-back': 'Arm & Back', 'hip-leg': 'Hip & Upper Leg', 'foot-ankle': 'Foot & Ankle' };
+const segmentTitles: Record<Segment, string> = { 'arm-back': 'Arm & Back', 'hip-leg': 'Hip & Upper Leg', 'foot-ankle': 'Lower Leg & Foot' };
 const segmentRegions: Record<Side, Record<Segment, string | null>> = {
   right: { 'arm-back': null, 'hip-leg': 'right-upper-leg', 'foot-ankle': 'lower-leg' },
   left: { 'arm-back': null, 'hip-leg': 'left-upper-leg', 'foot-ankle': 'left-lower-leg' },
@@ -78,7 +78,7 @@ const faceMarkup = `<path class="body-head" d="M110 62 L130 62 L131 80 C127 82 1
         <path class="body-hair" d="M97 47 C95 28 105 16 120 16 C135 16 145 28 143 47 C141 38 137 32 131 29 C124 33 112 33 107 29 C101 33 98 40 97 47 Z"/>
         <g class="body-face"><circle cx="112" cy="46" r="1.8"/><circle cx="128" cy="46" r="1.8"/><path d="M107 40 Q112 38 116 40 M124 40 Q128 38 133 40 M119.5 48 C118.5 52 117.5 54 118 55.5 L121.5 55.5 M114.5 61 Q120 64 125.5 61"/></g>`;
 
-const tissueLabels: Record<string, string> = { bone: 'bones', muscle: 'muscles', ligament: 'ligaments', nerve: 'nerves', artery: 'arteries' };
+const tissueLabels: Record<string, string> = { bone: 'bones', muscle: 'muscles', ligament: 'ligaments', nerve: 'nerves', artery: 'arteries', vein: 'veins', tendon: 'tendons', fascia: 'fascia & retinacula', cartilage: 'cartilage structures' };
 
 export function renderBodyMap() {
   const sectionMarkup = bodySections.map(section => {
@@ -108,11 +108,10 @@ export function renderBodyMap() {
 
 function tipHtml(section: BodySection, reason: string | null, selected: boolean) {
   const region = catalogFor(section);
+  const availableCounts = region ? browsableCounts(region.structureCounts) : undefined;
   const status = !region ? '<span class="tip-badge soon">Coming soon</span>'
     : selected ? '<span class="tip-badge on">Selected</span>' : '';
-  const counts = region ? `<p class="tip-counts"><strong>${region.structureCounts.total}</strong> structures · ${Object.entries(tissueLabels)
-    .filter(([tissue]) => region.structureCounts.byTissue[tissue as keyof typeof region.structureCounts.byTissue])
-    .map(([tissue, label]) => `${region.structureCounts.byTissue[tissue as keyof typeof region.structureCounts.byTissue]} ${label}`).join(', ')}</p>` : '';
+  const counts = availableCounts ? `<p class="tip-counts"><strong>${availableCounts.total}</strong> structures · ${Object.entries(availableCounts.byTissue).map(([tissue, count]) => `${count} ${tissueLabels[tissue] ?? tissue}`).join(', ')}</p>` : '';
   const action = !region ? '' : reason ? `<p class="tip-action blocked">${reason}</p>` : `<p class="tip-action">${selected ? 'Click to deselect' : 'Click to select'}</p>`;
   return `<div class="tip-head"><strong>${section.title}</strong>${status}</div><p>${region?.description ?? comingSoonCopy[section.segment]}</p>${counts}${action}`;
 }
@@ -160,7 +159,7 @@ export function bindBodyMap(root: HTMLElement) {
     }
     const titles = bodySections.filter(section => selected.includes(section.id)).map(section => section.title);
     status.textContent = titles.length ? titles.join(' + ') : 'Nothing selected';
-    hint.textContent = selected.length ? 'Add a highlighted neighbouring section, or press Go.' : 'Click a body region to select it. Hover for details.';
+    hint.textContent = selected.length ? 'Add a highlighted neighboring section, or press Go.' : 'Click a body region to select it. Hover for details.';
     warning.hidden = selected.length < 2;
     go.disabled = !selected.length;
     clear.disabled = !selected.length;

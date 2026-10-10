@@ -24,7 +24,7 @@ const lowerLegCounts: RegionStructureCounts = {
 /** Static hub metadata. The viewer pack remains lazy and is only imported by load(). */
 export const regionCatalog: readonly RegionCatalogEntry[] = [{
   id: "lower-leg",
-  title: "Right Foot & Ankle",
+  title: "Right Lower Leg & Foot",
   description: "Explore the right foot and ankle through bones, muscles, connective tissues, vessels and nerves.",
   thumbnail: `${import.meta.env.BASE_URL}regions/lower-leg.png`,
   dimThumbnail: `${import.meta.env.BASE_URL}regions/lower-leg-dim.png`,
@@ -39,14 +39,14 @@ export const regionCatalog: readonly RegionCatalogEntry[] = [{
   structureCounts: lowerLegCounts, credits: leftLowerLegCredits,
   load: async () => (await import("./left-lower-leg")).default,
 }, {
-  id: "right-upper-leg", title: "Right Upper Leg",
+  id: "right-upper-leg", title: "Right Hip & Upper Leg",
   description: "Explore the right thigh with hip and knee context, muscle attachments, joint tissues, vessels and nerves.",
   thumbnail: `${import.meta.env.BASE_URL}regions/right-upper-leg.png`,
   dimThumbnail: `${import.meta.env.BASE_URL}regions/right-upper-leg-dim.png`,
   structureCounts: rightUpperCounts, credits: upperLegCredits,
   load: async () => (await import("./upper-leg/right")).default,
 }, {
-  id: "left-upper-leg", title: "Left Upper Leg",
+  id: "left-upper-leg", title: "Left Hip & Upper Leg",
   description: "Explore the left thigh with hip and knee context, muscle attachments, joint tissues, vessels and nerves.",
   thumbnail: `${import.meta.env.BASE_URL}regions/left-upper-leg.png`,
   dimThumbnail: `${import.meta.env.BASE_URL}regions/left-upper-leg-dim.png`,
@@ -64,4 +64,10 @@ validateRegionCatalog(regionCatalog);
 export const defaultRegionId = "lower-leg";
 export function regionForId(id: string | null | undefined): RegionCatalogEntry | undefined {
   return regionCatalog.find(region => region.id === id);
+}
+
+/** The illustrative skin layer is excluded from advertised anatomical structure counts. */
+export function browsableCounts(counts: RegionStructureCounts): RegionStructureCounts {
+  const { skin: _skin, ...byTissue } = counts.byTissue;
+  return { total: Object.values(byTissue).reduce((sum, count) => sum + (count ?? 0), 0), byTissue };
 }

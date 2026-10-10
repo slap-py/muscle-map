@@ -1,0 +1,109 @@
+{
+  "errors": [],
+  "rows": [
+    {
+      "width": 1440,
+      "expanded": false,
+      "sliders": [
+        {
+          "id": "opacity",
+          "width": 150,
+          "left": 1217,
+          "right": 1367,
+          "visible": true
+        },
+        {
+          "id": "dim-opacity",
+          "width": 150,
+          "left": 1217,
+          "right": 1367,
+          "visible": true
+        },
+        {
+          "id": "skin-opacity",
+          "width": 150,
+          "left": 1217,
+          "right": 1367,
+          "visible": true
+        },
+        {
+          "id": "neurovascular-opacity",
+          "width": 150,
+          "left": 1217,
+          "right": 1367,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "expanded": true,
+      "sliders": [
+        {
+          "id": "opacity",
+          "width": 490,
+          "left": 877,
+          "right": 1367,
+          "visible": true
+        },
+        {
+          "id": "dim-opacity",
+          "width": 490,
+          "left": 877,
+          "right": 1367,
+          "visible": true
+        },
+        {
+          "id": "skin-opacity",
+          "width": 490,
+          "left": 877,
+          "right": 1367,
+          "visible": true
+        },
+        {
+          "id": "neurovascular-opacity",
+          "width": 490,
+          "left": 877,
+          "right": 1367,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "expanded": false,
+      "sliders": [
+        {
+          "id": "opacity",
+          "width": 150,
+          "left": 801,
+          "right": 951,
+          "visible": true
+        },
+        {
+          "id": "dim-opacity",
+          "width": 150,
+          "left": 801,
+          "right": 951,
+          "visible": true
+        },
+        {
+          "id": "skin-opacity",
+          "width": 150,
+          "left": 801,
+          "right": 951,
+          "visible": true
+        },
+        {
+          "id": "neurovascular-opacity",
+          "width": 150,
+          "left": 801,
+          "right": 951,
+          "visible": true
+        }
+      ]
+    }
+  ],
+  "skinExcludedFromAtlas": true,
+  "capControlsRemoved": true
+}

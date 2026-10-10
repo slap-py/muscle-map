@@ -1,0 +1,129 @@
+{
+  "format": "muscle-map-skin-validation-v1",
+  "side": "right",
+  "inputs": {
+    "metadata": {
+      "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.json",
+      "sha256": "514b521f3ea0877b8f93153d025d22be733a9a84cdf0b82c6bff61c4afeb6b8f"
+    },
+    "vertices": {
+      "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.vertices.bin",
+      "bytes": 8203452,
+      "sha256": "6a50db419ee99383f5ce6e7e1f4181431ed99e53b0d39b0bb2e825e090132b66",
+      "count": 683621,
+      "boundsMm": {
+        "min": [
+          -94.8544692993164,
+          -71.87387084960938,
+          -100.17294311523438
+        ],
+        "max": [
+          176.52780151367188,
+          790,
+          102.96189880371094
+        ]
+      }
+    },
+    "denseFaces": {
+      "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.faces.bin",
+      "bytes": 16404096,
+      "sha256": "c400fdaddeddcae1ecf9c7d43abe7abdcd2fceffeee3e17dd4da9970c4d02347",
+      "triangles": 1367008
+    },
+    "simplifiedFaces": {
+      "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.simplified.bin",
+      "bytes": 1835952,
+      "sha256": "f79b2fb94584a83a1c46af1b12339c3d22e8a9fbeba9a4a6206889f64ab2a159",
+      "triangles": 152996
+    }
+  },
+  "sourceGlb": {
+    "available": true,
+    "path": "H:\\Projects\\Muscle Map\\public\\models\\exterior.glb",
+    "bytes": 2979152,
+    "sha256": "80f939481f7985f1c1a16ed506b40a6222559cf8dfe7ced41b2ed0da50f906d8",
+    "meshes": 4,
+    "boundsMeters": {
+      "min": [
+        -0.08035854250192642,
+        -0.07186616212129593,
+        -0.06790591031312943
+      ],
+      "max": [
+        0.17652779817581177,
+        0.4501250088214874,
+        0.07385589927434921
+      ]
+    }
+  },
+  "targetTriangles": 150000,
+  "budgetTriangles": 260000,
+  "triangleBudgetPassed": true,
+  "targetErrorMm": 0.06,
+  "hausdorff": {
+    "limitMm": 0.3,
+    "spacingMm": 0.15,
+    "measuredMaxMm": 0.2571168515748077,
+    "upperBoundMm": 0.30000093570550135,
+    "passed": true,
+    "denseToSimplified": {
+      "triangleCount": 1367008,
+      "sampleCount": 2794788,
+      "nearestQueries": 2437843,
+      "cacheSize": 2437843,
+      "elapsedMs": 8256.7646,
+      "spacingMm": 0.15,
+      "minimumUncertainSpacingMm": 0.005,
+      "certificationEpsilonMm": 0.000001,
+      "certifiedTriangles": 2437843,
+      "fallbackTriangles": 0,
+      "maxSubdivisionDepth": 3,
+      "maxMeasuredMm": 0.2542621469016959,
+      "upperBoundMm": 0.3000006977249302,
+      "badSourceFaceCount": 0,
+      "badSourceFaces": [],
+      "badSourceFacesTruncated": false,
+      "worstActualFaceCount": 4,
+      "worstActualFaceIndices": [
+        1073048,
+        1073049,
+        1073068,
+        1073069
+      ],
+      "worstActualFacesTruncated": false
+    },
+    "simplifiedToDense": {
+      "triangleCount": 152996,
+      "sampleCount": 11528380,
+      "nearestQueries": 8684534,
+      "cacheSize": 8684534,
+      "elapsedMs": 28946.681300000004,
+      "spacingMm": 0.15,
+      "minimumUncertainSpacingMm": 0.005,
+      "certificationEpsilonMm": 0.000001,
+      "certifiedTriangles": 8684534,
+      "fallbackTriangles": 0,
+      "maxSubdivisionDepth": 8,
+      "maxMeasuredMm": 0.2571168515748077,
+      "upperBoundMm": 0.30000093570550135,
+      "badSourceFaceCount": 0,
+      "badSourceFaces": [],
+      "badSourceFacesTruncated": false,
+      "worstActualFaceCount": 2,
+      "worstActualFaceIndices": [
+        128091,
+        128092
+      ],
+      "worstActualFacesTruncated": false
+    }
+  },
+  "selfIntersections": {
+    "sampledTriangles": 10000,
+    "candidatePairs": 0,
+    "rejectedSeparatingAxisCandidates": 0,
+    "independentSeparationToleranceMm": 1e-7,
+    "intersections": [],
+    "passed": true
+  },
+  "passed": true
+}

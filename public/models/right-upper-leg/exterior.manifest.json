@@ -1,0 +1,1737 @@
+{
+  "side": "right",
+  "prototype": false,
+  "skinSource": "structure-envelope",
+  "parameters": {
+    "version": 2,
+    "gridMm": 1,
+    "sampleSpacingMm": 0.5,
+    "closingRadiusMm": 6,
+    "thicknessSmoothingMm": 8,
+    "fieldSmoothingVoxels": 7,
+    "toeThicknessMm": 0.65,
+    "toeFieldSmoothingVoxels": 0.6,
+    "webDistalMm": 1,
+    "webBlendMm": 5,
+    "thicknessProfile": [
+      [
+        -90,
+        8
+      ],
+      [
+        -35,
+        8
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        70,
+        7
+      ],
+      [
+        200,
+        11
+      ],
+      [
+        350,
+        11
+      ],
+      [
+        400,
+        12
+      ],
+      [
+        460,
+        13
+      ],
+      [
+        620,
+        17
+      ],
+      [
+        800,
+        18
+      ]
+    ],
+    "pads": [
+      {
+        "bone": "calcaneus",
+        "selection": "posterior-plantar",
+        "amplitudeMm": 5,
+        "sigmaMm": [
+          20,
+          12,
+          17
+        ]
+      },
+      {
+        "bone": "metatarsal-1",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.5,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-2",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-3",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-4",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-5",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "patella",
+        "region": "upper",
+        "selection": "anterior-patella",
+        "amplitudeMm": 10,
+        "sigmaMm": [
+          34,
+          38,
+          34
+        ]
+      }
+    ],
+    "seamYLowerMm": 450.125,
+    "proximalYLowerMm": 790,
+    "inputCropPaddingMm": 20,
+    "boundsPaddingMm": 30,
+    "flatSole": false,
+    "targetTriangles": 150000,
+    "quadricErrorMm": 0.06,
+    "hausdorffLimitMm": 0.3,
+    "surfaceValidationSpacingMm": 0.15,
+    "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+    "limitations": [
+      "Illustrative structure envelope; no scanned skin, creases, nails, or person-specific fat.",
+      "Thickness and cuts are project choices, not clinically sourced measurements.",
+      "Full source inputs are read; proximal pelvis context is trimmed at a configured groin-level study cut.",
+      "Region skins share a seam; overlapping source structures belong to the envelope on the side of the seam where their vertices lie.",
+      "Uniform minimum clearance within 0.5 mm is not met; final measured deviations are reported rather than inferred from the configured field.",
+      "Fuller illustrative soft tissue follows photo references qualitatively; regional padding is an artistic choice.",
+      "Independent rounded toe fields use toe-labelled bones/cartilage and endpoint-associated tendons; grouped digital neurovascular vertices are associated by nearest own-side phalanges as containment constraints, while continuous separators define the webs.",
+      "Continuous intertoe separators replace voxel carving and patchwise source repair; actual containment is measured independently."
+    ],
+    "sectionFloodFill": true,
+    "webFilletMm": 2.5,
+    "seamChoice": "Offset 0.125 mm from the voxel-aligned Y450 plane to avoid coplanar extracted facets altering opposite cut loops.",
+    "extractionGridMm": 0.5,
+    "extractionSlabIntervals": 32,
+    "toeSectionEnvelopes": true,
+    "skinToeGaussianSigmaVoxels": 1.1,
+    "skinSectionThicknessMm": 0.65,
+    "skinToeCarveIterations": 2,
+    "skinToeMoatField": 1.2,
+    "skinToeSourceRepairClearanceMm": 0.5,
+    "skinCropXMinMm": 65,
+    "skinCropTopYMm": 30,
+    "preserveSourceMarginMm": 0.2,
+    "preserveSourceRadiusMm": 0.8,
+    "preserveToeWallGridMm": 1,
+    "preserveToeWallPhaseToleranceMm": 0.05,
+    "maximumTriangles": 260000,
+    "hybridExtraction": true,
+    "hybridExtractionType": "foot-x-collar",
+    "hybridFinePlaneXmm": 80.375,
+    "hybridCoarsePlaneXmm": 80.125,
+    "hybridFootYMaxMm": 50,
+    "sideQuadricErrorMm": {
+      "right": 0.06,
+      "left": 0.06
+    },
+    "signedBodyField": true,
+    "smoothToeEnvelopes": true,
+    "toeGapMm": 0.6,
+    "toeProfileSmoothingMm": 4,
+    "toeDorsalPaddingMm": 4,
+    "toeLateralPaddingMm": 1.2,
+    "toeRootBlendMm": 22,
+    "auditPreservationRings": 8,
+    "auditIntersectionPaddingMm": 3,
+    "preservation": {
+      "right": {
+        "vertexSha256": "6a50db419ee99383f5ce6e7e1f4181431ed99e53b0d39b0bb2e825e090132b66",
+        "indicesFile": "scripts/skin-preservation-right.json",
+        "indicesSha256": "2e4b08b5b2410d1fd5f4a5d258f4f38a1f97f34060514af8b5f3010ed2790127"
+      },
+      "left": {
+        "vertexSha256": "11748988fa5780040e9cc715d71f303ed9a85b7e76dd17ee018560697ecb6fa0",
+        "indicesFile": "scripts/skin-preservation-left.json",
+        "indicesSha256": "c440f1df0a972189fa4ca3dbe98de8c87b99dd99156465ad799420c334926c53"
+      }
+    }
+  },
+  "sources": [
+    {
+      "path": "public\\models\\bones.glb",
+      "sha256": "93c5e1bcb3a7262efebb6d4f02ffb5599fa39b1d2b3149024b1ea0a5991f5e04"
+    },
+    {
+      "path": "public\\models\\muscles.glb",
+      "sha256": "53544fca088a482d9a7bae23030b6c3dd9f459711f2744214640cb881cd18e5b"
+    },
+    {
+      "path": "public\\models\\exterior.glb",
+      "retainedStructureSha256": "59156ed410d6d6a8edfc96008f79b6b32bb43ea41d9658e13071101925645f7d",
+      "included": "gastrocnemius only; old skin excluded"
+    },
+    {
+      "path": "public\\models\\neurovascular.glb",
+      "sha256": "99a2df0a57206e02c879e06f99b811899fd868d5b92c85b6823e6b6fe414f5db"
+    },
+    {
+      "path": "public\\models\\right-upper-leg\\bones.glb",
+      "sha256": "c4299c87c64b73c92383b8d3d6f31cc73df0522128ed0993173c9f01dedc5976"
+    },
+    {
+      "path": "public\\models\\right-upper-leg\\muscles.glb",
+      "sha256": "fbde53484a23a29345d6a3ea2fd0af008531b962ab1fae9ef30fd04dc5bdee6d"
+    },
+    {
+      "path": "public\\models\\right-upper-leg\\neurovascular.glb",
+      "sha256": "ce8d6d581b0d0374943bd282cce73a6215176c8285fddd663fa1f9b20b870da8"
+    },
+    {
+      "path": "output\\skin-input\\right-soft.json",
+      "layoutSha256": "94c11d657793ee4985b7eb979dd79eff2d0ae2d1b9d31636ef99f00a86c8344f",
+      "binarySha256": "05dcacd6fa7d8a8afaebc5a4c52ebc629c1ee187a4df61f648e3b4c18d51c466"
+    }
+  ],
+  "fieldCodeSha256": {
+    "prepare-structure-skin.py": "4bec7fa94fa6a1528ab22db6510cb3b37eab7449813f8a261ad967211dcbe0fa",
+    "skin_soft_toes.py": "30bf913f6e0e301e6df0f69921f42f316e3a6281f4e27d26dd9cadf4df562d7f",
+    "skin_toes.py": "96318b2203c9fa3e19819080bbf2be04ecc2a50bf3222675966550b13a9339f3",
+    "skin_hybrid.py": "7977d9d0e457cea5a0b1461f19688c84ecc6da619fbc1a5bebb6f80245b68531",
+    "skin_extract.py": "90d64a430f28e3733c5a91494af5e5d920230e1e5496f98ea793ece49649da39",
+    "skin_winding.py": "6f0fafc191aac98832810077509d9db93976a13d42ce9f7129d02d61080edb58"
+  },
+  "inputMeshes": 366,
+  "sourceSurfaceSamples": 49664025,
+  "grid": {
+    "originMm": [
+      -108.0,
+      -95.0,
+      -126.0
+    ],
+    "spacingMm": 1,
+    "shape": [
+      313,
+      936,
+      244
+    ],
+    "voxels": 71484192
+  },
+  "componentProcessing": {
+    "mainComponent": {
+      "components": 6,
+      "removedVoxels": 5
+    },
+    "skinComponent": {
+      "components": 1,
+      "removedVoxels": 0
+    },
+    "toeSolidVoxels": [
+      9960,
+      5512,
+      5226,
+      4896,
+      3322
+    ]
+  },
+  "landmarkPads": [
+    {
+      "bone": "calcaneus",
+      "selection": "posterior-plantar",
+      "amplitudeMm": 5,
+      "sigmaMm": [
+        20,
+        12,
+        17
+      ],
+      "centerMm": [
+        -43.70341452034139,
+        -46.13975894467607,
+        -2.5884711555204
+      ]
+    },
+    {
+      "bone": "metatarsal-1",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.5,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ],
+      "centerMm": [
+        118.02285784528456,
+        -46.365411994793945,
+        -6.000391116560964
+      ]
+    },
+    {
+      "bone": "metatarsal-2",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ],
+      "centerMm": [
+        118.90903372938435,
+        -49.65389530795316,
+        16.424350964371115
+      ]
+    },
+    {
+      "bone": "metatarsal-3",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ],
+      "centerMm": [
+        115.67945533121626,
+        -49.81880011036992,
+        31.545082906571526
+      ]
+    },
+    {
+      "bone": "metatarsal-4",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ],
+      "centerMm": [
+        106.65602168689172,
+        -50.001496697465576,
+        44.07647380915781
+      ]
+    },
+    {
+      "bone": "metatarsal-5",
+      "selection": "distal-plantar",
+      "amplitudeMm": 1.2,
+      "sigmaMm": [
+        13,
+        10,
+        13
+      ],
+      "centerMm": [
+        94.08402737850945,
+        -52.89128281486531,
+        54.04297523200512
+      ]
+    },
+    {
+      "bone": "patella",
+      "region": "upper",
+      "selection": "anterior-patella",
+      "amplitudeMm": 10,
+      "sigmaMm": [
+        34,
+        38,
+        34
+      ],
+      "centerMm": [
+        52.172985763471814,
+        383.6858656222575,
+        11.990492019985115
+      ]
+    }
+  ],
+  "denseTriangles": 1497024,
+  "elapsedSeconds": 25.14763045310974,
+  "registration": {
+    "constructionFrame": "side-specific lower talus datum",
+    "upperToLowerOffsetMm": [
+      16.27548784017563,
+      589.4165262579918,
+      15.534035861492157
+    ],
+    "export": "metres, identity transforms; upper output offset restored"
+  },
+  "notes": [
+    "Illustrative structure envelope; no scanned skin, creases, nails, or person-specific fat.",
+    "Thickness and cuts are project choices, not clinically sourced measurements.",
+    "Full source inputs are read; proximal pelvis context is trimmed at a configured groin-level study cut.",
+    "Region skins share a seam; overlapping source structures belong to the envelope on the side of the seam where their vertices lie.",
+    "Uniform minimum clearance within 0.5 mm is not met; final measured deviations are reported rather than inferred from the configured field.",
+    "Fuller illustrative soft tissue follows photo references qualitatively; regional padding is an artistic choice.",
+    "Independent rounded toe fields use toe-labelled bones/cartilage and endpoint-associated tendons; grouped digital neurovascular vertices are associated by nearest own-side phalanges as containment constraints, while continuous separators define the webs.",
+    "Continuous intertoe separators replace voxel carving and patchwise source repair; actual containment is measured independently."
+  ],
+  "fineFoot": {
+    "shape": [
+      279,
+      249,
+      487
+    ],
+    "originMm": [
+      65.0,
+      -95.0,
+      -126.0
+    ],
+    "spacingMm": 0.5,
+    "crop": {
+      "xMinMm": 65.0,
+      "yMaxMm": 29.0
+    },
+    "method": "smooth source-labelled elliptic toe sweeps; continuous field bisectors; rounded tips; C1 forefoot-to-toe blend",
+    "toeProfiles": [
+      {
+        "toe": 1,
+        "startMm": 109.02350527048111,
+        "endMm": 175.8246957063675,
+        "sectionSamples": 68
+      },
+      {
+        "toe": 2,
+        "startMm": 111.15574222803116,
+        "endMm": 176.52770268917084,
+        "sectionSamples": 67
+      },
+      {
+        "toe": 3,
+        "startMm": 104.70130425691605,
+        "endMm": 169.79498553276062,
+        "sectionSamples": 67
+      },
+      {
+        "toe": 4,
+        "startMm": 97.21101951599121,
+        "endMm": 158.2240252494812,
+        "sectionSamples": 63
+      },
+      {
+        "toe": 5,
+        "startMm": 83.6094183921814,
+        "endMm": 139.81256771087646,
+        "sectionSamples": 58
+      }
+    ],
+    "neurovascularConstraintVertices": 18764,
+    "intendedGapMm": 0.6,
+    "sourceRepairVoxels": 0,
+    "carvedBoundaryVoxelCount": 0
+  },
+  "hybridExtraction": {
+    "hybridExtraction": true,
+    "hybridExtractionType": "foot-x-collar",
+    "finePlaneXmm": 80.375,
+    "coarsePlaneXmm": 80.125,
+    "footYMaxMm": 50.0,
+    "yPlaneProof": {
+      "planeYmm": 50.0,
+      "verticesAtPlane": 561,
+      "verticesAtPlaneAboveCoarseX": 0,
+      "passed": true
+    },
+    "fineLoopCount": 1,
+    "coarseLoopCount": 1,
+    "fineLoopLengths": [
+      1296
+    ],
+    "coarseLoopLengths": [
+      654
+    ],
+    "zipperSamples": 1950,
+    "alignmentMeanMm": [
+      0.2515689952554019
+    ],
+    "signedVolumeMm3": 13670342.666666666,
+    "winding": {
+      "faceCount": 1497056,
+      "vertexCount": 748214,
+      "components": [
+        {
+          "component": 0,
+          "faces": 1497024,
+          "open": false,
+          "orientationBasis": "signedVolume",
+          "signedVolume": 13670342.063278496,
+          "signedVolumeBeforeComponentFlip": 13670342.063278496,
+          "gradientAgreement": 910393.0187365772,
+          "gradientAgreementBeforeComponentFlip": 910393.0187365772,
+          "flipped": false
+        },
+        {
+          "component": 1,
+          "faces": 8,
+          "open": false,
+          "orientationBasis": "signedVolume",
+          "signedVolume": 1.8162706538760176e-07,
+          "signedVolumeBeforeComponentFlip": -1.8162706538760176e-07,
+          "gradientAgreement": -2.383409749296878e-06,
+          "gradientAgreementBeforeComponentFlip": 2.383409749296878e-06,
+          "flipped": true
+        },
+        {
+          "component": 2,
+          "faces": 8,
+          "open": false,
+          "orientationBasis": "signedVolume",
+          "signedVolume": 0.00029024892972802363,
+          "signedVolumeBeforeComponentFlip": -0.00029024892972802363,
+          "gradientAgreement": -0.004783757601976161,
+          "gradientAgreementBeforeComponentFlip": 0.004783757601976161,
+          "flipped": true
+        },
+        {
+          "component": 3,
+          "faces": 8,
+          "open": false,
+          "orientationBasis": "signedVolume",
+          "signedVolume": 0.0002682912433883966,
+          "signedVolumeBeforeComponentFlip": -0.0002682912433883966,
+          "gradientAgreement": -0.006007407646476583,
+          "gradientAgreementBeforeComponentFlip": 0.006007407646476583,
+          "flipped": true
+        },
+        {
+          "component": 4,
+          "faces": 8,
+          "open": false,
+          "orientationBasis": "signedVolume",
+          "signedVolume": 0.00026445612355985304,
+          "signedVolumeBeforeComponentFlip": -0.00026445612355985304,
+          "gradientAgreement": -0.005013873828499266,
+          "gradientAgreementBeforeComponentFlip": 0.005013873828499266,
+          "flipped": true
+        }
+      ],
+      "componentCount": 5,
+      "manifoldSharedEdges": 2245584,
+      "boundaryEdgeGroups": 0,
+      "nonManifoldEdgeGroups": 0,
+      "directedDisagreementsBefore": 1216,
+      "directedDisagreementsAfter": 0,
+      "parityConflicts": 0,
+      "degenerateFaces": 0,
+      "facesFlippedByParity": 542,
+      "facesFlippedByComponentOrientation": 32,
+      "outwardClosedComponents": 5
+    },
+    "method": "fine slab extraction below foot Y limit with fine-foot override; coarse one-mm body split at Y and X; ordered-arclength zipper for every matched cavity loop; no caps or mesh smoothing"
+  },
+  "winding": {
+    "faceCount": 1497024,
+    "vertexCount": 748190,
+    "components": [
+      {
+        "component": 0,
+        "faces": 1497024,
+        "open": false,
+        "orientationBasis": "signedVolume",
+        "signedVolume": 13670342.063278496,
+        "signedVolumeBeforeComponentFlip": 13670342.063278496,
+        "gradientAgreement": 910393.0368735667,
+        "gradientAgreementBeforeComponentFlip": 910393.0368735667,
+        "flipped": false
+      }
+    ],
+    "componentCount": 1,
+    "manifoldSharedEdges": 2245536,
+    "boundaryEdgeGroups": 0,
+    "nonManifoldEdgeGroups": 0,
+    "directedDisagreementsBefore": 0,
+    "directedDisagreementsAfter": 0,
+    "parityConflicts": 0,
+    "degenerateFaces": 0,
+    "facesFlippedByParity": 0,
+    "facesFlippedByComponentOrientation": 0,
+    "outwardClosedComponents": 1
+  },
+  "surfaceComponents": {
+    "surfaceComponentsBefore": 1,
+    "removedInnerSurfaceTriangles": 0
+  },
+  "numericalHoleRepair": {
+    "openEdgesBefore": 880,
+    "ignoredEndpointEdges": 880,
+    "internalOpenEdgesBefore": 0,
+    "edgeToleranceMm": 0.001,
+    "planeToleranceMm": 0.0001,
+    "collinearToleranceMm": 1e-05,
+    "repairedCount": 0,
+    "repaired": [],
+    "splitCollinearCount": 0,
+    "splitCollinear": [],
+    "unresolved": [],
+    "internalOpenEdgesAfter": 0,
+    "openEdgesAfter": 880,
+    "proofDistanceBoundMm": 0.0
+  },
+  "simplification": {
+    "algorithm": "meshoptimizer quadric with locked boundaries",
+    "meshoptimizerVersion": "0.22.0",
+    "targetTriangles": 150000,
+    "inputTriangles": 1367008,
+    "triangles": 152996,
+    "quadricErrorMm": 0.05881335213780403,
+    "requestedErrorMm": 0.06,
+    "removedFoldedTriangles": 6,
+    "lockedVertices": 36680
+  },
+  "pieces": [
+    {
+      "region": "lower",
+      "skinTriangles": 99791,
+      "capTriangles": 253,
+      "bytes": 2979152,
+      "glbSha256": "80f939481f7985f1c1a16ed506b40a6222559cf8dfe7ced41b2ed0da50f906d8",
+      "topology": {
+        "closed": true,
+        "consistentWinding": true,
+        "windingDisagreements": 0,
+        "edgeIncidences": {
+          "2": 150066
+        },
+        "signedVolumeMm3": 4940998.37951979
+      },
+      "preservedGastrocnemius": [
+        {
+          "mesh": "Lateral head of gastrocnemius.r",
+          "accessor": 6,
+          "outputAccessor": 6,
+          "sha256": "48a531b931aaed59d6006ae5a96d205fbb84123e8bb68c4f1df66e3391abda4e"
+        },
+        {
+          "mesh": "Lateral head of gastrocnemius.r",
+          "accessor": 7,
+          "outputAccessor": 7,
+          "sha256": "34deafc43f195d2da109c74f301a1c1d0c61e499a2f4747209f570b22401b50e"
+        },
+        {
+          "mesh": "Lateral head of gastrocnemius.r",
+          "accessor": 8,
+          "outputAccessor": 8,
+          "sha256": "47ad43e1ff6dcb7cc7ac405ec34c3df7c51a1e7b126b3731fc2622cd529dae27"
+        },
+        {
+          "mesh": "Medial head of gastrocnemius.r",
+          "accessor": 9,
+          "outputAccessor": 9,
+          "sha256": "84c86249b5413629bea7ee496251233667fc646f90c31764cb12ec82b700ee92"
+        },
+        {
+          "mesh": "Medial head of gastrocnemius.r",
+          "accessor": 10,
+          "outputAccessor": 10,
+          "sha256": "28fb65b88e156bc3a4f9797446328fa3efbc7b2067dabc64f7bcb418b54d5143"
+        },
+        {
+          "mesh": "Medial head of gastrocnemius.r",
+          "accessor": 11,
+          "outputAccessor": 11,
+          "sha256": "35fab9f214245b76a17847a0b7d18bcd3c9e1e44be3ed7ba2b78e3a029a825d2"
+        }
+      ],
+      "preservedSourcePatches": []
+    },
+    {
+      "region": "upper",
+      "skinTriangles": 53692,
+      "capTriangles": 1108,
+      "bytes": 1413808,
+      "glbSha256": "e2f33c5c45b268f696f1e2c7daedebcc2fe310db417bacb173e93688e8977a4d",
+      "topology": {
+        "closed": true,
+        "consistentWinding": true,
+        "windingDisagreements": 0,
+        "edgeIncidences": {
+          "2": 82200
+        },
+        "signedVolumeMm3": 7709505.57726114
+      },
+      "preservedGastrocnemius": [],
+      "preservedSourcePatches": [
+        {
+          "mesh": "skin",
+          "accessor": 9,
+          "outputAccessor": 9,
+          "sha256": "76b492e32912c682f709f1fe4e6bc27d59c9765caa1c1432ce10d6a98d033d17"
+        },
+        {
+          "mesh": "skin",
+          "accessor": 10,
+          "outputAccessor": 10,
+          "sha256": "1388d645debccf8df28a6b4cbda036c70d461fa58dda98e178d135e0a2f0cbe4"
+        },
+        {
+          "mesh": "skin",
+          "accessor": 11,
+          "outputAccessor": 11,
+          "sha256": "0f71d02bdc2425ab38778a0199543d168a814165733295d730941dc61fbbc724"
+        },
+        {
+          "mesh": "skin",
+          "accessor": 12,
+          "outputAccessor": 12,
+          "sha256": "4fa8ba04692f4d1eec97cfbddae25252dc4c7e5325073ee3bc7eaab5c907e7eb"
+        },
+        {
+          "mesh": "skin.001",
+          "accessor": 13,
+          "outputAccessor": 13,
+          "sha256": "090ad877ad9e92327a79a8d2f91ee2296ffea62797e2c5685febfc66e3bd1cd5"
+        },
+        {
+          "mesh": "skin.001",
+          "accessor": 14,
+          "outputAccessor": 14,
+          "sha256": "f75c6054fb27d436cf8198c74ff5ea6dd302a2b2b36a153f53ff3f0a4dcdfb07"
+        },
+        {
+          "mesh": "skin.001",
+          "accessor": 15,
+          "outputAccessor": 15,
+          "sha256": "930e67e165f0fc176bca9d38eba07db25d74104c62a1a67ee858487d58a3e709"
+        },
+        {
+          "mesh": "skin.001",
+          "accessor": 16,
+          "outputAccessor": 16,
+          "sha256": "4fec4cdf00d691c2664537d4f33b13b0ea266fef798e01951b751948d92e1852"
+        },
+        {
+          "mesh": "skin.002",
+          "accessor": 17,
+          "outputAccessor": 17,
+          "sha256": "83885d24b2f942f2a0f8dd07d6e9f48280b155879fc9bd2cc5e893015910390a"
+        },
+        {
+          "mesh": "skin.002",
+          "accessor": 18,
+          "outputAccessor": 18,
+          "sha256": "039cc8726b9b7cf0c4d3d12753468ff7e9107e6e5ee10a9087603d352680d8cc"
+        },
+        {
+          "mesh": "skin.002",
+          "accessor": 19,
+          "outputAccessor": 19,
+          "sha256": "2c528693d45914540f3e3a983e5f92455b99248bb886d2e9b127af00c981b7f6"
+        },
+        {
+          "mesh": "skin.002",
+          "accessor": 20,
+          "outputAccessor": 20,
+          "sha256": "38651907ea1d08e1165eb5a1e99818253f5e8536421415f37e3d9d9919bab686"
+        },
+        {
+          "mesh": "skin.003",
+          "accessor": 21,
+          "outputAccessor": 21,
+          "sha256": "b6b8d2dbdb5a84cbf096cf75db41bd39e4e1e682f39e2388c6658619ae5b2b5b"
+        },
+        {
+          "mesh": "skin.003",
+          "accessor": 22,
+          "outputAccessor": 22,
+          "sha256": "a589dbcfcefef51d8153c6a65291649d7836161ec1a770a5f559dc50fe4b76c9"
+        },
+        {
+          "mesh": "skin.003",
+          "accessor": 23,
+          "outputAccessor": 23,
+          "sha256": "706296a1e76940bd898002991524446984a7b2c559784f3a887558be0a1e4d44"
+        },
+        {
+          "mesh": "skin.003",
+          "accessor": 24,
+          "outputAccessor": 24,
+          "sha256": "5b74c382a462b3d58acf9dcc1ee482c4526062d072899a762e26975c57aa47b8"
+        },
+        {
+          "mesh": "skin.004",
+          "accessor": 25,
+          "outputAccessor": 25,
+          "sha256": "519bcc7e5d50b97093c285c7d7f8259accc420405dcfd59f57ec2ff81afa8139"
+        },
+        {
+          "mesh": "skin.004",
+          "accessor": 26,
+          "outputAccessor": 26,
+          "sha256": "7095ee9fb60b2eabd7eaaedf224dce164c58d2f1b949a6cd84b2794d5c2d317a"
+        },
+        {
+          "mesh": "skin.004",
+          "accessor": 27,
+          "outputAccessor": 27,
+          "sha256": "a795d9fcd7cc0495c92509110c1cf513a3af32c2fe9c48b6290d7d941ee84dd2"
+        },
+        {
+          "mesh": "skin.004",
+          "accessor": 28,
+          "outputAccessor": 28,
+          "sha256": "4cdf084cd0a581af6411e216d06b19b0f6aa6b7a3fb200fc58f28f083903ce83"
+        },
+        {
+          "mesh": "skin.005",
+          "accessor": 29,
+          "outputAccessor": 29,
+          "sha256": "4ab48a177e2edb28acccc34e00858e1ef8ce42486ff2ca253cb3688d64128b7e"
+        },
+        {
+          "mesh": "skin.005",
+          "accessor": 30,
+          "outputAccessor": 30,
+          "sha256": "fdca88e6515992a0164017bf6fb3f87e11d99949bd2dde5bdbe326830c4275ef"
+        },
+        {
+          "mesh": "skin.005",
+          "accessor": 31,
+          "outputAccessor": 31,
+          "sha256": "a4528d00e8fd775a4c2392c9bad72605d9563cc596b4c7b140f8b1103c6cac14"
+        },
+        {
+          "mesh": "skin.005",
+          "accessor": 32,
+          "outputAccessor": 32,
+          "sha256": "0ab639cfceab557c8371e29f24ec0ea6aaeaa0b787333b6dc1a510e6d9d53f81"
+        },
+        {
+          "mesh": "skin.006",
+          "accessor": 33,
+          "outputAccessor": 33,
+          "sha256": "89b668a56e34e707bf17cfdd390655d2d9c5a1cd380dee2713386ed9ca0545b6"
+        },
+        {
+          "mesh": "skin.006",
+          "accessor": 34,
+          "outputAccessor": 34,
+          "sha256": "23f33860994e475b344ff491fa3959227b13982c2d92b2c8c0f108bcdbc89f71"
+        },
+        {
+          "mesh": "skin.006",
+          "accessor": 35,
+          "outputAccessor": 35,
+          "sha256": "aec7c7abdda4fcb6ff44f9ea9de0d27b3a09c5e5fede74aa7e23a500950c9062"
+        },
+        {
+          "mesh": "skin.006",
+          "accessor": 36,
+          "outputAccessor": 36,
+          "sha256": "f2c5fdf98295ea105c68434a74d00fbcb4254083b54bdf9d823c6d5c7eeac712"
+        },
+        {
+          "mesh": "skin.007",
+          "accessor": 37,
+          "outputAccessor": 37,
+          "sha256": "f83c4ce7cfbd90b51737233894a96ccc784ff70695b24e07644098256f52079f"
+        },
+        {
+          "mesh": "skin.007",
+          "accessor": 38,
+          "outputAccessor": 38,
+          "sha256": "036f842e87d92da3db6096b8927a6a3e3d8aef3c0338a8a0fd45a337744db4f8"
+        },
+        {
+          "mesh": "skin.007",
+          "accessor": 39,
+          "outputAccessor": 39,
+          "sha256": "64997ff7752b713a2664ed7c292b5ca78ea5bba175b6029d45d2d2cf533b2795"
+        },
+        {
+          "mesh": "skin.007",
+          "accessor": 40,
+          "outputAccessor": 40,
+          "sha256": "28490547dca26e2b22d51dc1dd85d3873e189a9ed871be32fb9bf54e929b1af4"
+        },
+        {
+          "mesh": "skin.008",
+          "accessor": 41,
+          "outputAccessor": 41,
+          "sha256": "faf2bb2898b6854be9441193696d70d8700a5d8bf852d6d4e800d144c25dc9c9"
+        },
+        {
+          "mesh": "skin.008",
+          "accessor": 42,
+          "outputAccessor": 42,
+          "sha256": "d0455cd08e29959d96f80e135b1755389549c3b2eef6f6229c286b8215c4d96c"
+        },
+        {
+          "mesh": "skin.008",
+          "accessor": 43,
+          "outputAccessor": 43,
+          "sha256": "21cd708e9282f3a473550078f1c8293fb3d1eaf50376f48824cff9e038db2f89"
+        },
+        {
+          "mesh": "skin.008",
+          "accessor": 44,
+          "outputAccessor": 44,
+          "sha256": "f17ebec4da4a8b4e8cfc37a9d6bbaeb6285819f9299a99478bbe08587d5bfe48"
+        }
+      ]
+    }
+  ],
+  "region": "upper",
+  "skinTriangles": 53692,
+  "capTriangles": 1108,
+  "bytes": 1413808,
+  "glbSha256": "aafef5427d7d226aa79f62b33dd7e984b4b7f6472726cb593d69b6f0b51707be",
+  "topology": {
+    "closed": true,
+    "consistentWinding": true,
+    "windingDisagreements": 0,
+    "edgeIncidences": {
+      "2": 82200
+    },
+    "signedVolumeMm3": 10211551.396332271
+  },
+  "preservedGastrocnemius": [],
+  "preservedSourcePatches": [
+    {
+      "mesh": "skin",
+      "accessor": 9,
+      "outputAccessor": 9,
+      "sha256": "76b492e32912c682f709f1fe4e6bc27d59c9765caa1c1432ce10d6a98d033d17"
+    },
+    {
+      "mesh": "skin",
+      "accessor": 10,
+      "outputAccessor": 10,
+      "sha256": "1388d645debccf8df28a6b4cbda036c70d461fa58dda98e178d135e0a2f0cbe4"
+    },
+    {
+      "mesh": "skin",
+      "accessor": 11,
+      "outputAccessor": 11,
+      "sha256": "0f71d02bdc2425ab38778a0199543d168a814165733295d730941dc61fbbc724"
+    },
+    {
+      "mesh": "skin",
+      "accessor": 12,
+      "outputAccessor": 12,
+      "sha256": "4fa8ba04692f4d1eec97cfbddae25252dc4c7e5325073ee3bc7eaab5c907e7eb"
+    },
+    {
+      "mesh": "skin.001",
+      "accessor": 13,
+      "outputAccessor": 13,
+      "sha256": "090ad877ad9e92327a79a8d2f91ee2296ffea62797e2c5685febfc66e3bd1cd5"
+    },
+    {
+      "mesh": "skin.001",
+      "accessor": 14,
+      "outputAccessor": 14,
+      "sha256": "f75c6054fb27d436cf8198c74ff5ea6dd302a2b2b36a153f53ff3f0a4dcdfb07"
+    },
+    {
+      "mesh": "skin.001",
+      "accessor": 15,
+      "outputAccessor": 15,
+      "sha256": "930e67e165f0fc176bca9d38eba07db25d74104c62a1a67ee858487d58a3e709"
+    },
+    {
+      "mesh": "skin.001",
+      "accessor": 16,
+      "outputAccessor": 16,
+      "sha256": "4fec4cdf00d691c2664537d4f33b13b0ea266fef798e01951b751948d92e1852"
+    },
+    {
+      "mesh": "skin.002",
+      "accessor": 17,
+      "outputAccessor": 17,
+      "sha256": "83885d24b2f942f2a0f8dd07d6e9f48280b155879fc9bd2cc5e893015910390a"
+    },
+    {
+      "mesh": "skin.002",
+      "accessor": 18,
+      "outputAccessor": 18,
+      "sha256": "039cc8726b9b7cf0c4d3d12753468ff7e9107e6e5ee10a9087603d352680d8cc"
+    },
+    {
+      "mesh": "skin.002",
+      "accessor": 19,
+      "outputAccessor": 19,
+      "sha256": "2c528693d45914540f3e3a983e5f92455b99248bb886d2e9b127af00c981b7f6"
+    },
+    {
+      "mesh": "skin.002",
+      "accessor": 20,
+      "outputAccessor": 20,
+      "sha256": "38651907ea1d08e1165eb5a1e99818253f5e8536421415f37e3d9d9919bab686"
+    },
+    {
+      "mesh": "skin.003",
+      "accessor": 21,
+      "outputAccessor": 21,
+      "sha256": "b6b8d2dbdb5a84cbf096cf75db41bd39e4e1e682f39e2388c6658619ae5b2b5b"
+    },
+    {
+      "mesh": "skin.003",
+      "accessor": 22,
+      "outputAccessor": 22,
+      "sha256": "a589dbcfcefef51d8153c6a65291649d7836161ec1a770a5f559dc50fe4b76c9"
+    },
+    {
+      "mesh": "skin.003",
+      "accessor": 23,
+      "outputAccessor": 23,
+      "sha256": "706296a1e76940bd898002991524446984a7b2c559784f3a887558be0a1e4d44"
+    },
+    {
+      "mesh": "skin.003",
+      "accessor": 24,
+      "outputAccessor": 24,
+      "sha256": "5b74c382a462b3d58acf9dcc1ee482c4526062d072899a762e26975c57aa47b8"
+    },
+    {
+      "mesh": "skin.004",
+      "accessor": 25,
+      "outputAccessor": 25,
+      "sha256": "519bcc7e5d50b97093c285c7d7f8259accc420405dcfd59f57ec2ff81afa8139"
+    },
+    {
+      "mesh": "skin.004",
+      "accessor": 26,
+      "outputAccessor": 26,
+      "sha256": "7095ee9fb60b2eabd7eaaedf224dce164c58d2f1b949a6cd84b2794d5c2d317a"
+    },
+    {
+      "mesh": "skin.004",
+      "accessor": 27,
+      "outputAccessor": 27,
+      "sha256": "a795d9fcd7cc0495c92509110c1cf513a3af32c2fe9c48b6290d7d941ee84dd2"
+    },
+    {
+      "mesh": "skin.004",
+      "accessor": 28,
+      "outputAccessor": 28,
+      "sha256": "4cdf084cd0a581af6411e216d06b19b0f6aa6b7a3fb200fc58f28f083903ce83"
+    },
+    {
+      "mesh": "skin.005",
+      "accessor": 29,
+      "outputAccessor": 29,
+      "sha256": "4ab48a177e2edb28acccc34e00858e1ef8ce42486ff2ca253cb3688d64128b7e"
+    },
+    {
+      "mesh": "skin.005",
+      "accessor": 30,
+      "outputAccessor": 30,
+      "sha256": "fdca88e6515992a0164017bf6fb3f87e11d99949bd2dde5bdbe326830c4275ef"
+    },
+    {
+      "mesh": "skin.005",
+      "accessor": 31,
+      "outputAccessor": 31,
+      "sha256": "a4528d00e8fd775a4c2392c9bad72605d9563cc596b4c7b140f8b1103c6cac14"
+    },
+    {
+      "mesh": "skin.005",
+      "accessor": 32,
+      "outputAccessor": 32,
+      "sha256": "0ab639cfceab557c8371e29f24ec0ea6aaeaa0b787333b6dc1a510e6d9d53f81"
+    },
+    {
+      "mesh": "skin.006",
+      "accessor": 33,
+      "outputAccessor": 33,
+      "sha256": "89b668a56e34e707bf17cfdd390655d2d9c5a1cd380dee2713386ed9ca0545b6"
+    },
+    {
+      "mesh": "skin.006",
+      "accessor": 34,
+      "outputAccessor": 34,
+      "sha256": "23f33860994e475b344ff491fa3959227b13982c2d92b2c8c0f108bcdbc89f71"
+    },
+    {
+      "mesh": "skin.006",
+      "accessor": 35,
+      "outputAccessor": 35,
+      "sha256": "aec7c7abdda4fcb6ff44f9ea9de0d27b3a09c5e5fede74aa7e23a500950c9062"
+    },
+    {
+      "mesh": "skin.006",
+      "accessor": 36,
+      "outputAccessor": 36,
+      "sha256": "f2c5fdf98295ea105c68434a74d00fbcb4254083b54bdf9d823c6d5c7eeac712"
+    },
+    {
+      "mesh": "skin.007",
+      "accessor": 37,
+      "outputAccessor": 37,
+      "sha256": "f83c4ce7cfbd90b51737233894a96ccc784ff70695b24e07644098256f52079f"
+    },
+    {
+      "mesh": "skin.007",
+      "accessor": 38,
+      "outputAccessor": 38,
+      "sha256": "036f842e87d92da3db6096b8927a6a3e3d8aef3c0338a8a0fd45a337744db4f8"
+    },
+    {
+      "mesh": "skin.007",
+      "accessor": 39,
+      "outputAccessor": 39,
+      "sha256": "64997ff7752b713a2664ed7c292b5ca78ea5bba175b6029d45d2d2cf533b2795"
+    },
+    {
+      "mesh": "skin.007",
+      "accessor": 40,
+      "outputAccessor": 40,
+      "sha256": "28490547dca26e2b22d51dc1dd85d3873e189a9ed871be32fb9bf54e929b1af4"
+    },
+    {
+      "mesh": "skin.008",
+      "accessor": 41,
+      "outputAccessor": 41,
+      "sha256": "faf2bb2898b6854be9441193696d70d8700a5d8bf852d6d4e800d144c25dc9c9"
+    },
+    {
+      "mesh": "skin.008",
+      "accessor": 42,
+      "outputAccessor": 42,
+      "sha256": "d0455cd08e29959d96f80e135b1755389549c3b2eef6f6229c286b8215c4d96c"
+    },
+    {
+      "mesh": "skin.008",
+      "accessor": 43,
+      "outputAccessor": 43,
+      "sha256": "21cd708e9282f3a473550078f1c8293fb3d1eaf50376f48824cff9e038db2f89"
+    },
+    {
+      "mesh": "skin.008",
+      "accessor": 44,
+      "outputAccessor": 44,
+      "sha256": "f17ebec4da4a8b4e8cfc37a9d6bbaeb6285819f9299a99478bbe08587d5bfe48"
+    }
+  ],
+  "method": "Dense source surface sampling; Euclidean closing, axial fill and signed body distance field; regional soft-tissue padding and patellar pad; smooth labelled elliptic toe sweeps with continuous gap separators and C1 root blend; multi-resolution marching cubes; consistent winding; conservative audited meshoptimizer decimation; earcut caps",
+  "allParameters": {
+    "version": 2,
+    "gridMm": 1,
+    "sampleSpacingMm": 0.5,
+    "closingRadiusMm": 6,
+    "thicknessSmoothingMm": 8,
+    "fieldSmoothingVoxels": 7,
+    "toeThicknessMm": 0.65,
+    "toeFieldSmoothingVoxels": 0.6,
+    "webDistalMm": 1,
+    "webBlendMm": 5,
+    "thicknessProfile": [
+      [
+        -90,
+        8
+      ],
+      [
+        -35,
+        8
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        70,
+        7
+      ],
+      [
+        200,
+        11
+      ],
+      [
+        350,
+        11
+      ],
+      [
+        400,
+        12
+      ],
+      [
+        460,
+        13
+      ],
+      [
+        620,
+        17
+      ],
+      [
+        800,
+        18
+      ]
+    ],
+    "pads": [
+      {
+        "bone": "calcaneus",
+        "selection": "posterior-plantar",
+        "amplitudeMm": 5,
+        "sigmaMm": [
+          20,
+          12,
+          17
+        ]
+      },
+      {
+        "bone": "metatarsal-1",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.5,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-2",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-3",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-4",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "metatarsal-5",
+        "selection": "distal-plantar",
+        "amplitudeMm": 1.2,
+        "sigmaMm": [
+          13,
+          10,
+          13
+        ]
+      },
+      {
+        "bone": "patella",
+        "region": "upper",
+        "selection": "anterior-patella",
+        "amplitudeMm": 10,
+        "sigmaMm": [
+          34,
+          38,
+          34
+        ]
+      }
+    ],
+    "seamYLowerMm": 450.125,
+    "proximalYLowerMm": 790,
+    "inputCropPaddingMm": 20,
+    "boundsPaddingMm": 30,
+    "flatSole": false,
+    "targetTriangles": 150000,
+    "quadricErrorMm": 0.06,
+    "hausdorffLimitMm": 0.3,
+    "surfaceValidationSpacingMm": 0.15,
+    "sourceRevision": "b722f392d2b09d21f0527229fe1338f27a3bc04e",
+    "limitations": [
+      "Illustrative structure envelope; no scanned skin, creases, nails, or person-specific fat.",
+      "Thickness and cuts are project choices, not clinically sourced measurements.",
+      "Full source inputs are read; proximal pelvis context is trimmed at a configured groin-level study cut.",
+      "Region skins share a seam; overlapping source structures belong to the envelope on the side of the seam where their vertices lie.",
+      "Uniform minimum clearance within 0.5 mm is not met; final measured deviations are reported rather than inferred from the configured field.",
+      "Fuller illustrative soft tissue follows photo references qualitatively; regional padding is an artistic choice.",
+      "Independent rounded toe fields use toe-labelled bones/cartilage and endpoint-associated tendons; grouped digital neurovascular vertices are associated by nearest own-side phalanges as containment constraints, while continuous separators define the webs.",
+      "Continuous intertoe separators replace voxel carving and patchwise source repair; actual containment is measured independently."
+    ],
+    "sectionFloodFill": true,
+    "webFilletMm": 2.5,
+    "seamChoice": "Offset 0.125 mm from the voxel-aligned Y450 plane to avoid coplanar extracted facets altering opposite cut loops.",
+    "extractionGridMm": 0.5,
+    "extractionSlabIntervals": 32,
+    "toeSectionEnvelopes": true,
+    "skinToeGaussianSigmaVoxels": 1.1,
+    "skinSectionThicknessMm": 0.65,
+    "skinToeCarveIterations": 2,
+    "skinToeMoatField": 1.2,
+    "skinToeSourceRepairClearanceMm": 0.5,
+    "skinCropXMinMm": 65,
+    "skinCropTopYMm": 30,
+    "preserveSourceMarginMm": 0.2,
+    "preserveSourceRadiusMm": 0.8,
+    "preserveToeWallGridMm": 1,
+    "preserveToeWallPhaseToleranceMm": 0.05,
+    "maximumTriangles": 260000,
+    "hybridExtraction": true,
+    "hybridExtractionType": "foot-x-collar",
+    "hybridFinePlaneXmm": 80.375,
+    "hybridCoarsePlaneXmm": 80.125,
+    "hybridFootYMaxMm": 50,
+    "sideQuadricErrorMm": {
+      "right": 0.06,
+      "left": 0.06
+    },
+    "signedBodyField": true,
+    "smoothToeEnvelopes": true,
+    "toeGapMm": 0.6,
+    "toeProfileSmoothingMm": 4,
+    "toeDorsalPaddingMm": 4,
+    "toeLateralPaddingMm": 1.2,
+    "toeRootBlendMm": 22,
+    "auditPreservationRings": 8,
+    "auditIntersectionPaddingMm": 3,
+    "preservation": {
+      "right": {
+        "vertexSha256": "6a50db419ee99383f5ce6e7e1f4181431ed99e53b0d39b0bb2e825e090132b66",
+        "indicesFile": "scripts/skin-preservation-right.json",
+        "indicesSha256": "2e4b08b5b2410d1fd5f4a5d258f4f38a1f97f34060514af8b5f3010ed2790127"
+      },
+      "left": {
+        "vertexSha256": "11748988fa5780040e9cc715d71f303ed9a85b7e76dd17ee018560697ecb6fa0",
+        "indicesFile": "scripts/skin-preservation-left.json",
+        "indicesSha256": "c440f1df0a972189fa4ca3dbe98de8c87b99dd99156465ad799420c334926c53"
+      }
+    }
+  },
+  "license": "CC-BY-SA-4.0",
+  "attribution": [
+    "Z-Anatomy \u2014 Gauthier Kervyn \u2014 CC BY-SA 4.0",
+    "BodyParts3D \u2014 Database Center for Life Science; Kousaku Okubo \u2014 CC BY-SA 2.1 Japan"
+  ],
+  "meshValidation": {
+    "format": "muscle-map-skin-validation-v1",
+    "side": "right",
+    "inputs": {
+      "metadata": {
+        "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.json",
+        "sha256": "514b521f3ea0877b8f93153d025d22be733a9a84cdf0b82c6bff61c4afeb6b8f"
+      },
+      "vertices": {
+        "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.vertices.bin",
+        "bytes": 8203452,
+        "sha256": "6a50db419ee99383f5ce6e7e1f4181431ed99e53b0d39b0bb2e825e090132b66",
+        "count": 683621,
+        "boundsMm": {
+          "min": [
+            -94.8544692993164,
+            -71.87387084960938,
+            -100.17294311523438
+          ],
+          "max": [
+            176.52780151367188,
+            790,
+            102.96189880371094
+          ]
+        }
+      },
+      "denseFaces": {
+        "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.faces.bin",
+        "bytes": 16404096,
+        "sha256": "c400fdaddeddcae1ecf9c7d43abe7abdcd2fceffeee3e17dd4da9970c4d02347",
+        "triangles": 1367008
+      },
+      "simplifiedFaces": {
+        "path": "H:\\Projects\\Muscle Map\\output\\skin\\right\\mesh.simplified.bin",
+        "bytes": 1835952,
+        "sha256": "f79b2fb94584a83a1c46af1b12339c3d22e8a9fbeba9a4a6206889f64ab2a159",
+        "triangles": 152996
+      }
+    },
+    "sourceGlb": {
+      "available": true,
+      "path": "H:\\Projects\\Muscle Map\\public\\models\\exterior.glb",
+      "bytes": 3669852,
+      "sha256": "4252a63d8b1b987d9b336878cba1dbbd280cc4b576eb4b6d75a37cb58578fa48",
+      "meshes": 4,
+      "boundsMeters": {
+        "min": [
+          -0.07653572410345078,
+          -0.06906758248806,
+          -0.06372655183076859
+        ],
+        "max": [
+          0.1740744262933731,
+          0.4501250088214874,
+          0.07285314798355103
+        ]
+      }
+    },
+    "targetTriangles": 150000,
+    "budgetTriangles": 260000,
+    "triangleBudgetPassed": true,
+    "targetErrorMm": 0.06,
+    "hausdorff": {
+      "limitMm": 0.3,
+      "spacingMm": 0.15,
+      "measuredMaxMm": 0.2571168515748077,
+      "upperBoundMm": 0.30000093570550135,
+      "passed": true,
+      "denseToSimplified": {
+        "triangleCount": 1367008,
+        "sampleCount": 2794788,
+        "nearestQueries": 2437843,
+        "cacheSize": 2437843,
+        "elapsedMs": 9490.4642,
+        "spacingMm": 0.15,
+        "minimumUncertainSpacingMm": 0.005,
+        "certificationEpsilonMm": 1e-06,
+        "certifiedTriangles": 2437843,
+        "fallbackTriangles": 0,
+        "maxSubdivisionDepth": 3,
+        "maxMeasuredMm": 0.2542621469016959,
+        "upperBoundMm": 0.3000006977249302,
+        "badSourceFaceCount": 0,
+        "badSourceFaces": [],
+        "badSourceFacesTruncated": false,
+        "worstActualFaceCount": 4,
+        "worstActualFaceIndices": [
+          1073048,
+          1073049,
+          1073068,
+          1073069
+        ],
+        "worstActualFacesTruncated": false
+      },
+      "simplifiedToDense": {
+        "triangleCount": 152996,
+        "sampleCount": 11528380,
+        "nearestQueries": 8684534,
+        "cacheSize": 8684534,
+        "elapsedMs": 50359.3646,
+        "spacingMm": 0.15,
+        "minimumUncertainSpacingMm": 0.005,
+        "certificationEpsilonMm": 1e-06,
+        "certifiedTriangles": 8684534,
+        "fallbackTriangles": 0,
+        "maxSubdivisionDepth": 8,
+        "maxMeasuredMm": 0.2571168515748077,
+        "upperBoundMm": 0.30000093570550135,
+        "badSourceFaceCount": 0,
+        "badSourceFaces": [],
+        "badSourceFacesTruncated": false,
+        "worstActualFaceCount": 2,
+        "worstActualFaceIndices": [
+          128091,
+          128092
+        ],
+        "worstActualFacesTruncated": false
+      }
+    },
+    "selfIntersections": {
+      "sampledTriangles": 10000,
+      "candidatePairs": 0,
+      "rejectedSeparatingAxisCandidates": 0,
+      "independentSeparationToleranceMm": 1e-07,
+      "intersections": [],
+      "passed": true
+    },
+    "passed": true
+  },
+  "software": {
+    "numpy": "1.26.4",
+    "scipy": "1.13.0",
+    "scikit-image": "0.26.0"
+  },
+  "validationReports": [
+    "validation/skin-mesh-right.json",
+    "validation/skin-geometry-right.json",
+    "validation/skin-clearance-right.json",
+    "validation/skin-enclosure-right.json"
+  ],
+  "sourcePatches": "Original nine open Z-Anatomy patches retained byte-for-byte as hidden sourceReference meshes because pelvis/gluteal patches exceed the groin cut; new visible envelope covers the configured thigh/knee study region.",
+  "acceptance": {
+    "allOriginalSourceContainment": {
+      "requiredFraction": 0.999,
+      "passed": false,
+      "status": "all-original-source-vertices"
+    },
+    "studyCropContainment": {
+      "fraction": 0.9991020413184002,
+      "outliers": 584,
+      "minimumFraction": 0.999,
+      "passed": true
+    },
+    "proximalCropExcludedVertices": 65792,
+    "clearance": {
+      "method": "Exact point-to-source-triangle distance at 10000 deterministic skin vertices; crop caps excluded",
+      "samples": 10000,
+      "toleranceMm": 0.5,
+      "maximumDeviationFromIntendedMm": 9.532759452256148,
+      "fractionWithinHalfMm": 0.2798,
+      "passed": false
+    },
+    "toes": [
+      {
+        "pair": [
+          1,
+          2
+        ],
+        "fractionWithGapAtLeastHalfMm": 0.9,
+        "passed": true
+      },
+      {
+        "pair": [
+          2,
+          3
+        ],
+        "fractionWithGapAtLeastHalfMm": 0.9666666666666667,
+        "passed": true
+      },
+      {
+        "pair": [
+          3,
+          4
+        ],
+        "fractionWithGapAtLeastHalfMm": 0.9333333333333333,
+        "passed": true
+      },
+      {
+        "pair": [
+          4,
+          5
+        ],
+        "fractionWithGapAtLeastHalfMm": 0.6333333333333333,
+        "passed": true
+      }
+    ],
+    "landmarks": {
+      "source": "H:\\Projects\\Muscle Map\\public\\models\\bones.glb",
+      "landmarks": [
+        {
+          "name": "tibia-medial-malleolus",
+          "available": true,
+          "bonePointMm": [
+            -1.0300669819116592,
+            19.977424293756485,
+            -28.765177354216576
+          ],
+          "skinDistanceMm": 4.813072103235429,
+          "criterionMm": [
+            2,
+            4
+          ],
+          "passed": false
+        },
+        {
+          "name": "fibula-lateral-malleolus",
+          "available": true,
+          "bonePointMm": [
+            -15.425005927681923,
+            0.9229511488229036,
+            33.75620022416115
+          ],
+          "skinDistanceMm": 5.617581218191775,
+          "criterionMm": [
+            2,
+            4
+          ],
+          "passed": false
+        },
+        {
+          "name": "tibial-crest",
+          "available": true,
+          "bonePointMm": [
+            36.48536652326584,
+            270.8738148212433,
+            8.694108575582504
+          ],
+          "skinDistanceMm": 11.630401575211485,
+          "criterionMm": [
+            2,
+            4
+          ],
+          "passed": false
+        },
+        {
+          "name": "calcaneus-posterior-tuberosity",
+          "available": true,
+          "bonePointMm": [
+            -54.8168383538723,
+            -31.887877732515335,
+            4.593168385326862
+          ],
+          "skinDistanceMm": 9.128281764811522,
+          "criterionMm": [
+            2,
+            4
+          ],
+          "passed": false
+        }
+      ],
+      "passed": false
+    },
+    "seam": {
+      "available": true,
+      "lowerVertexCount": 255,
+      "upperVertexCount": 255,
+      "lowerToUpperMaxMm": 7.848766669294009e-06,
+      "upperToLowerMaxMm": 7.61461441013561e-06,
+      "surfaceNearestMaxMm": 7.848766669294009e-06,
+      "lowerLoopSegmentCount": 255,
+      "upperLoopSegmentCount": 255,
+      "lowerLoopToUpperMeasuredMm": 7.848766669294009e-06,
+      "upperLoopToLowerMeasuredMm": 7.786214975582925e-06,
+      "lowerLoopToUpperUpperBoundMm": 0.005005987619511194,
+      "upperLoopToLowerUpperBoundMm": 0.005006219482175854,
+      "loopSampleCount": 88532,
+      "maxMeasuredMm": 7.848766669294009e-06,
+      "maxNearestMm": 0.005006219482175854,
+      "toleranceMm": 0.1,
+      "passed": true
+    },
+    "hausdorff": {
+      "limitMm": 0.3,
+      "measuredMaxMm": 0.2571168515748077,
+      "upperBoundMm": 0.30000093570550135,
+      "passed": true
+    },
+    "sampledSelfIntersections": {
+      "sampledTriangles": 10000,
+      "candidatePairs": 0,
+      "rejectedSeparatingAxisCandidates": 0,
+      "independentSeparationToleranceMm": 1e-07,
+      "passed": true
+    },
+    "visualReview": {
+      "report": "validation/skin-visual-review.json",
+      "passed": true,
+      "noFlapsAndThinBridges": {
+        "passed": true,
+        "note": "The previously ragged toe-web strips are absent in the reviewed fresh dorsal closeups; rounded toe surfaces and continuous separators replace voxel-carved edges."
+      }
+    },
+    "mirrorCertification": {
+      "passed": null,
+      "note": "Sampled diagnostic only; native source differences and raster/simplification error are reported, not certified as exact reflection."
+    },
+    "initial150kTriangleGoalMet": false,
+    "allCriteriaPassed": false,
+    "limitations": [
+      "The groin study cut intentionally leaves proximal source context outside the envelope.",
+      "The photo-guided soft-tissue and rounded toe profiles have variable source clearance; the original uniform-clearance criterion remains independently measured.",
+      "The original 2-4 mm landmark bands are not met by the fuller contour; actual distances are recorded.",
+      "The original 150k triangle goal remains unmet on this side."
+    ]
+  },
+  "mirrorDiagnosticReport": "validation/skin-enclosure-right.json",
+  "visualReports": [
+    "validation/skin-fullness-final-right/skin-visual-browser-check.json",
+    "validation/skin-fullness-final-left/skin-visual-browser-check.json",
+    "validation/skin-fullness-caps/report.json"
+  ],
+  "loadBudgetReport": "validation/skin-load-budget.json",
+  "softTissueFullness": {
+    "method": "Smooth radial expansion and outward elliptical rounding in shared lower-leg frame",
+    "sourceGlbSha256": "e2f33c5c45b268f696f1e2c7daedebcc2fe310db417bacb173e93688e8977a4d",
+    "profileYmmScaleRoundness": [
+      [
+        50.0,
+        0.0,
+        0.0
+      ],
+      [
+        90.0,
+        0.025,
+        0.1
+      ],
+      [
+        200.0,
+        0.075,
+        0.25
+      ],
+      [
+        300.0,
+        0.09,
+        0.3
+      ],
+      [
+        400.0,
+        0.06,
+        0.25
+      ],
+      [
+        450.125,
+        0.075,
+        0.35
+      ],
+      [
+        560.0,
+        0.1,
+        0.55
+      ],
+      [
+        680.0,
+        0.11,
+        0.55
+      ],
+      [
+        790.0,
+        0.09,
+        0.45
+      ],
+      [
+        850.0,
+        0.09,
+        0.45
+      ]
+    ],
+    "source": "output/skin/right/upper-exterior.glb",
+    "scriptSha256": "3bd3eeb6a492b2d9e3ae9683b71ccfaf91e5d56f80d9584a76107b4a52a87bc4",
+    "minimumSampledJacobian": 0.752260755832638,
+    "maxOutwardMovementMm": 19.72444963681479,
+    "topology": {
+      "closed": true,
+      "consistentWinding": true,
+      "windingDisagreements": 0,
+      "edgeIncidences": {
+        "2": 82200
+      },
+      "signedVolumeMm3": 10211551.396332271
+    },
+    "illustrative": true
+  },
+  "meshValidationScope": "Original pre-fullness envelope. The final fullness transform has independent topology, seam, and positive-Jacobian checks in validation/skin-natural/fullness-geometry.json."
+}

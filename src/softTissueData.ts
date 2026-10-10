@@ -1,6 +1,6 @@
 import type { Structure } from './data';
 import { cartilageBoneIds, cartilageId } from './joints';
-const entry=(id:string,name:string,tissue:Structure['tissue'],group:string,description:string):Structure=>({id,name,tissue,description,region:'Foot',group,role:'Explore the modeled attachment records and connected structures.',connection:'Surface-fitted footprints and guide points.',hint:'Use Focus or Use Neighbors to inspect.'});
+const entry=(id:string,name:string,tissue:Structure['tissue'],group:string,description:string):Structure=>({id,name,tissue,description,region:tissue==='muscle'?'Lower leg':'Foot',group,role:'Explore the modeled attachment records and connected structures.',connection:'Surface-fitted footprints and guide points.',hint:'Use Focus or Use Neighbors to inspect.'});
 export const softTissueStructures:Structure[]=[
   entry('tibialis-posterior','Tibialis posterior','muscle','Deep posterior compartment','Source muscle belly continuing into the tendon behind the medial malleolus.'),
   entry('fdl','Flexor digitorum longus','muscle','Deep posterior compartment','Source muscle belly continuing into four long digital flexor slips.'),
@@ -12,7 +12,7 @@ export const softTissueStructures:Structure[]=[
   entry('abductor-digiti-tendon','Abductor digiti minimi tendon','tendon','Flexor tendons','Lateral insertion at the base of the proximal fifth phalanx.'),
   entry('short-plantar','Short plantar ligament','ligament','Midfoot ligaments','A broad plantar calcaneocuboid band deep to the long plantar ligament.'),
   entry('flexor-retinaculum','Flexor retinaculum','fascia','Retinacula','Broad medial band over the tibialis posterior, FDL and FHL tendon paths.'),
-  ...cartilageBoneIds.filter(b=>b!=='talus').map(b=>entry(cartilageId(b),`${b.replaceAll('-',' ')} · articular cartilage`,'cartilage','Articular cartilage','Thin offset shells on selected opposing joint surfaces of this bone.')),
+  ...cartilageBoneIds.filter(b=>b!=='talus').map(b=>entry(cartilageId(b),`${b.replaceAll('-',' ')} articular cartilage`,'cartilage','Articular cartilage','Thin offset shells on selected opposing joint surfaces of this bone.')),
 ];
 
 const roles:Record<string,string>={

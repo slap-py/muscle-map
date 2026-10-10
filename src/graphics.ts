@@ -12,8 +12,6 @@ export interface GraphicsSettings {
   /** Pixel ratio while the camera moves; null keeps the resting ratio. */
   movingPixelRatio: number | null;
   shadows: boolean;
-  /** Swap the skin's physical (sheen/clearcoat) material for a standard one. */
-  simpleSkin: boolean;
   /** Jittered TAA samples accumulated at rest; 0 disables TAA. */
   taaSamples: number;
   /** Fetch muscle and exterior models only when their layers are shown. */
@@ -29,11 +27,11 @@ export interface GraphicsSettings {
 
 export const graphicsSettings: Record<GraphicsTier, GraphicsSettings> = {
   high: {
-    maxPixelRatio: 2, movingPixelRatio: null, shadows: true, simpleSkin: false, taaSamples: 32,
+    maxPixelRatio: 2, movingPixelRatio: null, shadows: true, taaSamples: 32,
     lazyLayers: false, workerBvh: false, throttleHover: false, thinHoverAssist: true, maxPassiveLabels: 12,
   },
   low: {
-    maxPixelRatio: 1, movingPixelRatio: 0.75, shadows: false, simpleSkin: true, taaSamples: 0,
+    maxPixelRatio: 1, movingPixelRatio: 0.75, shadows: false, taaSamples: 0,
     lazyLayers: true, workerBvh: true, throttleHover: true, thinHoverAssist: false, maxPassiveLabels: 6,
   },
 };

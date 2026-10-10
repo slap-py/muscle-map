@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-09",
+  "revision": "photo-guided-fullness-and-rounded-toes",
+  "method": "Assistant qualitative inspection of fresh viewer screenshots, with the user-provided photos as contour references. The photos supply no registered dimensions and do not establish scanned or person-specific skin.",
+  "captureCounts": {
+    "right": 5,
+    "left": 5,
+    "capEnds": 16,
+    "total": 26
+  },
+  "reports": [
+    "validation/skin-fullness-final-right/skin-visual-browser-check.json",
+    "validation/skin-fullness-final-left/skin-visual-browser-check.json",
+    "validation/skin-fullness-caps/report.json"
+  ],
+  "reviewScope": "Current geometry: desktop 1440 px, High graphics, light theme and 100% skin opacity for anterior/lateral whole-limb views and ankle/heel/toe closeups on both sides. Cap captures cover both sides, light/dark, proximal/seam, on/off at 100% opacity. The historical mobile, transparency and all-angle matrix was not rerun for this revision.",
+  "findings": {
+    "fullerContoursAndKnee": {
+      "passed": true,
+      "note": "Calf/thigh contours are fuller and the anterior patellar pad reduces the skeletal knee contour. This is an illustrative envelope, with some structure-derived surface relief remaining."
+    },
+    "ankleAndHeelLandmarks": {
+      "passed": true,
+      "note": "Rounder heel and smoother ankle/Achilles transitions are visible. The original thin 2-4 mm landmark distance targets fail and are recorded separately."
+    },
+    "toeGaps": {
+      "passed": true,
+      "note": "All four actual mesh section gap criteria pass on each side. Distal clefts are visible; normal proximal toe webs remain."
+    },
+    "noFlapsAndThinBridges": {
+      "passed": true,
+      "note": "The previously ragged toe-web strips are absent in the reviewed fresh dorsal closeups; rounded toe surfaces and continuous separators replace voxel-carved edges."
+    },
+    "capControls": {
+      "passed": true,
+      "note": "Fresh 16-cap capture run verifies on/off at proximal and seam cuts in both themes. Independent opacity and combined seam hiding are covered by existing tests."
+    },
+    "flatSole": {
+      "applied": false,
+      "note": "Rounded illustrative heel/sole retained."
+    }
+  },
+  "visualAcceptancePassed": true,
+  "allCriteriaPassed": false,
+  "publishedGlbSha256": {
+    "public/models/exterior.glb": "80f939481f7985f1c1a16ed506b40a6222559cf8dfe7ced41b2ed0da50f906d8",
+    "public/models/left-lower-leg/exterior.glb": "ef550a43467d2f2993cbf30561e107c8ecd53d1cc57cc2959fb153c9ff1157ae",
+    "public/models/right-upper-leg/exterior.glb": "e2f33c5c45b268f696f1e2c7daedebcc2fe310db417bacb173e93688e8977a4d",
+    "public/models/left-upper-leg/exterior.glb": "ec708c08116f22cba4d14bbddfc7a5904d9c54524fff17bcc14b3c1b0b74cc46"
+  },
+  "historicalReview": {
+    "backup": "output/skin/reference-before-fullness/skin-visual-review.json",
+    "captureCounts": {
+      "right": 264,
+      "left": 264,
+      "capEnds": 16,
+      "total": 544
+    },
+    "reports": [
+      "validation/skin-visual-final-right/skin-visual-browser-check.json",
+      "validation/skin-visual-final-left/skin-visual-browser-check.json",
+      "validation/skin-cut-caps/report.json"
+    ],
+    "publishedGlbSha256": {
+      "public/models/exterior.glb": "4252a63d8b1b987d9b336878cba1dbbd280cc4b576eb4b6d75a37cb58578fa48",
+      "public/models/left-lower-leg/exterior.glb": "8f5858a59f0d72c1aad2193d1f66b55fe0734c3dd0a2ad4e1dc685553b702216",
+      "public/models/right-upper-leg/exterior.glb": "7734fc74034058cf97dd6de29ca6bcdcbf2e08dbc944ebd7ffb7039c63fbc6d0",
+      "public/models/left-upper-leg/exterior.glb": "05fed5c353b9c43357d4c84f9db7685a21b38c5eacc9cd64f7edc140b71ddfbf"
+    },
+    "visualAcceptancePassed": false,
+    "note": "These captures describe the previous geometry and its rejected ragged toe webs. They are not current-revision validation."
+  },
+  "phoneQa": {
+    "currentRevisionCaptured": false,
+    "productionPhoneViewerSupported": false
+  },
+  "userVisualApproval": null,
+  "subsequentRuntimeRevision": {
+    "report": "validation/skin-runtime-review.json",
+    "note": "User feedback rejected the previous interaction lag and smooth/clay appearance. The runtime revision supersedes the presentation review; the geometry and its historical scoped review remain unchanged.",
+    "userVisualApproval": null,
+    "allCriteriaPassed": false
+  }
+}

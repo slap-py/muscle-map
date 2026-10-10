@@ -1,4 +1,4 @@
-export type Route = { kind: 'hub' } | { kind: 'credits' } | { kind: 'region'; regionId: string; select: string | null } | { kind: 'regions'; regionIds: string[]; select: string | null };
+export type Route = { kind: 'landing' } | { kind: 'how-it-works' } | { kind: 'hub' } | { kind: 'credits' } | { kind: 'region'; regionId: string; select: string | null } | { kind: 'regions'; regionIds: string[]; select: string | null };
 
 /** Hash routing works on a static host without server rewrite rules. */
 export function parseRoute(hash: string, regionIds: readonly string[]): Route {
@@ -6,6 +6,9 @@ export function parseRoute(hash: string, regionIds: readonly string[]): Route {
   let regionId: string;
   try { regionId = decodeURIComponent((pathname || '/').replace(/^\/+|\/+$/g, '')); }
   catch { return { kind: 'hub' }; }
+  if (!regionId) return { kind: 'landing' };
+  if (regionId === 'browser') return { kind: 'hub' };
+  if (regionId === 'how-it-works') return { kind: 'how-it-works' };
   if (regionId === 'credits') return { kind: 'credits' };
   if (regionId === 'regions') {
     const params = new URLSearchParams(query);
@@ -27,7 +30,7 @@ export const regionStorageKey = (regionId: string, key: string) => `muscle-map-r
 
 export function regionsHref(regionIds: readonly string[], select?: string | null) {
   const ids = [...new Set(regionIds)].sort();
-  if (!ids.length) return '#/';
+  if (!ids.length) return '#/browser';
   if (ids.length === 1) return regionHref(ids[0], select);
   const params = new URLSearchParams();
   ids.forEach(id => params.append('region', id));

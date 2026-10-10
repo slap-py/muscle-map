@@ -1,0 +1,111 @@
+{
+  "origin": "http://127.0.0.1:5178/",
+  "method": "45-step real pointer drag, 1440x1000, fresh Edge headless contexts; RAF intervals during drag include CPU label work and rendering; local observations",
+  "rows": [
+    {
+      "side": "right",
+      "graphics": "high",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 40377,
+      "frames": 134,
+      "medianFrameMs": 300.2999999999993,
+      "p95FrameMs": 400.2999999999993,
+      "maxFrameMs": 417,
+      "meanFrameMs": 298.2985074626866,
+      "errors": []
+    },
+    {
+      "side": "right",
+      "graphics": "high",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 43410,
+      "frames": 134,
+      "medianFrameMs": 333.6999999999971,
+      "p95FrameMs": 383.79999999999563,
+      "maxFrameMs": 400.5,
+      "meanFrameMs": 320.9574626865671,
+      "errors": []
+    },
+    {
+      "side": "right",
+      "graphics": "low",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 34607,
+      "frames": 134,
+      "medianFrameMs": 250.3000000000029,
+      "p95FrameMs": 300.40000000000146,
+      "maxFrameMs": 317.1000000000022,
+      "meanFrameMs": 255.96791044776117,
+      "errors": []
+    },
+    {
+      "side": "right",
+      "graphics": "low",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 36708,
+      "frames": 134,
+      "medianFrameMs": 267,
+      "p95FrameMs": 317.09999999999854,
+      "maxFrameMs": 333.8000000000029,
+      "meanFrameMs": 271.4059701492538,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "high",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 35855,
+      "frames": 134,
+      "medianFrameMs": 266.90000000000146,
+      "p95FrameMs": 350.1999999999989,
+      "maxFrameMs": 416.8000000000011,
+      "meanFrameMs": 265.055223880597,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "high",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 36739,
+      "frames": 134,
+      "medianFrameMs": 283.59999999999854,
+      "p95FrameMs": 333.6999999999971,
+      "maxFrameMs": 333.8000000000029,
+      "meanFrameMs": 271.6544776119403,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "low",
+      "opacity": 100,
+      "labels": false,
+      "elapsedMs": 37918,
+      "frames": 134,
+      "medianFrameMs": 283.6999999999971,
+      "p95FrameMs": 333.59999999999854,
+      "maxFrameMs": 333.8000000000029,
+      "meanFrameMs": 280.3701492537313,
+      "errors": []
+    },
+    {
+      "side": "left",
+      "graphics": "low",
+      "opacity": 50,
+      "labels": false,
+      "elapsedMs": 39685,
+      "frames": 134,
+      "medianFrameMs": 300.1999999999971,
+      "p95FrameMs": 333.70000000001164,
+      "maxFrameMs": 350.3000000000029,
+      "meanFrameMs": 293.5671641791045,
+      "errors": []
+    }
+  ],
+  "note": "Labels were off at the default setting. The old visibility grid still scanned skin during rotation even with no label candidates."
+}

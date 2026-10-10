@@ -30,9 +30,11 @@ describe('exterior and regional atlas',()=>{
   const skin=model.parts.get('skin')!.meshes[0];
   expect(skin.geometry.boundingBox!.max.y).toBeGreaterThan(430);
   expect(skin.geometry.boundingBox!.max.x).toBeGreaterThan(165);
-  // Pinned source contains no skin mesh; retain honest provenance until replaced.
-  expect(skin.userData.source).toBe('illustrative-envelope');
+  expect(skin.userData.source).toBe('structure-envelope');
+  expect(skin.material).toBeInstanceOf(THREE.MeshStandardMaterial);
   expect(skin.material).toBeInstanceOf(THREE.MeshPhysicalMaterial);
+  expect((skin.material as THREE.MeshPhysicalMaterial).specularIntensity).toBeLessThan(.5);
+  expect(skin.geometry.boundsTree).toBeDefined();
   applyCoverage(skin,.4);
   expect(skin.castShadow).toBe(false);
  });
@@ -47,3 +49,19 @@ describe('exterior and regional atlas',()=>{
   }
  });
 });
+
+it('smooth attachment ghosting restores normal depth coverage when closed',()=>{
+ const mesh = new THREE.Mesh(new THREE.BoxGeometry(),new THREE.MeshStandardMaterial());
+ applyCoverage(mesh,.07,true);
+ expect(mesh.material.alphaHash).toBe(false);
+ expect(mesh.material.transparent).toBe(true);
+ expect(mesh.material.depthWrite).toBe(false);
+ expect(mesh.castShadow).toBe(false);
+ applyCoverage(mesh,.5);
+ expect(mesh.material.transparent).toBe(false);
+ expect(mesh.material.alphaHash).toBe(true);
+ expect(mesh.material.depthWrite).toBe(true);
+ expect(mesh.castShadow).toBe(true);
+ mesh.geometry.dispose();mesh.material.dispose();mesh.customDepthMaterial?.dispose();
+});
+

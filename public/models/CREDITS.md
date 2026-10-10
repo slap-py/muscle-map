@@ -96,9 +96,9 @@ nails and creases are omitted. It is an adaptation under the same CC BY-SA 4.0
 terms and attribution as the source anatomy. Rebuild with Blender:
 `blender --background --factory-startup --disable-autoexec --python scripts/prepare-exterior.py`.
 
-## October 2026 skin inspection
+## Historical source skin inspection
 
-The Blender 5.2 MCP source inspection found no skin/integument mesh in the pinned Startup.blend. Skin and Dermis collections are empty; Integument contains hair and nail appendages. The real-skin replacement is pending. The exterior GLB and manifest were preserved, and the procedural surface must not be attributed as extracted Z-Anatomy skin.
+The Blender 5.2 MCP source inspection found no skin/integument mesh in the pinned Startup.blend. Skin and Dermis collections are empty; Integument contains hair and nail appendages. The preceding ring-derived surface is retained in Git history. The current structure-envelope derivative is documented below; neither surface is extracted Z-Anatomy skin.
 
 The viewer now uses a skin physical material and a skin-plus-bone Exterior preset. These visual changes do not change the geometry's provenance. The running MCP extension can be inspected through `python scripts/blender-command.py scripts/inspect-exterior.py` after saving open Blender work.
 
@@ -223,3 +223,8 @@ with their original radii; register around each femur; export static Y-up GLBs.
 Exterior consists of original body-region patches displayed double-sided.
 No excluded third-party exception objects are used. Per-object names and triangle
 counts are recorded in each manifest. Footprint focus extents are illustrative.
+
+
+## Illustrative structure envelope (October 2026)
+
+The displayed skin is derived from the side-specific Z-Anatomy structure exports and the viewer’s generated connective tissues, rather than extracted from a skin scan. Each side is constructed from its own packs; the left lower-leg anatomy remains a mirrored right-side derivative, while its upper-leg source is native. Triangle surfaces are voxel-sampled, filled, inflated by a smooth project-defined thickness field and extracted with gradient normals. Independent per-toe fields use source-derived cross-section hulls and preserve air gaps; bounded half-millimetre toe extraction slabs resolve their contours, joined to the one-millimetre body and heel across a configured quarter-millimetre collar. Consistent outward winding is checked across shared edges. The lower-leg gastrocnemius geometry is preserved byte for byte. Cut caps are separately triangulated meshes. The nine original upper-leg open surface patches are compared in `validation/skin-source-audit.json`; the new envelope stops at a groin-level study cut and omits more proximal pelvis/gluteal context. No creases, nails or person-specific fat are modeled. Derived envelopes: CC BY-SA 4.0. Source attribution and upstream license notices above continue to apply.
