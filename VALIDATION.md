@@ -403,3 +403,42 @@ Fresh production Edge captures in `validation/skin-natural/after-*.png` cover bo
 Removed the cap and cap-opacity controls from Layers and Settings, together with their saved preferences/session fields. Cut surfaces follow the skin opacity; paired internal seam caps remain automatically hidden. Skin is excluded from the left atlas filters, rows and advertised search/list counts, while the right layer and skin-opacity control remain available. All four opacity sliders use fixed label/output columns and the same flexible track width; the longer vessels/nerves label wraps.
 
 The production build and 14 relevant viewer/session/graphics tests pass. `validation/skin-controls-check.json` records browser verification at 1440 px with normal/expanded inspector widths and at 1024 px: all four slider tracks have matching widths and horizontal alignment; cap controls are absent from both panels; skin is absent from the left menu and from counts; reset and skin opacity still work. Legacy saved cap preferences were included in the browser check. No browser errors occurred. Screenshots are `validation/skin-controls-*.png`.
+
+## Earlier structure-derived skin record (UI branch copy, superseded by the records above)
+
+
+The current skin is an illustrative envelope of each side's own structures. The preceding skin checks below are historical and do not describe this derivative. Full unit suite: **140 tests across 29 files pass**. `npm run build` passes; the existing viewer-resources chunk remains above Vite's 500 kB advisory threshold.
+
+The source packs have different local datums: lower talus and upper femur midpoint. Frozen assembly offsets register them before construction, then upper export restores its own local frame. Lower bones/vessels stop at Y=365.3445 mm; upper shaft context begins at Y=252.3309 mm, about 113.014 mm of overlap. The skin seam is Y=450.125 mm above the retained gastrocnemius heads (maximum Y=438.3018 mm). The extra 0.125 mm avoids coplanar voxel facets. The proximal study cut is Y=790 mm in the lower frame.
+
+Both sides use 1 mm grids of 60,118,912 voxels, triangle sampling at no more than 0.5 mm, 2.5 mm closing and explicit outside/axial section filling. Profile, pads and cuts are project choices. A foot-only prototype preceded whole-limb generation. Free-toe padding required **0.65 mm**, below the proposed 1.5–2.5 mm starting range, to maintain gaps around digital tissue. Exact adjacent source-bone surface gaps are 5.5621, 4.2039, 3.0754 and 6.9993 mm. Toe sampling includes the per-toe assigned digital structures in the generated surface.
+
+Fresh full field builds reproduced both audited dense-vertex and simplified-index hashes. NumPy/SciPy/scikit-image perform voxel work; existing meshoptimizer 0.22.0 and Three's earcut perform decimation/caps, so no pip installation was needed. Per-side JSON preservation constraints make final simplification independent of scratch audit history. Publication refuses stale/failed mesh-error audits. Gastrocnemius accessor buffer bytes remain identical. Original nine open upper source patches are also retained byte-identically as hidden `sourceReference` meshes because some extend above the groin crop.
+
+| Metric | Right | Left | Result |
+| --- | ---: | ---: | --- |
+| Simplified full skin triangles before splitting | 150,000 | 150,000 | Budget met |
+| Lower skin / cap triangles | 87,806 / 304 | 88,905 / 323 | Closed, one component |
+| Upper skin / cap triangles | 62,769 / 1,127 | 61,713 / 1,149 | Closed, one component |
+| Lower exterior GLB bytes, including calf heads | 2,697,296 | 2,724,700 | Reported |
+| Upper exterior GLB bytes, including hidden references | 1,632,696 | 1,608,324 | Reported |
+| Certified Hausdorff upper bound against dense skin | ≤0.300001 mm | ≤0.300001 mm | 0.3 mm with 1e-6 mm numerical tolerance |
+| Sampled self-intersection candidates | 0 | 0 | 10,000 triangles sampled per side; not an exhaustive proof |
+| Exact containment within groin study crop | 99.9588% | 99.9533% | ≥99.9% met |
+| Exact eligible vertex outliers | 268 | 304 | Every coordinate/index listed in enclosure reports |
+| Containment across all uncropped source vertices | 90.7758% | 90.7710% | **Fails 99.9% if proximal context is included** |
+| Intentionally proximal-cropped source vertices | 65,792 | 65,795 | Listed separately |
+| Certified seam-loop discrepancy | <0.006 mm | <0.006 mm | <0.1 mm met |
+| Toe lengths with gap ≥0.5 mm, pairs 1–2/2–3/3–4/4–5 | 80% / 73.3% / 88.3% / 90% | 80% / 73.3% / 88.3% / 90% | ≥60% met, 60 sections per pair |
+| Clearance samples within 0.5 mm of intended field | 68.59% | 68.02% | **Everywhere clearance criterion fails** |
+| Maximum sampled clearance deviation | 6.161 mm | 6.165 mm | Explicit limitation |
+| Medial / lateral malleolus skin-to-bone distance | 3.277 / 3.430 mm | 3.235 / 3.430 mm | 2–4 mm met |
+| Tibial crest / posterior calcaneus distance | 5.221 / 7.125 mm | 5.226 / 7.148 mm | **2–4 mm criterion fails** |
+
+Each capped piece has every geometrically welded edge incident to exactly two triangles and positive signed volume. The skin itself remains open at the seam/proximal ends; separate caps close the piece. Combined views hide paired seam caps. Skin uses outward front faces, draws last, is excluded from BVHs, and yields picking to underlying structures. Opacity below one disables depth writes. Caps have independent persisted controls, default on at 100%, and Low graphics keeps the simpler material.
+
+Mirror diagnostics use 10,000 samples per direction. Source native-left differences reach 1.2051 mm (p95 0.0037 mm); the generated skin reaches 0.2920 mm (p95 0.0648 mm). The 1 mm discretization also contributes. This is not an exact-reflection claim.
+
+Reports: `validation/skin-source-audit.json`, `skin-toe-source-gaps.json`, `skin-toe-prototype.json`, `skin-mesh-{side}.json`, `skin-geometry-{side}.json`, `skin-enclosure-{side}.json`, `skin-clearance-{side}.json` and compressed field outlier files. Clearance is exact point-to-source-triangle distance at 10,000 deterministic skin vertices; it is not a continuous guarantee. Source-all containment and crest/heel clearance remain unmet acceptance criteria rather than being relabeled as passes. The source has no scanned skin, creases, nails or person-specific fat.
+
+Browser/visual QA results are appended after capture below. The production phone-size notice remains active. Any 390 px viewer captures use an explicitly documented test-only media-query override; they do not imply that the production viewer is enabled on phones.

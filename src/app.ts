@@ -8,12 +8,11 @@ import { introductionPage, bindIntroductionPreview } from "./introduction";
 import { regionCatalog } from "./regions/catalog";
 import { validateRegionPack } from "./regions";
 import { parseRoute, LAST_REGION_KEY } from "./router";
-import { readThemeChoice, setThemeChoice, type ThemeChoice } from "./theme";
 import "./viewerDiagnostics";
 import { loadingScreen } from "./loading";
 import { combinedTitleForIds } from "./regions/combinedTitle";
 import { renderBodyMap, bindBodyMap } from "./bodyMap";
-import { mainNavigation, siteFooter } from "./siteChrome";
+import { bindSkipLink, siteFooter, skipLink } from "./siteChrome";
 import { brandLockup } from "./branding";
 import { phoneScreenNotice, phoneScreenQuery } from "./phoneScreen";
 
@@ -29,31 +28,17 @@ let mountedRegion: string | undefined;
 function renderHub(error?: string) {
   document.title = "Browser · Fabrica";
   document.body.dataset.page = "hub";
-  app.innerHTML = `<div id="hub">
-    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>${mainNavigation(location.hash)}
-      <div class="segmented theme-control" aria-label="Color theme">${(["system","light","dark"] as const).map(choice => `<button data-theme-choice="${choice}" aria-pressed="${readThemeChoice() === choice}" class="${readThemeChoice() === choice ? "active" : ""}">${choice === "system" ? "System" : choice === "light" ? "Light" : "Dim"}</button>`).join("")}</div>
+  app.innerHTML = `<div id="hub">${skipLink("hub-main")}
+    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>
     </header>
-    <main class="hub-main hub-body-main"><div class="hub-intro"><h1>Explore by region</h1><p>Click a region of the body to select it, add touching sections on the same side, then press Go to explore them together in 3D.</p></div>
+    <main id="hub-main" class="hub-main hub-body-main"><div class="hub-intro"><h1>Explore by region</h1><p>Click a region of the body to select it, add touching sections on the same side, then press Go to explore them together in 3D.</p></div>
     ${error ? '<p class="hub-error" role="alert">The viewer could not start. Please try opening the region again.</p>' : ""}
     ${renderBodyMap()}
     </main>
     ${siteFooter}
   </div>`;
-  bindThemeControl();
+  bindSkipLink(app);
   bindBodyMap(app.querySelector<HTMLElement>(".body-map")!);
-}
-
-function bindThemeControl() {
-  app.querySelectorAll<HTMLButtonElement>("[data-theme-choice]").forEach(button => {
-    button.onclick = () => {
-      const choice = button.dataset.themeChoice as ThemeChoice;
-      setThemeChoice(choice);
-      app.querySelectorAll<HTMLButtonElement>("[data-theme-choice]").forEach(item => {
-        const active = item.dataset.themeChoice === choice;
-        item.classList.toggle("active", active); item.setAttribute("aria-pressed", String(active));
-      });
-    };
-  });
 }
 
 function creditsSections() {
@@ -71,15 +56,14 @@ function creditsSections() {
 function renderCredits() {
   document.title = "Sources & credits · Fabrica";
   document.body.dataset.page = "hub";
-  app.innerHTML = `<div id="hub">
-    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>${mainNavigation(location.hash)}
-      <div class="segmented theme-control" aria-label="Color theme">${(["system", "light", "dark"] as const).map(choice => `<button data-theme-choice="${choice}" aria-pressed="${readThemeChoice() === choice}" class="${readThemeChoice() === choice ? "active" : ""}">${choice === "system" ? "System" : choice === "light" ? "Light" : "Dim"}</button>`).join("")}</div>
+  app.innerHTML = `<div id="hub">${skipLink("hub-main")}
+    <header class="hub-header"><a class="hub-brand" href="#/" aria-label="Fabrica home">${brandLockup}</a>
     </header>
-    <main class="hub-main credits-main"><a class="credits-back" href="${previousPage}">← Back to ${parseRoute(previousPage, regionIds).kind === "landing" ? "Home" : parseRoute(previousPage, regionIds).kind === "how-it-works" ? "How it works" : parseRoute(previousPage, regionIds).kind === "hub" ? "Browser" : "Viewer"}</a><h1>Sources &amp; credits</h1>
+    <main id="hub-main" class="hub-main credits-main"><a class="credits-back" href="${previousPage}">← Back to ${parseRoute(previousPage, regionIds).kind === "landing" ? "Home" : parseRoute(previousPage, regionIds).kind === "how-it-works" ? "How it works" : parseRoute(previousPage, regionIds).kind === "hub" ? "Browser" : "Viewer"}</a><h1>Sources &amp; credits</h1>
       ${creditsSections()}
     </main>${siteFooter}
   </div>`;
-  bindThemeControl();
+  bindSkipLink(app);
 }
 
 async function route() {
@@ -110,7 +94,7 @@ async function route() {
     document.title = next.kind === "landing" ? "Home · Fabrica" : "How it works · Fabrica";
     document.body.dataset.page = "introduction";
     app.innerHTML = introductionPage(next.kind === "how-it-works");
-    bindThemeControl(); bindIntroductionPreview(app);
+    bindIntroductionPreview(app);
     window.scrollTo(0, 0);
     return;
   }
