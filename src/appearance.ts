@@ -25,6 +25,7 @@ export function applyCoverage(mesh: THREE.Mesh, alpha: number, smooth = false) {
   depth.userData.coverage.value=alpha;
   if(depth.alphaHash !== hashed) {depth.alphaHash=hashed;depth.needsUpdate=true;}
   depth.opacity=alpha;
-  mesh.castShadow=!transparent && !skin && !mesh.userData.fiber && mesh.userData.id !== "skin";
+  // A faded skin stops casting so it does not darken the anatomy beneath it.
+  mesh.castShadow=!transparent && !mesh.userData.fiber && (!skin || alpha >= 0.99);
   mesh.renderOrder=skin ? 10 : 0;
 }

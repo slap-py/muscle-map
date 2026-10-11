@@ -115,6 +115,7 @@ export const enableMeshPickingInWorker: BvhBuilder = createPickingWorker().build
 export function intersectThinStructures(
   raycaster: THREE.Raycaster, camera: THREE.Camera, pointer: THREE.Vector2,
   width: number, height: number, targets: THREE.Mesh[],
+  accept: (hit: THREE.Intersection) => boolean = () => true,
 ): THREE.Intersection | undefined {
   if (!targets.some(mesh => mesh.userData.thinStructure)) return;
   const sample = new THREE.Vector2();
@@ -127,7 +128,7 @@ export function intersectThinStructures(
         sample.set(pointer.x + Math.cos(angle) * radius * 2 / width,
           pointer.y + Math.sin(angle) * radius * 2 / height);
         raycaster.setFromCamera(sample, camera);
-        const hits = raycaster.intersectObjects(targets, false);
+        const hits = raycaster.intersectObjects(targets, false).filter(accept);
         const opaque = hits.find(hit => (hit.object.parent?.userData.alpha ?? 1) >= .99);
         const hit = hits.find(hit => hit.object.userData.thinStructure &&
           (!opaque || hit.distance <= opaque.distance + .05));

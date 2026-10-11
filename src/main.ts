@@ -1,5 +1,4 @@
 import { version } from "../package.json";
-import { mainNavigation, siteFooter } from "./siteChrome";
 import { loadingScreen } from "./loading";
 import { brandLockup } from "./branding";
 import type { RegionPack } from "./regions";
@@ -13,6 +12,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { TAARenderPass } from "three/addons/postprocessing/TAARenderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { applyCoverage } from "./appearance";
+import { capPriority, createSectionCap, defaultSection, hiddenSide, isMostlyClosed, placeCapQuad, type SectionCap, isClipped, isFullyClipped, normalizeSection, sectionFillColor, sectionPlanes, updateSectionPlane, withSectionFill, type SectionAxis } from "./section";
 import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/inter/latin-600.css";
@@ -64,7 +64,7 @@ app.innerHTML = `
 <header class="topbar">
   <div class="brand"><a class="viewer-home" href="#/" aria-label="Fabrica home" title="Home">${brandLockup}</a><span class="title" title="${pack.title}">${pack.title}</span></div>
   <div class="segmented modes" aria-label="Tissue presets">${presets.map(preset => `<button data-mode="${preset.id}" class="${preset.id === pack.defaultMode ? 'active' : ''}">${preset.icon ?? ''}${preset.label}</button>`).join('')}</div>
-  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items">${mainNavigation(location.hash)}<button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset model, selection, layers and filters (R)" aria-label="Reset model"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
+  <nav class="topbar-actions" aria-label="Explorer actions"><details class="actions-menu" open><summary aria-label="More actions" title="More actions">⋯</summary><div class="action-items"><button id="labels" class="tool-button" aria-pressed="true" title="Toggle labels (L)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h9l3 5-3 5H2Z"/><circle cx="10" cy="8" r="1"/></svg>Labels</button><button id="reset" class="tool-button" title="Reset model, selection, layers and filters (R)" aria-label="Reset model"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 6a5 5 0 1 1 0 5M3 2v4h4"/></svg></button><button id="about" class="tool-button" title="About ${pack.title}" aria-label="About"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7v4M8 4.5v.2"/></svg></button></div></details></nav>
 </header>
 <main>
 <aside class="panel atlas" aria-label="Structures">
@@ -101,11 +101,18 @@ app.innerHTML = `
     <div class="slider-row"><label for="skin-opacity">Skin</label><input id="skin-opacity" type="range" min="0" max="100" value="100"/><output id="skin-opacity-value">100%</output></div>
     <div id="neurovascular-opacity-controls" hidden><div class="slider-row"><label for="neurovascular-opacity">Vessels &amp; nerves</label><input id="neurovascular-opacity" type="range" min="10" max="100" value="100"/><output id="neurovascular-opacity-value">100%</output></div></div>
     <p id="neurovascular-status" role="status" hidden></p>
+    <div class="section-control" role="group" aria-labelledby="section-heading">
+      <p class="setting-title" id="section-heading">Section</p>
+      <div class="segmented section-axis">${([["off","Off"],["sagittal","Sagittal"],["coronal","Coronal"],["transverse","Transverse"]] as const).map(([id, name]) => `<button data-section-axis="${id}" aria-pressed="${id === 'off'}" class="${id === 'off' ? 'active' : ''}">${name}</button>`).join('')}</div>
+      <div id="section-options" hidden>
+        <div class="slider-row"><label for="section-position">Position</label><input id="section-position" type="range" min="0" max="100" value="50"/><output id="section-position-value">50%</output></div>
+        <button id="section-flip" class="toggle-row" aria-pressed="false"><span>Flip side</span><span class="switch" aria-hidden="true"></span></button>
+      </div>
+    </div>
   </section>
   <p id="layer-hint" class="layer-hint"></p>
 </aside>
 </main>
-${siteFooter}
 <dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close icon-button" aria-label="Close model information">${icon.close}</button><h2 id="about-title">${pack.about.title}</h2>
 <div class="about-tabs" role="tablist" aria-label="About sections">${[['overview','Overview'],['controls','Controls'],['settings','Settings']].map(([id,name])=>`<button id="about-tab-${id}" role="tab" data-about-tab="${id}" aria-controls="about-panel-${id}" aria-selected="${id==='overview'}" tabindex="${id==='overview'?0:-1}">${name}</button>`).join('')}</div>
 <section id="about-panel-overview" role="tabpanel" data-about-panel="overview" aria-labelledby="about-tab-overview">${pack.about.overviewHtml}</section>
@@ -158,6 +165,7 @@ const state = {
 
   mode: pack.defaultMode,
   view: pack.defaultView,
+  section: defaultSection(),
 };
 
 if (restored) {
@@ -171,6 +179,7 @@ if (restored) {
   state.labels = restored.labels;
   state.highlightConnections = restored.highlightConnections;
   state.view = restored.view;
+  state.section = normalizeSection(restored.section);
   $<HTMLInputElement>('#search').value = restored.search;
   for (const [id, value] of [['opacity', state.opacity], ['skin-opacity', state.skinOpacity], ['neurovascular-opacity', state.neurovascularOpacity]] as const) {
     $<HTMLInputElement>('#' + id).value = String(Math.round(value * 100));
@@ -422,6 +431,7 @@ try {
   scope.dispose(); worker.dispose();
   throw new Error("WebGL unavailable");
 }
+renderer.localClippingEnabled = true;
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -494,10 +504,12 @@ scene.add(fill);
 controls.minPolarAngle = 0.001;
 controls.maxPolarAngle = Math.PI - 0.001;
 const updateCompass = createCompass($("#compass"), (view) => setView(view), pack.directions);
-const composer = new EffectComposer(renderer);
+// Section caps count front and back faces in the stencil buffer, so every target the scene is drawn into needs one.
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, stencilBuffer: true }));
 const taa = new TAARenderPass(scene, camera);
 // One scene render per frame: unjittered while moving, then one jittered TAA sample per frame until converged.
 taa.sampleLevel=0;
+taa.stencilBuffer = true;
 composer.addPass(taa);composer.addPass(new OutputPass());
 let taaSamplesLeft=0;
 let taaAccumulated=false;
@@ -869,8 +881,50 @@ function selectedConnectionHighlights() {
 function focusIds() {
   return state.highlightConnections && !state.isolated ? [...selectedConnectionHighlights()] : state.multi.length ? state.multi : [state.selected!];
 }
+/** Union of part bounds, as used by the camera fit, so the slider spans the same extent in every region. */
+const sectionBounds = new THREE.Box3();
+/** Structures whose bounds lie wholly on the hidden side of the section plane. */
+const sectionHidden = new Set<string>();
+function refreshSection() {
+  sectionBounds.makeEmpty();
+  sectionHidden.clear();
+  if (state.section.axis === "off") { updateSectionPlane(state.section, sectionBounds); return; }
+  for (const [id, part] of leg.parts) if (part.meshes.length && !isNeurovascular(byId[id].tissue)) sectionBounds.union(new THREE.Box3().setFromObject(part.group));
+  updateSectionPlane(state.section, sectionBounds);
+  const size = sectionBounds.getSize(new THREE.Vector3()).length() * 1.5;
+  for (const cap of sectionCaps) placeCapQuad(cap.quad, sectionPlanes[0], size);
+  for (const [id, part] of leg.parts) if (part.meshes.length && isFullyClipped(new THREE.Box3().setFromObject(part.group))) sectionHidden.add(id);
+}
+const sectionActive = () => sectionPlanes.length > 0;
+const sectionCaps: SectionCap[] = [];
+// Not in mesh.userData: region packs deep-copy that data, and caps hold parent links.
+const sectionCapOf = new WeakMap<THREE.Mesh, SectionCap>();
+const visibleHit = (hit: THREE.Intersection) => !isClipped(hit.point);
+function syncSectionUI() {
+  const { axis, position, flipped } = state.section;
+  app.querySelectorAll<HTMLButtonElement>("[data-section-axis]").forEach(button => {
+    const active = button.dataset.sectionAxis === axis;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  $("#section-options").hidden = axis === "off";
+  const slider = $<HTMLInputElement>("#section-position");
+  slider.value = String(Math.round(position * 100));
+  const percent = `${Math.round(position * 100)}%`;
+  $("#section-position-value").textContent = percent;
+  slider.setAttribute("aria-valuetext", axis === "off" ? percent : `${percent}, ${hiddenSide(state.section)} half hidden`);
+  $("#section-flip").setAttribute("aria-pressed", String(flipped));
+  raycaster.firstHitOnly = axis === "off";
+  seenRaycaster.firstHitOnly = axis === "off";
+}
+function setSection(next: Partial<typeof state.section>) {
+  state.section = normalizeSection({ ...state.section, ...next });
+  syncSectionUI();
+  updateAppearance();
+}
 function updateAppearance() {
   invalidate();
+  refreshSection();
   if (viewport.dataset.neurovascularAssets === 'fallback') {
     for (const tissue of neurovascularTissues)
       if (![...leg.parts.values()].some(p => byId[p.id].tissue === tissue && p.meshes.length && !p.group.userData.unavailable)) state.layers.delete(tissue);
@@ -920,6 +974,7 @@ function updateAppearance() {
       mesh.userData.alpha = alpha;
       applyCoverage(mesh, alpha, state.attachmentFade);
       mesh.visible = alpha > 0 && (!cap || !mesh.userData.combineCapHidden);
+      applySectionToMesh(mesh, mat, d.tissue, part.group.visible && mesh.visible);
       mat.emissive.set(selected ? "#2b62a0" : highlighted.has(id) ? "#1d8a7a" : "#000000");
       mat.emissiveIntensity = selected ? 0.13 : highlighted.has(id) ? 0.25 : 0;
 
@@ -929,9 +984,15 @@ function updateAppearance() {
   $("#highlight-connections").setAttribute("aria-pressed", String(state.highlightConnections));
   viewport.dataset.highlightedStructures = [...highlighted].filter(id => leg.parts.get(id)?.group.visible).sort().join(",");
   updateFootprints();
-  $("#layer-hint").textContent = state.attachmentFade
-    ? "Attachment close-up shows all layers. Press Esc to restore."
-    : "";
+  const hint = $("#layer-hint");
+  if (state.attachmentFade) hint.textContent = "Attachment close-up shows all layers. Press Esc to restore.";
+  else if (state.selected && sectionHidden.has(state.selected)) {
+    const clear = document.createElement("button");
+    clear.className = "link-button";
+    clear.textContent = "Clear section";
+    clear.onclick = () => setSection({ axis: "off" });
+    hint.replaceChildren("Hidden by the section plane. ", clear);
+  } else hint.textContent = "";
   if (state.hovered && (!leg.parts.get(state.hovered)?.group.visible ||
     (state.highlightConnections && !hoverConnectionIds().has(state.hovered))))
     setHovered(null);
@@ -953,6 +1014,39 @@ function updateAppearance() {
   $("#labels").classList.toggle("active", state.labels);
   $("#labels").setAttribute("aria-pressed", String(state.labels));
   buildLabels();
+}
+/** Clips per material (not renderer-wide) so the floor and shadow catcher stay whole. */
+function applySectionToMesh(mesh: THREE.Mesh, mat: THREE.MeshStandardMaterial, tissue: Tissue, shown: boolean) {
+  const on = sectionActive();
+  mat.clippingPlanes = sectionPlanes;
+  // The shadow pass reads clipping from the depth material; flagging the main material would make three
+  // clone the depth material and drop its coverage shader.
+  const depth = mesh.customDepthMaterial as THREE.MeshDepthMaterial | undefined;
+  if (depth) { depth.clippingPlanes = sectionPlanes; depth.clipShadows = true; }
+  let cap = sectionCapOf.get(mesh);
+  // Faded meshes, skin end caps and open sheets are not capped; their back faces get a tinted fill instead.
+  const capped = on && shown && (mesh.userData.alpha ?? 1) >= 0.99 && mesh.userData.skinCap !== true && !mesh.userData.fiber && isMostlyClosed(mesh.geometry);
+  mesh.userData.sectionCap = capped;
+  mat.userData.baseSide ??= mat.side;
+  const side = on && !capped ? THREE.DoubleSide : mat.userData.baseSide as THREE.Side;
+  if (mat.side !== side) { mat.side = side; mat.needsUpdate = true; }
+  const color = sectionFillColor(colors[tissue], tissue === "skin" ? "#b87362" : undefined);
+  // A small per-structure lightness shift keeps neighbouring cut faces of one tissue apart.
+  let hash = 0;
+  for (const ch of String(mesh.userData.id ?? mesh.name)) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  color.offsetHSL(0, 0, ((hash % 1000) / 1000 - 0.5) * 0.1);
+  if (on && !capped) withSectionFill(mat, color);
+  if (!cap && capped) {
+    cap = createSectionCap(mesh, 1000 * (capPriority(tissue) + 2) + 3 * sectionCaps.length, color);
+    sectionCapOf.set(mesh, cap);
+    sectionCaps.push(cap);
+    scene.add(cap.quad);
+    placeCapQuad(cap.quad, sectionPlanes[0], sectionBounds.getSize(new THREE.Vector3()).length() * 1.5);
+  }
+  if (cap) {
+    cap.back.visible = cap.front.visible = cap.quad.visible = capped;
+    (cap.quad.material as THREE.MeshStandardMaterial).color.copy(color);
+  }
 }
 function presetLayers(mode: string): Tissue[] {
   return [...(pack.presets.find(preset => preset.id === mode)?.tissues ?? [])];
@@ -1035,6 +1129,11 @@ $<HTMLInputElement>("#skin-opacity").oninput = e => {
   updateAppearance();
 };
 $<HTMLInputElement>("#neurovascular-opacity").oninput = e => {state.neurovascularOpacity=Number((e.target as HTMLInputElement).value)/100;$("#neurovascular-opacity-value").textContent=`${Math.round(state.neurovascularOpacity*100)}%`;updateAppearance();};
+app.querySelectorAll<HTMLButtonElement>("[data-section-axis]").forEach(button => {
+  button.onclick = () => setSection({ axis: button.dataset.sectionAxis as SectionAxis });
+});
+$<HTMLInputElement>("#section-position").oninput = e => setSection({ position: Number((e.target as HTMLInputElement).value) / 100 });
+$("#section-flip").onclick = () => setSection({ flipped: !state.section.flipped });
 $("#home").onclick = () => setView(pack.defaultView);
 $("#zoom-in").onclick = () => {
   zoomBy(controls, 0.84);
@@ -1046,6 +1145,8 @@ function reset() {
   setPan(false);
   state.highlightConnections = false;
   clearFilters();
+  state.section = defaultSection();
+  syncSectionUI();
 
   state.neurovascularOpacity = 1;
   $<HTMLInputElement>("#neurovascular-opacity").value="100";
@@ -1086,6 +1187,27 @@ function hoverConnectionIds() {
     ...(state.multi.length ? state.multi : state.selected ? [state.selected] : []),
   ]);
 }
+/** Hits on the section's hidden side are dropped; with a section active every hit per mesh is needed, not only the closest. */
+function intersectVisible(caster: THREE.Raycaster, targets: THREE.Mesh[]) {
+  const hits = caster.intersectObjects(targets, false);
+  if (!sectionActive()) return hits;
+  const direction = caster.ray.direction;
+  const backFacing = (hit: THREE.Intersection) => !!hit.face && hit.face.normal.clone().transformDirection(hit.object.matrixWorld).dot(direction) > 0;
+  // A closed mesh whose near wall is cut away shows its cut face on the plane, so a hit on its far wall counts there.
+  const entered = new Set<THREE.Object3D>();
+  for (const hit of hits) if (!backFacing(hit) && visibleHit(hit)) entered.add(hit.object);
+  const planeDistance = caster.ray.distanceToPlane(sectionPlanes[0]);
+  const result: THREE.Intersection[] = [];
+  for (const hit of hits) {
+    if (!visibleHit(hit)) continue;
+    if (planeDistance !== null && backFacing(hit) && hit.object.userData.sectionCap && !entered.has(hit.object)) {
+      const tissue = byId[hit.object.userData.id]?.tissue;
+      const distance = planeDistance - capPriority(tissue) * 0.03;
+      result.push({ ...hit, distance, point: caster.ray.at(distance, new THREE.Vector3()) });
+    } else result.push(hit);
+  }
+  return result.sort((a, b) => a.distance - b.distance);
+}
 function pickStructure(clientX: number, clientY: number, hoverOnly = false): string | null {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.set(
@@ -1096,9 +1218,9 @@ function pickStructure(clientX: number, clientY: number, hoverOnly = false): str
   const hoverIds = hoverOnly && state.highlightConnections ? hoverConnectionIds() : null;
   const targets = [...leg.parts.values()]
     .filter((p) => p.group.visible && (!hoverIds || hoverIds.has(p.id)))
-    .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber));
+    .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber && !sectionHidden.has(p.id)));
   const anatomyTargets = targets.filter(mesh => !isSkinSurface(mesh) && !isSkinCap(mesh));
-  const hits = raycaster.intersectObjects(anatomyTargets, false);
+  const hits = intersectVisible(raycaster, anatomyTargets);
   // Preserve exact selected-surface priority before assisting neighboring tubes.
   const selectedHit = hits.find(hit => isSelected(hit.object.userData.id));
   // A previously selected skin surface must still yield to deeper anatomy; caps are never selectable.
@@ -1109,12 +1231,12 @@ function pickStructure(clientX: number, clientY: number, hoverOnly = false): str
   if (directThin) return directThin.object.userData.id;
   if (depthAware) return depthAware.object.userData.id;
   // Low graphics keeps the 48-ray assist for clicks, where it matters, and skips it on hover.
-  const thinHit = hoverOnly && !graphics.thinHoverAssist ? undefined : intersectThinStructures(raycaster, camera, mouse, rect.width, rect.height, anatomyTargets);
+  const thinHit = hoverOnly && !graphics.thinHoverAssist ? undefined : intersectThinStructures(raycaster, camera, mouse, rect.width, rect.height, anatomyTargets, sectionActive() ? visibleHit : undefined);
   if (thinHit) return thinHit.object.userData.id;
   // Only test the skin when no anatomical hit exists and its opacity allows picking.
   const skinTargets = targets.filter(mesh => isSkinSurface(mesh) && !isSkinCap(mesh) &&
     (mesh.userData.alpha ?? mesh.parent?.userData.alpha ?? 1) >= .6);
-  return chooseDepthAwareHit(raycaster.intersectObjects(skinTargets, false))?.object.userData.id ?? null;
+  return chooseDepthAwareHit(intersectVisible(raycaster, skinTargets))?.object.userData.id ?? null;
 }
 let pendingHover: string | null | undefined;
 let hoverTimer: number | undefined;
@@ -1207,18 +1329,19 @@ let seenPoints = new Map<string, THREE.Vector3>();
 let seenAt = -Infinity;
 const seenRaycaster = new THREE.Raycaster();
 seenRaycaster.firstHitOnly = true;
+syncSectionUI();
 function updateSeenIds(time: number, freeWidth: number, height: number) {
   seenAt = time;
   if (!labelNodes.some(label => label.retiringAt === undefined)) { seenPoints.clear(); return; }
   const targets = [...leg.parts.values()]
-    .filter((p) => p.group.visible && (p.group.userData.alpha ?? 1) >= .5)
+    .filter((p) => p.group.visible && (p.group.userData.alpha ?? 1) >= .5 && !sectionHidden.has(p.id))
     .flatMap((p) => p.meshes.filter((m) => m.visible && !m.userData.fiber));
   const hits = new Map<string, { x: number; y: number; point: THREE.Vector3 }[]>();
   const width = viewport.clientWidth, ndc = new THREE.Vector2();
   const firstHit = (px: number, py: number) => {
     ndc.set((px / width) * 2 - 1, -(py / height) * 2 + 1);
     seenRaycaster.setFromCamera(ndc, camera);
-    return seenRaycaster.intersectObjects(targets, false)[0];
+    return intersectVisible(seenRaycaster, targets)[0];
   };
   const cast = (px: number, py: number) => {
     const hit = firstHit(px, py);
@@ -1266,7 +1389,7 @@ function buildLabels() {
     ...(state.multi.length ? state.multi : state.selected ? [state.selected] : []),
   ]);
   for (const id of visible) {
-    if (!leg.parts.get(id)!.group.visible || (leg.parts.get(id)!.group.userData.alpha ?? 1) < .5) continue;
+    if (!leg.parts.get(id)!.group.visible || (leg.parts.get(id)!.group.userData.alpha ?? 1) < .5 || sectionHidden.has(id)) continue;
     let label = existing.get(id);
     if (!label) {
       const node = document.createElement("button");
@@ -1558,6 +1681,7 @@ return {
       labels: state.labels, highlightConnections: state.highlightConnections,
       view: state.view, viewDirection: pack.viewPresets.find(view => view.id === state.view)?.direction,
       overview: state.view === pack.defaultView,
+      section: { ...state.section },
     };
   },
   dispose() {

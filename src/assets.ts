@@ -124,7 +124,7 @@ function stageAssets(scene: THREE.Object3D, parts: Parts, ids: string[], tissue:
       }));
       mesh.name = id;
       mesh.userData = { id, atlasId: id, fiber: false, source: authoredSource ?? (skinSurface ? skinSource : "z-anatomy"), skinSurface, skinCap, capEnd };
-      mesh.castShadow = !skinSurface;
+      mesh.castShadow = true;
       if (skinSurface) mesh.renderOrder = 10;
       mesh.receiveShadow = true;
       if (pick) enableMeshPicking(mesh);

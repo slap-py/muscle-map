@@ -1,5 +1,6 @@
 import type { RegionPack } from './regions';
 import type { Tissue } from './data';
+import type { SectionState } from './section';
 
 export interface ViewerSession {
   regionIds: readonly string[];
@@ -17,6 +18,8 @@ export interface ViewerSession {
   view: string;
   viewDirection?: string;
   overview: boolean;
+  /** Absent in sessions saved before section planes existed. */
+  section?: SectionState;
 }
 
 export function resolveStructureId(pack: RegionPack, id: string | null): string | null {

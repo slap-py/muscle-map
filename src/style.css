@@ -1361,3 +1361,10 @@ body[data-page="viewer"] { --gap:12px; }
 
 .site-nav a { color:var(--muted); }
 .site-nav a:hover, .site-nav a[aria-current="page"] { color:var(--brand-link); }
+
+/* Section planes */
+.section-control { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.section-control .setting-title { margin-bottom: 6px; }
+.section-axis { gap: 2px; }
+.section-axis button { flex: 1 1 auto; min-width: 0; padding-left: 6px; padding-right: 6px; font-size: 12px; }
+#section-options { margin-top: 6px; }
